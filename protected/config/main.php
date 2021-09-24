@@ -96,7 +96,7 @@ return array(
 			'class'=>'CHttpSession',
 			'cookieMode'=>'allow',
 			'cookieParams'=>array(
-				'domain'=>'192.168.3.22',
+				'domain'=>'192.168.0.105',
 			),
 		),
 	),
@@ -114,6 +114,7 @@ return array(
 		'docmanPath'=>'/docman/dev',
 		'systemId'=>'svc',
 		'envSuffix'=>'dev',
+		'table_envSuffix'=>'lbs_service_',
 		'appname'=>'LBS DMS (UAT)',
 		'appcolor'=>'skin-purple-light',
 		'showRank'=>'on',

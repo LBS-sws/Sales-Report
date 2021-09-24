@@ -1,5 +1,5 @@
 <?php
 
 return array(
-//	SAMPLE: 'Access Right Name'=>array('access'=>'XX01',),
+    'Material settings All'=>array('access'=>'SR01',),
 );

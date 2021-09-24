@@ -65,5 +65,8 @@ return array(
     'Please complete the sales commission form audit first'=>'请先完成销售提成表审核',
 	'Saving' => '保存中',
 	'Invalid file type.'=>'无效的文件类型.',
+
+    'Submission Done'=>'保存成功',
+    'Save no Done'=>'保存失败',
 );
 ?>

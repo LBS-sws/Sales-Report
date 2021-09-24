@@ -46,5 +46,27 @@ return array(
 	'Complete'=>'完成',
 	'Fail'=>'失败',
 	'Sent'=>'送出',
+
+	//服务报告系统
+	'Material settings'=>'物料设置',
+    'Material List'=>'物料列表',
+    'Material Class'=>'物料分类',
+    'Material Usearea'=>'物料使用区域',
+    'Material Usemode'=>'物料使用方式',
+    'Material Usepest'=>'物料使用害虫',
+    'Risk settings'=>'风险跟进设置',
+    'Risk Pest'=>'风险害虫',
+    'Risk Grade'=>'风险等级',
+    'Risk Category'=>'风险类别',
+    'Risk Label'=>'风险标签',
+    'Other settings'=>'其他设置',
+    'Signature settings'=>'签名设置',
+    'Shortcuts'=>'快捷语类型',
+    'Shortcut Content'=>'快捷语内容',
+    'Equipment Type'=>'设备类型',
+    'Equipment Type Select'=>'设备类型检查常见选项',
+    'Equipment and material use area'=>'设备及物料使用区域',
+	'Employeesignature'=>'员工签名',
+
 );
 ?>
