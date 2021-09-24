@@ -113,7 +113,7 @@ return array(
 		'version'=>'china',
 		'docmanPath'=>'/docman/dev',
 		'systemId'=>'svc',
-		'envSuffix'=>'dev',
+		'envSuffix'=>'uat',
 		'table_envSuffix'=>'lbs_service_',
 		'appname'=>'LBS DMS (UAT)',
 		'appcolor'=>'skin-purple-light',
