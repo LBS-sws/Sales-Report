@@ -44,6 +44,7 @@ class ShortcutcontentController extends Controller
         $tab_suffix = Yii::app()->params['table_envSuffix'];
         $sql = "select s.ServiceName,t.* from ".$tab_suffix."shortcuts as t  left join service as s on t.service_type=s.ServiceType where t.city in(".$city_allow.")";
         $rows = Yii::app()->db->createCommand($sql)->queryAll();
+        $service_type_lists = [];
         foreach ($rows as $row) {
             $service_type_lists[$row['id']] = $row['ServiceName']."-".$row['shortcut_name'];
         }
@@ -92,6 +93,7 @@ class ShortcutcontentController extends Controller
             $tab_suffix = Yii::app()->params['table_envSuffix'];
             $sql = "select s.ServiceName,t.* from ".$tab_suffix."shortcuts as t  left join service as s on t.service_type=s.ServiceType where t.city in(".$city_allow.")";
             $rows = Yii::app()->db->createCommand($sql)->queryAll();
+            $service_type_lists = [];
             foreach ($rows as $row) {
                 $service_type_lists[$row['id']] = $row['ServiceName']."-".$row['shortcut_name'];
             }

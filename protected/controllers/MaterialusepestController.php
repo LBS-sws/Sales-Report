@@ -43,6 +43,7 @@ class MaterialusepestController extends Controller
         $city_allow = Yii::app()->user->city_allow();
         $sql = "select ServiceType,ServiceName from service where ServiceName is not null";
         $rows = Yii::app()->db->createCommand($sql)->queryAll();
+        $service_type_lists = [];
         foreach ($rows as $row) {
             $service_type_lists[$row['ServiceType']] = $row['ServiceName'];
         }
@@ -89,6 +90,7 @@ class MaterialusepestController extends Controller
             // print_r($model);exit();
             $sql = "select ServiceType,ServiceName from service where ServiceName is not null";
             $rows = Yii::app()->db->createCommand($sql)->queryAll();
+            $service_type_lists = [];
             foreach ($rows as $row) {
                 $service_type_lists[$row['ServiceType']] = $row['ServiceName'];
             }
