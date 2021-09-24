@@ -43,6 +43,7 @@ class MateriallistController extends Controller
         $city_allow = Yii::app()->user->city_allow();
         $sql = "select id,name from ".$tab_suffix."material_classifys "." where city in(".$city_allow.")";
         $rows = Yii::app()->db->createCommand($sql)->queryAll();
+        $maclass = array();
         foreach ($rows as $row) {
             $maclass[$row['id']] = $row['name'];
         }
