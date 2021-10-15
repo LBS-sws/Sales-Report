@@ -12,7 +12,7 @@ $this->pageTitle=Yii::app()->name . ' - Credits for';
 
 <section class="content-header">
 	<h1>
-		<strong><?php echo Yii::t('Employeesignature','Employeesignature Form'); ?></strong>
+		<strong><?php echo Yii::t('employeesignature','Employeesignature Form'); ?></strong>
 	</h1>
 <!--
 	<ol class="breadcrumb">

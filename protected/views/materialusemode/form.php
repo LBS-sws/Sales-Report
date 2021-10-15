@@ -10,7 +10,7 @@ $this->pageTitle=Yii::app()->name . ' - Credits for';
 
 <section class="content-header">
 	<h1>
-		<strong><?php echo Yii::t('material','Materialclass Form'); ?></strong>
+		<strong><?php echo Yii::t('material','Materialusemode Form'); ?></strong>
 	</h1>
 <!--
 	<ol class="breadcrumb">
