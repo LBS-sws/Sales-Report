@@ -29,7 +29,7 @@ return array(
     'Materialclass'=>'物料分类',
     'materialclassname'=>'物料分类名称',
 
-    'Materialusemode Form'=>'物料使用详情',
+    'Materialusemode Form'=>'物料使用方式详情',
     'Add Materialusemode'=>'新增物料使用方式',
     'Use_mode'=>'使用方式',
 
