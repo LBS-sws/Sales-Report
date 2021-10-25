@@ -82,7 +82,13 @@ class MaterialusepestController extends Controller
             } else {
                 $message = CHtml::errorSummary($model);
                 Dialog::message(Yii::t('dialog','Validation Message'), $message);
-                $this->render('form',array('model'=>$model));
+                $sql = "select ServiceType,ServiceName from service where ServiceName is not null";
+                $rows = Yii::app()->db->createCommand($sql)->queryAll();
+                $service_type_lists = [];
+                foreach ($rows as $row) {
+                    $service_type_lists[$row['ServiceType']] = $row['ServiceName'];
+                }
+                $this->render('form',array('model'=>$model,'service_type_lists'=>$service_type_lists));
             }
         }
     }

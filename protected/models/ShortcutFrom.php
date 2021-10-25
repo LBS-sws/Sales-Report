@@ -49,6 +49,7 @@ class ShortcutFrom extends CFormModel
         if (count($rows) > 0) {
             foreach ($rows as $row) {
                 $this->id = $row['id'];
+                $this->city = $row['city'];
                 $this->service_type = $row['service_type'];
                 $this->shortcut_type = $row['shortcut_type'];
                 $this->shortcut_name = $row['shortcut_name'];
@@ -81,8 +82,8 @@ class ShortcutFrom extends CFormModel
                 break;
             case 'new':
                 $sql = "insert into ".$tab_suffix."shortcuts(
-                        service_type,shortcut_type,shortcut_name,creat_time) values (
-						:service_type,:shortcut_type,:shortcut_name,:creat_time)";
+                        city,service_type,shortcut_type,shortcut_name,creat_time) values (
+						:city,:service_type,:shortcut_type,:shortcut_name,:creat_time)";
                 break;
             case 'edit':
                 $sql = "update  ".$tab_suffix."shortcuts set 
@@ -95,6 +96,8 @@ class ShortcutFrom extends CFormModel
         $command=$connection->createCommand($sql);
         if (strpos($sql,':id')!==false)
             $command->bindParam(':id',$this->id,PDO::PARAM_INT);
+        if (strpos($sql,':city')!==false)
+            $command->bindParam(':city',Yii::app()->user->city(),PDO::PARAM_STR);
         if (strpos($sql,':service_type')!==false)
             $command->bindParam(':service_type',$this->service_type,PDO::PARAM_STR);
         if (strpos($sql,':shortcut_type')!==false)
