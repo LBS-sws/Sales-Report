@@ -20,12 +20,27 @@ class RiskrankController extends Controller
             'postOnly + delete', // we only allow deletion via POST request
         );
     }
-
+    public function accessRules()
+    {
+        return array(
+            array('allow',
+                'actions'=>array('new','edit','delete','save'),
+                'expression'=>array('RiskrankController','allowReadWrite'),
+            ),
+            array('allow',
+                'actions'=>array('index','view'),
+                'expression'=>array('RiskrankController','allowReadOnly'),
+            ),
+            array('deny',  // deny all users
+                'users'=>array('*'),
+            ),
+        );
+    }
     public function actionIndex($pageNum=0)
     {
-        $model = new Riskrank();
-        if (isset($_POST['Riskrank'])) {
-            $model->attributes = $_POST['Riskrank'];
+        $model = new RiskrankList();
+        if (isset($_POST['RiskrankList'])) {
+            $model->attributes = $_POST['RiskrankList'];
         } else {
             $session = Yii::app()->session;
             if (isset($session['riskrank_rs02']) && !empty($session['riskrank_rs02'])) {
@@ -39,49 +54,51 @@ class RiskrankController extends Controller
     }
     public function actionNew()
     {
-        $model = new Riskrank('new');
+        $model = new RiskrankFrom('new');
         $this->render('form',array('model'=>$model));
     }
     public function actionSave()
     {
-        $data = $_POST['Riskrank'];
-        $tab_suffix = Yii::app()->params['table_envSuffix'];
-        if ($data['id']>0){
-            $result = Yii::app()->db->createCommand()->update($tab_suffix .'risk_rank_lists', array('rank' => $data['rank']), 'id=:id', array(':id' => $data['id']));
-            $id = $data['id'];
-        }else{
-            $city = Yii::app()->user->city();
-            $result = Yii::app()->db->createCommand()->insert($tab_suffix .'risk_rank_lists', array('rank' => $data['rank'],'creat_time'=>date('Y-m-d H:i:s', time())));
-            $id = Yii::app()->db->getLastInsertID();
-        }
-        if ($result) {
-            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
-            $this->redirect(Yii::app()->createUrl('riskrank/edit',array('index'=>$id)));
-        } else {
-            Dialog::message(Yii::t('dialog','Validation Message'), Yii::t('dialog','Save no Done'));
-            $this->redirect(Yii::app()->createUrl('riskrank/edit',array('index'=>$id)));
+        if (isset($_POST['RiskrankFrom'])) {
+            $model = new RiskrankFrom($_POST['RiskrankFrom']['scenario']);
+            $model->attributes = $_POST['RiskrankFrom'];
+            if ($model->validate()) {
+                $model->saveData();
+                $model->scenario = 'edit';
+                Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+                $this->redirect(Yii::app()->createUrl('riskrank/edit',array('index'=>$model->id)));
+            } else {
+                $message = CHtml::errorSummary($model);
+                Dialog::message(Yii::t('dialog','Validation Message'), $message);
+                $this->render('form',array('model'=>$model));
+            }
         }
     }
     public function actionDelete()
     {
-        $tab_suffix = Yii::app()->params['table_envSuffix'];
-        $de = Yii::app()->db->createCommand()->delete($tab_suffix .'risk_rank_lists', 'id=:id', array(':id' => $_POST['Riskrank']['id']));
-        if ($de) {
-            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Submission Done'));
-            $this->redirect(Yii::app()->createUrl('riskrank/index'));
-        } else {
-            Dialog::message(Yii::t('dialog','Validation Message'), Yii::t('dialog','Save no Done'));
-            $this->redirect(Yii::app()->createUrl('riskrank/index'));
+        $model = new RiskrankFrom('delete');
+        if (isset($_POST['RiskrankFrom'])) {
+            $model->attributes = $_POST['RiskrankFrom'];
+            $model->saveData();
+            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Record Deleted'));
         }
+//		$this->actionIndex();
+        $this->redirect(Yii::app()->createUrl('riskrank/index'));
     }
     public function actionEdit($index)
     {
-        $model = new Riskrank('view');
+        $model = new RiskrankFrom('edit');
         if (!$model->retrieveData($index)) {
             throw new CHttpException(404,'The requested page does not exist.');
         } else {
             $this->render('form',array('model'=>$model));
         }
     }
+    public static function allowReadWrite() {
+        return Yii::app()->user->validRWFunction('RS02');
+    }
 
+    public static function allowReadOnly() {
+        return Yii::app()->user->validFunction('RS02');
+    }
 }

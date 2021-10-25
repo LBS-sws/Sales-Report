@@ -20,12 +20,27 @@ class RisktypeController extends Controller
             'postOnly + delete', // we only allow deletion via POST request
         );
     }
-
+    public function accessRules()
+    {
+        return array(
+            array('allow',
+                'actions'=>array('new','edit','delete','save'),
+                'expression'=>array('RisktypeController','allowReadWrite'),
+            ),
+            array('allow',
+                'actions'=>array('index','view'),
+                'expression'=>array('RisktypeController','allowReadOnly'),
+            ),
+            array('deny',  // deny all users
+                'users'=>array('*'),
+            ),
+        );
+    }
     public function actionIndex($pageNum=0)
     {
-        $model = new Risktype();
-        if (isset($_POST['Risktype'])) {
-            $model->attributes = $_POST['Risktype'];
+        $model = new RisktypeList();
+        if (isset($_POST['RisktypeList'])) {
+            $model->attributes = $_POST['RisktypeList'];
         } else {
             $session = Yii::app()->session;
             if (isset($session['risktype_rs03']) && !empty($session['risktype_rs03'])) {
@@ -39,49 +54,51 @@ class RisktypeController extends Controller
     }
     public function actionNew()
     {
-        $model = new Risktype('new');
+        $model = new RisktypeFrom('new');
         $this->render('form',array('model'=>$model));
     }
     public function actionSave()
     {
-        $data = $_POST['Risktype'];
-        $tab_suffix = Yii::app()->params['table_envSuffix'];
-        if ($data['id']>0){
-            $result = Yii::app()->db->createCommand()->update($tab_suffix .'risk_type_lists', array('type' => $data['type']), 'id=:id', array(':id' => $data['id']));
-            $id = $data['id'];
-        }else{
-            $city = Yii::app()->user->city();
-            $result = Yii::app()->db->createCommand()->insert($tab_suffix .'risk_type_lists', array('type' => $data['type'],'city'=>$city,'creat_time'=>date('Y-m-d H:i:s', time())));
-            $id = Yii::app()->db->getLastInsertID();
-        }
-        if ($result) {
-            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
-            $this->redirect(Yii::app()->createUrl('risktype/edit',array('index'=>$id)));
-        } else {
-            Dialog::message(Yii::t('dialog','Validation Message'), Yii::t('dialog','Save no Done'));
-            $this->redirect(Yii::app()->createUrl('risktype/edit',array('index'=>$id)));
+        if (isset($_POST['RisktypeFrom'])) {
+            $model = new RisktypeFrom($_POST['RisktypeFrom']['scenario']);
+            $model->attributes = $_POST['RisktypeFrom'];
+            if ($model->validate()) {
+                $model->saveData();
+                $model->scenario = 'edit';
+                Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+                $this->redirect(Yii::app()->createUrl('risktype/edit',array('index'=>$model->id)));
+            } else {
+                $message = CHtml::errorSummary($model);
+                Dialog::message(Yii::t('dialog','Validation Message'), $message);
+                $this->render('form',array('model'=>$model));
+            }
         }
     }
     public function actionDelete()
     {
-        $tab_suffix = Yii::app()->params['table_envSuffix'];
-        $de = Yii::app()->db->createCommand()->delete($tab_suffix .'risk_type_lists', 'id=:id', array(':id' => $_POST['Risktype']['id']));
-        if ($de) {
-            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Submission Done'));
-            $this->redirect(Yii::app()->createUrl('risktype/index'));
-        } else {
-            Dialog::message(Yii::t('dialog','Validation Message'), Yii::t('dialog','Save no Done'));
-            $this->redirect(Yii::app()->createUrl('risktype/index'));
+        $model = new RisktypeFrom('delete');
+        if (isset($_POST['RisktypeFrom'])) {
+            $model->attributes = $_POST['RisktypeFrom'];
+            $model->saveData();
+            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Record Deleted'));
         }
+//		$this->actionIndex();
+        $this->redirect(Yii::app()->createUrl('risktype/index'));
     }
     public function actionEdit($index)
     {
-        $model = new Risktype('view');
+        $model = new RisktypeFrom('edit');
         if (!$model->retrieveData($index)) {
             throw new CHttpException(404,'The requested page does not exist.');
         } else {
             $this->render('form',array('model'=>$model));
         }
     }
+    public static function allowReadWrite() {
+        return Yii::app()->user->validRWFunction('RS03');
+    }
 
+    public static function allowReadOnly() {
+        return Yii::app()->user->validFunction('RS03');
+    }
 }

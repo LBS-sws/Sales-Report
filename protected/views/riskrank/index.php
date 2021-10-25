@@ -26,9 +26,7 @@ $this->pageTitle=Yii::app()->name . ' - Riskrank';
         'viewhdr'=>'//riskrank/_listhdr',
         'viewdtl'=>'//riskrank/_listdtl',
         'search'=>array(
-//            'city',
-//            'classify_id',
-//            'name',
+//            'rank',
         ),
     ));
     ?>

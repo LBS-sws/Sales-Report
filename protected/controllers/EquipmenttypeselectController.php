@@ -20,12 +20,27 @@ class EquipmenttypeselectController extends Controller
             'postOnly + delete', // we only allow deletion via POST request
         );
     }
-
+    public function accessRules()
+    {
+        return array(
+            array('allow',
+                'actions'=>array('new','edit','delete','save'),
+                'expression'=>array('EquipmenttypeselectController','allowReadWrite'),
+            ),
+            array('allow',
+                'actions'=>array('index','view'),
+                'expression'=>array('EquipmenttypeselectController','allowReadOnly'),
+            ),
+            array('deny',  // deny all users
+                'users'=>array('*'),
+            ),
+        );
+    }
     public function actionIndex($pageNum=0)
     {
-        $model = new Equipmenttypeselect();
-        if (isset($_POST['Equipmenttypeselect'])) {
-            $model->attributes = $_POST['Equipmenttypeselect'];
+        $model = new EquipmenttypeselectList();
+        if (isset($_POST['EquipmenttypeselectList'])) {
+            $model->attributes = $_POST['EquipmenttypeselectList'];
         } else {
             $session = Yii::app()->session;
             if (isset($session['equipmenttypeselect_os04']) && !empty($session['equipmenttypeselect_os04'])) {
@@ -39,7 +54,7 @@ class EquipmenttypeselectController extends Controller
     }
     public function actionNew()
     {
-        $model = new Equipmenttypeselect('new');
+        $model = new EquipmenttypeselectFrom('new');
         $tab_suffix = Yii::app()->params['table_envSuffix'];
         $city_allow = Yii::app()->user->city_allow();
         $sql = "select * from ".$tab_suffix."equipment_type where  type=2 and city in(".$city_allow.")";
@@ -54,40 +69,55 @@ class EquipmenttypeselectController extends Controller
     }
     public function actionSave()
     {
-//        var_dump($_POST);die();
-        $data = $_POST['Equipmenttypeselect'];
-        $tab_suffix = Yii::app()->params['table_envSuffix'];
-        if ($data['id']>0){
-            $result = Yii::app()->db->createCommand()->update($tab_suffix .'equipment_type_selects', array('check_selects' => $data['check_selects'],'check_targt' => $data['check_targt'],'equipment_type_id' => $data['equipment_type_id']), 'id=:id', array(':id' => $data['id']));
-            $id = $data['id'];
-        }else{
-            $city = Yii::app()->user->city();
-            $result = Yii::app()->db->createCommand()->insert($tab_suffix .'equipment_type_selects', array('check_selects' => $data['check_selects'],'check_targt' => $data['check_targt'],'equipment_type_id' => $data['equipment_type_id'],'creat_time'=>date('Y-m-d H:i:s', time())));
-            $id = Yii::app()->db->getLastInsertID();
-        }
-        if ($result) {
-            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
-            $this->redirect(Yii::app()->createUrl('equipmenttypeselect/edit',array('index'=>$id)));
-        } else {
-            Dialog::message(Yii::t('dialog','Validation Message'), Yii::t('dialog','Save no Done'));
-            $this->redirect(Yii::app()->createUrl('equipmenttypeselect/edit',array('index'=>$id)));
+        if (isset($_POST['EquipmenttypeselectFrom'])) {
+            $model = new EquipmenttypeselectFrom($_POST['EquipmenttypeselectFrom']['scenario']);
+            $model->attributes = $_POST['EquipmenttypeselectFrom'];
+            if ($model->validate()) {
+                $model->saveData();
+                $model->scenario = 'edit';
+                Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+                $tab_suffix = Yii::app()->params['table_envSuffix'];
+                $city_allow = Yii::app()->user->city_allow();
+                $sql = "select * from ".$tab_suffix."equipment_type where  type=2 and city in(".$city_allow.")";
+                $rows = Yii::app()->db->createCommand($sql)->queryAll();
+                $equipment_type_lists = [];
+                $equipment_type_list_selects = [];
+                foreach ($rows as $row) {
+                    $equipment_type_lists[$row['id']] = $row['name'];
+                    $equipment_type_list_selects[$row['id']]= explode(',',$row['check_targt']);
+                }
+                $this->redirect(Yii::app()->createUrl('equipmenttypeselect/edit',array('index'=>$model->id,'equipment_type_lists'=>$equipment_type_lists,'equipment_type_list_selects'=>$equipment_type_list_selects)));
+            } else {
+                $message = CHtml::errorSummary($model);
+                Dialog::message(Yii::t('dialog','Validation Message'), $message);
+                $tab_suffix = Yii::app()->params['table_envSuffix'];
+                $city_allow = Yii::app()->user->city_allow();
+                $sql = "select * from ".$tab_suffix."equipment_type where  type=2 and city in(".$city_allow.")";
+                $rows = Yii::app()->db->createCommand($sql)->queryAll();
+                $equipment_type_lists = [];
+                $equipment_type_list_selects = [];
+                foreach ($rows as $row) {
+                    $equipment_type_lists[$row['id']] = $row['name'];
+                    $equipment_type_list_selects[$row['id']]= explode(',',$row['check_targt']);
+                }
+                $this->render('form',array('model'=>$model,'equipment_type_lists'=>$equipment_type_lists,'equipment_type_list_selects'=>$equipment_type_list_selects));
+            }
         }
     }
     public function actionDelete()
     {
-        $tab_suffix = Yii::app()->params['table_envSuffix'];
-        $de = Yii::app()->db->createCommand()->delete($tab_suffix .'equipment_type_selects', 'id=:id', array(':id' => $_POST['Equipmenttypeselect']['id']));
-        if ($de) {
-            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Submission Done'));
-            $this->redirect(Yii::app()->createUrl('equipmenttypeselect/index'));
-        } else {
-            Dialog::message(Yii::t('dialog','Validation Message'), Yii::t('dialog','Save no Done'));
-            $this->redirect(Yii::app()->createUrl('equipmenttypeselect/index'));
+        $model = new EquipmenttypeselectFrom('delete');
+        if (isset($_POST['EquipmenttypeselectFrom'])) {
+            $model->attributes = $_POST['EquipmenttypeselectFrom'];
+            $model->saveData();
+            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Record Deleted'));
         }
+//		$this->actionIndex();
+        $this->redirect(Yii::app()->createUrl('equipmenttypeselect/index'));
     }
     public function actionEdit($index)
     {
-        $model = new Equipmenttypeselect('view');
+        $model = new EquipmenttypeselectFrom('edit');
         if (!$model->retrieveData($index)) {
             throw new CHttpException(404,'The requested page does not exist.');
         } else {
@@ -104,6 +134,12 @@ class EquipmenttypeselectController extends Controller
             $this->render('form',array('model'=>$model,'equipment_type_lists'=>$equipment_type_lists,'equipment_type_list_selects'=>$equipment_type_list_selects));
         }
     }
+    public static function allowReadWrite() {
+        return Yii::app()->user->validRWFunction('OS04');
+    }
 
+    public static function allowReadOnly() {
+        return Yii::app()->user->validFunction('OS04');
+    }
 
 }

@@ -20,12 +20,28 @@ class EmployeesignatureController extends Controller
             'postOnly + delete', // we only allow deletion via POST request
         );
     }
+    public function accessRules()
+    {
+        return array(
+            array('allow',
+                'actions'=>array('new','edit','delete','save'),
+                'expression'=>array('EmployeesignatureController','allowReadWrite'),
+            ),
+            array('allow',
+                'actions'=>array('index','view'),
+                'expression'=>array('EmployeesignatureController','allowReadOnly'),
+            ),
+            array('deny',  // deny all users
+                'users'=>array('*'),
+            ),
+        );
+    }
 
     public function actionIndex($pageNum=0)
     {
-        $model = new Employeesignature();
-        if (isset($_POST['Employeesignature'])) {
-            $model->attributes = $_POST['Employeesignature'];
+        $model = new EmployeesignatureList();
+        if (isset($_POST['EmployeesignatureList'])) {
+            $model->attributes = $_POST['EmployeesignatureList'];
         } else {
             $session = Yii::app()->session;
             if (isset($session['employeesignature_ss01']) && !empty($session['employeesignature_ss01'])) {
@@ -37,9 +53,18 @@ class EmployeesignatureController extends Controller
         $model->retrieveDataByPage($model->pageNum);
         $this->render('index',array('model'=>$model));
     }
+    public function actionView($index)
+    {
+        $model = new EmployeesignatureList('view');
+        if (!$model->retrieveData($index)) {
+            throw new CHttpException(404,'The requested page does not exist.');
+        } else {
+            $this->render('form',array('model'=>$model));
+        }
+    }
     public function actionNew()
     {
-        $model = new Employeesignature('new');
+        $model = new EmployeesignatureFrom('new');
         //当前城市员工列表
         $se_suffix = Yii::app()->params['envSuffix'];
         $city_allow = Yii::app()->user->city_allow();
@@ -54,66 +79,63 @@ class EmployeesignatureController extends Controller
 
     public function actionSave()
     {
-        if (isset($_POST['Employeesignature'])) {
-            $model = new Employeesignature($_POST['Employeesignature']['scenario']);
-            $model->attributes = $_POST['Employeesignature'];
+        if (isset($_POST['EmployeesignatureFrom'])) {
+            $model = new EmployeesignatureFrom($_POST['EmployeesignatureFrom']['scenario']);
+            $model->attributes = $_POST['EmployeesignatureFrom'];
+            $file = CUploadedFile::getInstance($model,'signaturefile');
+            if ($file) {
+                $model->signature_file_type = $file->type;
+                $content = file_get_contents($file->tempName);
+                $model->signature = "data:image/jpg;base64,".base64_encode($content);
+            }
             if ($model->validate()) {
-                $file = CUploadedFile::getInstance($model,'signature');
-                if ($file) {
-                    $model->signature_file_type = $file->type;
-                    $content = file_get_contents($file->tempName);
-                    $model->signature = "data:image/jpg;base64,".base64_encode($content);
-                } else {
-                    $model->signature_file_type = '';
-                    $model->signature = '';
+                $model->saveData();
+                $model->scenario = 'edit';
+                Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+                //当前城市员工列表
+                $se_suffix = Yii::app()->params['envSuffix'];
+                $city_allow = Yii::app()->user->city_allow();
+                $sql = "select s.StaffID,s.StaffName,b.name city_name from staff  as s left join officecity as o on o.City = s.City left join enums as e on e.EnumID = o.Office left join security".$se_suffix.".sec_city as b on e.Text=b.code where  e.EnumType=8 and s.Status in('1,2,5') and e.Text in(".$city_allow.")";
+                $rows = Yii::app()->db->createCommand($sql)->queryAll();
+                $employee_lists = [];
+                foreach ($rows as $row) {
+                    $employee_lists[$row['StaffID']] = $row['StaffName']."(".$row['city_name'].")";
                 }
-                //查询是否存在
-                $sql = "select e.Text from staff  as s left join officecity as o on o.City = s.City left join enums as e on e.EnumID = o.Office where  e.EnumType=8 and s.StaffID =".$model->staffid;
-                $row = Yii::app()->db->createCommand($sql)->queryRow();
-                $city = $row['Text'];
-                $tab_suffix = Yii::app()->params['table_envSuffix'];
-                $sql_e = "select * from ".$tab_suffix."employee_signature where city='".$city."' and staffid=".$model->staffid;
-                $row_e = Yii::app()->db->createCommand($sql_e)->queryRow();
-                if ($row_e){
-                    $result = Yii::app()->db->createCommand()->update($tab_suffix .'employee_signature', array('signature' => $model->signature), 'id=:id', array(':id' => $row_e['id']));
-                    $id = $model->id;
-                }else{
-
-                    $result = Yii::app()->db->createCommand()->insert($tab_suffix .'employee_signature', array('city' => $city,'staffid' => $model->staffid,'signature'=>$model->signature,'creat_time'=>date('Y-m-d H:i:s', time())));
-                    $id = Yii::app()->db->getLastInsertID();
-                }
-                if ($result) {
-                    Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
-                    $this->redirect(Yii::app()->createUrl('employeesignature/edit',array('index'=>$id)));
-                } else {
-                    Dialog::message(Yii::t('dialog','Validation Message'), Yii::t('dialog','Save no Done'));
-                    $this->redirect(Yii::app()->createUrl('employeesignature/edit',array('index'=>$id)));
-                }
+                $this->redirect(Yii::app()->createUrl('employeesignature/edit',array('index'=>$model->id,'employee_lists'=>$employee_lists)));
             } else {
                 $message = CHtml::errorSummary($model);
                 Dialog::message(Yii::t('dialog','Validation Message'), $message);
-                $this->render('form',array('model'=>$model,));
+                //当前城市员工列表
+                $se_suffix = Yii::app()->params['envSuffix'];
+                $city_allow = Yii::app()->user->city_allow();
+                $sql = "select s.StaffID,s.StaffName,b.name city_name from staff  as s left join officecity as o on o.City = s.City left join enums as e on e.EnumID = o.Office left join security".$se_suffix.".sec_city as b on e.Text=b.code where  e.EnumType=8 and s.Status in('1,2,5') and e.Text in(".$city_allow.")";
+                $rows = Yii::app()->db->createCommand($sql)->queryAll();
+                $employee_lists = [];
+                foreach ($rows as $row) {
+                    $employee_lists[$row['StaffID']] = $row['StaffName']."(".$row['city_name'].")";
+                }
+                $this->render('form',array('model'=>$model,'employee_lists'=>$employee_lists));
             }
         }
     }
     public function actionDelete()
     {
-        $tab_suffix = Yii::app()->params['table_envSuffix'];
-        $de = Yii::app()->db->createCommand()->delete($tab_suffix .'employee_signature', 'id=:id', array(':id' => $_POST['Employeesignature']['id']));
-        if ($de) {
-            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Submission Done'));
-            $this->redirect(Yii::app()->createUrl('employeesignature/index'));
-        } else {
-            Dialog::message(Yii::t('dialog','Validation Message'), Yii::t('dialog','Save no Done'));
-            $this->redirect(Yii::app()->createUrl('employeesignature/index'));
+        $model = new EmployeesignatureFrom('delete');
+        if (isset($_POST['EmployeesignatureFrom'])) {
+            $model->attributes = $_POST['EmployeesignatureFrom'];
+            $model->saveData();
+            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Record Deleted'));
         }
+//		$this->actionIndex();
+        $this->redirect(Yii::app()->createUrl('employeesignature/index'));
     }
     public function actionEdit($index)
     {
-        $model = new Employeesignature('edit');
+        $model = new EmployeesignatureFrom('edit');
         if (!$model->retrieveData($index)) {
             throw new CHttpException(404,'The requested page does not exist.');
         } else {
+            //当前城市员工列表
             $se_suffix = Yii::app()->params['envSuffix'];
             $city_allow = Yii::app()->user->city_allow();
             $sql = "select s.StaffID,s.StaffName,b.name city_name from staff  as s left join officecity as o on o.City = s.City left join enums as e on e.EnumID = o.Office left join security".$se_suffix.".sec_city as b on e.Text=b.code where  e.EnumType=8 and s.Status in('1,2,5') and e.Text in(".$city_allow.")";
@@ -124,5 +146,12 @@ class EmployeesignatureController extends Controller
             }
             $this->render('form',array('model'=>$model,'employee_lists'=>$employee_lists));
         }
+    }
+    public static function allowReadWrite() {
+        return Yii::app()->user->validRWFunction('SS01');
+    }
+
+    public static function allowReadOnly() {
+        return Yii::app()->user->validFunction('SS01');
     }
 }

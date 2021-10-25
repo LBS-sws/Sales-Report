@@ -20,12 +20,27 @@ class ShortcutcontentController extends Controller
             'postOnly + delete', // we only allow deletion via POST request
         );
     }
-
+    public function accessRules()
+    {
+        return array(
+            array('allow',
+                'actions'=>array('new','edit','delete','save'),
+                'expression'=>array('ShortcutcontentController','allowReadWrite'),
+            ),
+            array('allow',
+                'actions'=>array('index','view'),
+                'expression'=>array('ShortcutcontentController','allowReadOnly'),
+            ),
+            array('deny',  // deny all users
+                'users'=>array('*'),
+            ),
+        );
+    }
     public function actionIndex($pageNum=0)
     {
-        $model = new Shortcutcontent();
-        if (isset($_POST['Shortcutcontent'])) {
-            $model->attributes = $_POST['Shortcutcontent'];
+        $model = new ShortcutcontentList();
+        if (isset($_POST['ShortcutcontentList'])) {
+            $model->attributes = $_POST['ShortcutcontentList'];
         } else {
             $session = Yii::app()->session;
             if (isset($session['shortcutcontent_os02']) && !empty($session['shortcutcontent_os02'])) {
@@ -39,7 +54,7 @@ class ShortcutcontentController extends Controller
     }
     public function actionNew()
     {
-        $model = new Shortcutcontent('new');
+        $model = new ShortcutcontentFrom('new');
         $city_allow = Yii::app()->user->city_allow();
         $tab_suffix = Yii::app()->params['table_envSuffix'];
         $sql = "select s.ServiceName,t.* from ".$tab_suffix."shortcuts as t  left join service as s on t.service_type=s.ServiceType where t.city in(".$city_allow.")";
@@ -52,45 +67,56 @@ class ShortcutcontentController extends Controller
     }
     public function actionSave()
     {
-        $data = $_POST['Shortcutcontent'];
-        $tab_suffix = Yii::app()->params['table_envSuffix'];
-        if ($data['id']>0){
-            $result = Yii::app()->db->createCommand()->update($tab_suffix .'shortcut_contents', array('shortcut_id' => $data['shortcut_id'],'content' => $data['content']), 'id=:id', array(':id' => $data['id']));
-            $id = $data['id'];
-        }else{
-            $city = Yii::app()->user->city();
-            $result = Yii::app()->db->createCommand()->insert($tab_suffix .'shortcut_contents', array('shortcut_id' => $data['shortcut_id'],'content' => $data['content'],'creat_time'=>date('Y-m-d H:i:s', time())));
-            $id = Yii::app()->db->getLastInsertID();
-        }
-        if ($result) {
-            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
-            $this->redirect(Yii::app()->createUrl('shortcutcontent/edit',array('index'=>$id)));
-        } else {
-            Dialog::message(Yii::t('dialog','Validation Message'), Yii::t('dialog','Save no Done'));
-            $this->redirect(Yii::app()->createUrl('shortcutcontent/edit',array('index'=>$id)));
+        if (isset($_POST['ShortcutcontentFrom'])) {
+            $model = new ShortcutcontentFrom($_POST['ShortcutcontentFrom']['scenario']);
+            $model->attributes = $_POST['ShortcutcontentFrom'];
+            if ($model->validate()) {
+                $model->saveData();
+                $model->scenario = 'edit';
+                Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+                $city_allow = Yii::app()->user->city_allow();
+                $tab_suffix = Yii::app()->params['table_envSuffix'];
+                $sql = "select s.ServiceName,t.* from ".$tab_suffix."shortcuts as t  left join service as s on t.service_type=s.ServiceType where t.city in(".$city_allow.")";
+                $rows = Yii::app()->db->createCommand($sql)->queryAll();
+                $service_type_lists = [];
+                foreach ($rows as $row) {
+                    $service_type_lists[$row['id']] = $row['ServiceName']."-".$row['shortcut_name'];
+                }
+                $this->redirect(Yii::app()->createUrl('shortcutcontent/edit',array('index'=>$model->id,'service_type_lists'=>$service_type_lists)));
+            } else {
+                $message = CHtml::errorSummary($model);
+                Dialog::message(Yii::t('dialog','Validation Message'), $message);
+                $city_allow = Yii::app()->user->city_allow();
+                $tab_suffix = Yii::app()->params['table_envSuffix'];
+                $sql = "select s.ServiceName,t.* from ".$tab_suffix."shortcuts as t  left join service as s on t.service_type=s.ServiceType where t.city in(".$city_allow.")";
+                $rows = Yii::app()->db->createCommand($sql)->queryAll();
+                $service_type_lists = [];
+                foreach ($rows as $row) {
+                    $service_type_lists[$row['id']] = $row['ServiceName']."-".$row['shortcut_name'];
+                }
+                $this->render('form',array('model'=>$model,'service_type_lists'=>$service_type_lists));
+            }
         }
     }
     public function actionDelete()
     {
-        $tab_suffix = Yii::app()->params['table_envSuffix'];
-        $de = Yii::app()->db->createCommand()->delete($tab_suffix .'shortcut_contents', 'id=:id', array(':id' => $_POST['Shortcutcontent']['id']));
-        if ($de) {
-            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Submission Done'));
-            $this->redirect(Yii::app()->createUrl('shortcutcontent/index'));
-        } else {
-            Dialog::message(Yii::t('dialog','Validation Message'), Yii::t('dialog','Save no Done'));
-            $this->redirect(Yii::app()->createUrl('shortcutcontent/index'));
+        $model = new ShortcutcontentFrom('delete');
+        if (isset($_POST['ShortcutcontentFrom'])) {
+            $model->attributes = $_POST['ShortcutcontentFrom'];
+            $model->saveData();
+            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Record Deleted'));
         }
+//		$this->actionIndex();
+        $this->redirect(Yii::app()->createUrl('shortcutcontent/index'));
     }
     public function actionEdit($index)
     {
-        $model = new Shortcutcontent('view');
+        $model = new ShortcutcontentFrom('edit');
         if (!$model->retrieveData($index)) {
             throw new CHttpException(404,'The requested page does not exist.');
         } else {
-            // print_r($model);exit();
-            $city_allow = Yii::app()->user->city_allow();
             $tab_suffix = Yii::app()->params['table_envSuffix'];
+            $city_allow = Yii::app()->user->city_allow();
             $sql = "select s.ServiceName,t.* from ".$tab_suffix."shortcuts as t  left join service as s on t.service_type=s.ServiceType where t.city in(".$city_allow.")";
             $rows = Yii::app()->db->createCommand($sql)->queryAll();
             $service_type_lists = [];
@@ -100,5 +126,11 @@ class ShortcutcontentController extends Controller
             $this->render('form',array('model'=>$model,'service_type_lists'=>$service_type_lists));
         }
     }
+    public static function allowReadWrite() {
+        return Yii::app()->user->validRWFunction('OS02');
+    }
 
+    public static function allowReadOnly() {
+        return Yii::app()->user->validFunction('OS02');
+    }
 }

@@ -20,12 +20,27 @@ class EquipmenttypeController extends Controller
             'postOnly + delete', // we only allow deletion via POST request
         );
     }
-
+    public function accessRules()
+    {
+        return array(
+            array('allow',
+                'actions'=>array('new','edit','delete','save'),
+                'expression'=>array('EquipmenttypeController','allowReadWrite'),
+            ),
+            array('allow',
+                'actions'=>array('index','view'),
+                'expression'=>array('EquipmenttypeController','allowReadOnly'),
+            ),
+            array('deny',  // deny all users
+                'users'=>array('*'),
+            ),
+        );
+    }
     public function actionIndex($pageNum=0)
     {
-        $model = new Equipmenttype();
-        if (isset($_POST['Equipmenttype'])) {
-            $model->attributes = $_POST['Equipmenttype'];
+        $model = new EquipmenttypeList();
+        if (isset($_POST['EquipmenttypeList'])) {
+            $model->attributes = $_POST['EquipmenttypeList'];
         } else {
             $session = Yii::app()->session;
             if (isset($session['equipmenttype_os03']) && !empty($session['equipmenttype_os03'])) {
@@ -39,45 +54,43 @@ class EquipmenttypeController extends Controller
     }
     public function actionNew()
     {
-        $model = new Equipmenttype('new');
+        $model = new EquipmenttypeFrom('new');
         $service_type_lists = ['1'=>'数量输入','2'=>'数据输入'];
         $this->render('form',array('model'=>$model,'service_type_lists'=>$service_type_lists));
     }
     public function actionSave()
     {
-        $data = $_POST['Equipmenttype'];
-        $tab_suffix = Yii::app()->params['table_envSuffix'];
-        if ($data['id']>0){
-            $result = Yii::app()->db->createCommand()->update($tab_suffix .'equipment_type', array('name' => $data['name'],'type' => $data['type'],'check_targt' => $data['check_targt'],'check_handles' => $data['check_handles']), 'id=:id', array(':id' => $data['id']));
-            $id = $data['id'];
-        }else{
-            $city = Yii::app()->user->city();
-            $result = Yii::app()->db->createCommand()->insert($tab_suffix .'equipment_type', array('name' => $data['name'],'type' => $data['type'],'check_targt' => $data['check_targt'],'check_handles' => $data['check_handles'],'city'=>$city,'creat_time'=>date('Y-m-d H:i:s', time())));
-            $id = Yii::app()->db->getLastInsertID();
-        }
-        if ($result) {
-            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
-            $this->redirect(Yii::app()->createUrl('equipmenttype/edit',array('index'=>$id)));
-        } else {
-            Dialog::message(Yii::t('dialog','Validation Message'), Yii::t('dialog','Save no Done'));
-            $this->redirect(Yii::app()->createUrl('equipmenttype/edit',array('index'=>$id)));
+        if (isset($_POST['EquipmenttypeFrom'])) {
+            $model = new EquipmenttypeFrom($_POST['EquipmenttypeFrom']['scenario']);
+            $model->attributes = $_POST['EquipmenttypeFrom'];
+            if ($model->validate()) {
+                $model->saveData();
+                $model->scenario = 'edit';
+                Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+                $service_type_lists = ['1'=>'数量输入','2'=>'数据输入'];
+                $this->redirect(Yii::app()->createUrl('equipmenttype/edit',array('index'=>$model->id,'service_type_lists'=>$service_type_lists)));
+            } else {
+                $message = CHtml::errorSummary($model);
+                Dialog::message(Yii::t('dialog','Validation Message'), $message);
+                $service_type_lists = ['1'=>'数量输入','2'=>'数据输入'];
+                $this->render('form',array('model'=>$model,'service_type_lists'=>$service_type_lists));
+            }
         }
     }
     public function actionDelete()
     {
-        $tab_suffix = Yii::app()->params['table_envSuffix'];
-        $de = Yii::app()->db->createCommand()->delete($tab_suffix .'equipment_type', 'id=:id', array(':id' => $_POST['Equipmenttype']['id']));
-        if ($de) {
-            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Submission Done'));
-            $this->redirect(Yii::app()->createUrl('equipmenttype/index'));
-        } else {
-            Dialog::message(Yii::t('dialog','Validation Message'), Yii::t('dialog','Save no Done'));
-            $this->redirect(Yii::app()->createUrl('equipmenttype/index'));
+        $model = new EquipmenttypeFrom('delete');
+        if (isset($_POST['EquipmenttypeFrom'])) {
+            $model->attributes = $_POST['EquipmenttypeFrom'];
+            $model->saveData();
+            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Record Deleted'));
         }
+//		$this->actionIndex();
+        $this->redirect(Yii::app()->createUrl('equipmenttype/index'));
     }
     public function actionEdit($index)
     {
-        $model = new Equipmenttype('view');
+        $model = new EquipmenttypeFrom('edit');
         if (!$model->retrieveData($index)) {
             throw new CHttpException(404,'The requested page does not exist.');
         } else {
@@ -85,5 +98,11 @@ class EquipmenttypeController extends Controller
             $this->render('form',array('model'=>$model,'service_type_lists'=>$service_type_lists));
         }
     }
+    public static function allowReadWrite() {
+        return Yii::app()->user->validRWFunction('OS03');
+    }
 
+    public static function allowReadOnly() {
+        return Yii::app()->user->validFunction('OS03');
+    }
 }

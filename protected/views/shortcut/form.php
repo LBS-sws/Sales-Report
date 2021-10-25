@@ -51,7 +51,7 @@ $this->pageTitle=Yii::app()->name . ' - Credits for';
             <?php echo $form->hiddenField($model, 'id',array("id"=>"id")); ?>
             <div class="form-group">
                 <?php echo $form->labelEx($model,'service_type',array('class'=>"col-sm-2 control-label")); ?>
-                <div class="col-sm-2">
+                <div class="col-sm-4">
                     <?php
                     echo $form->dropDownList($model, 'service_type', $service_type_lists);
                     ?>
@@ -85,23 +85,6 @@ $this->pageTitle=Yii::app()->name . ' - Credits for';
 //    'ronly'=>($model->scenario=='view'),
 //));
 //?>
-<?php
 
-$js = '
-    $(function () {
-        $(".btnIntegralApply").on("click",function () {
-            $("#gift_type").val($("#rq_gift_id").val());
-            $("#gift_name").val($("#rq_gift_name").val());
-            $("#bonus_point").val($("#rq_bonus_point").val());
-            $("#integralApply").modal("show");
-            return false;
-        })
-    })
-    ';
-Yii::app()->clientScript->registerScript('calcFunction',$js,CClientScript::POS_READY);
-Script::genFileUpload($model,$form->id,'ICUT');
-$js = Script::genReadonlyField();
-Yii::app()->clientScript->registerScript('readonlyClass',$js,CClientScript::POS_READY);
-?>
 
 <?php $this->endWidget(); ?>

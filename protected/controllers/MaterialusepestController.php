@@ -20,12 +20,27 @@ class MaterialusepestController extends Controller
             'postOnly + delete', // we only allow deletion via POST request
         );
     }
-
+    public function accessRules()
+    {
+        return array(
+            array('allow',
+                'actions'=>array('new','edit','delete','save'),
+                'expression'=>array('MaterialusepestController','allowReadWrite'),
+            ),
+            array('allow',
+                'actions'=>array('index','view'),
+                'expression'=>array('MaterialusepestController','allowReadOnly'),
+            ),
+            array('deny',  // deny all users
+                'users'=>array('*'),
+            ),
+        );
+    }
     public function actionIndex($pageNum=0)
     {
-        $model = new Materialusepest();
-        if (isset($_POST['Materialusepest'])) {
-            $model->attributes = $_POST['Materialusepest'];
+        $model = new MaterialusepestList();
+        if (isset($_POST['MaterialusepestList'])) {
+            $model->attributes = $_POST['MaterialusepestList'];
         } else {
             $session = Yii::app()->session;
             if (isset($session['materialusepest_ms03']) && !empty($session['materialusepest_ms03'])) {
@@ -39,8 +54,7 @@ class MaterialusepestController extends Controller
     }
     public function actionNew()
     {
-        $model = new Materialusepest('new');
-        $city_allow = Yii::app()->user->city_allow();
+        $model = new MaterialusepestFrom('new');
         $sql = "select ServiceType,ServiceName from service where ServiceName is not null";
         $rows = Yii::app()->db->createCommand($sql)->queryAll();
         $service_type_lists = [];
@@ -51,39 +65,41 @@ class MaterialusepestController extends Controller
     }
     public function actionSave()
     {
-        $data = $_POST['Materialusepest'];
-        $tab_suffix = Yii::app()->params['table_envSuffix'];
-        if ($data['id']>0){
-            $result = Yii::app()->db->createCommand()->update($tab_suffix .'material_target_lists', array('service_type' => $data['service_type'],'targets' => $data['targets']), 'id=:id', array(':id' => $data['id']));
-            $id = $data['id'];
-        }else{
-            $city = Yii::app()->user->city();
-            $result = Yii::app()->db->createCommand()->insert($tab_suffix .'material_target_lists', array('service_type' => $data['service_type'],'targets' => $data['targets'],'city'=>$city,'creat_time'=>date('Y-m-d H:i:s', time())));
-            $id = Yii::app()->db->getLastInsertID();
-        }
-        if ($result) {
-            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
-            $this->redirect(Yii::app()->createUrl('materialusepest/edit',array('index'=>$id)));
-        } else {
-            Dialog::message(Yii::t('dialog','Validation Message'), Yii::t('dialog','Save no Done'));
-            $this->redirect(Yii::app()->createUrl('materialusepest/edit',array('index'=>$id)));
+        if (isset($_POST['MaterialusepestFrom'])) {
+            $model = new MaterialusepestFrom($_POST['MaterialusepestFrom']['scenario']);
+            $model->attributes = $_POST['MaterialusepestFrom'];
+            if ($model->validate()) {
+                $model->saveData();
+                $model->scenario = 'edit';
+                Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+                $sql = "select ServiceType,ServiceName from service where ServiceName is not null";
+                $rows = Yii::app()->db->createCommand($sql)->queryAll();
+                $service_type_lists = [];
+                foreach ($rows as $row) {
+                    $service_type_lists[$row['ServiceType']] = $row['ServiceName'];
+                }
+                $this->redirect(Yii::app()->createUrl('materialusepest/edit',array('index'=>$model->id,'service_type_lists'=>$service_type_lists)));
+            } else {
+                $message = CHtml::errorSummary($model);
+                Dialog::message(Yii::t('dialog','Validation Message'), $message);
+                $this->render('form',array('model'=>$model));
+            }
         }
     }
     public function actionDelete()
     {
-        $tab_suffix = Yii::app()->params['table_envSuffix'];
-        $de = Yii::app()->db->createCommand()->delete($tab_suffix .'material_target_lists', 'id=:id', array(':id' => $_POST['Materialusepest']['id']));
-        if ($de) {
-            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Submission Done'));
-            $this->redirect(Yii::app()->createUrl('materialusepest/index'));
-        } else {
-            Dialog::message(Yii::t('dialog','Validation Message'), Yii::t('dialog','Save no Done'));
-            $this->redirect(Yii::app()->createUrl('materialusepest/index'));
+        $model = new MaterialusepestFrom('delete');
+        if (isset($_POST['MaterialusepestFrom'])) {
+            $model->attributes = $_POST['MaterialusepestFrom'];
+            $model->saveData();
+            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Record Deleted'));
         }
+//		$this->actionIndex();
+        $this->redirect(Yii::app()->createUrl('materialusepest/index'));
     }
     public function actionEdit($index)
     {
-        $model = new Materialusepest('view');
+        $model = new MaterialusepestFrom('edit');
         if (!$model->retrieveData($index)) {
             throw new CHttpException(404,'The requested page does not exist.');
         } else {
@@ -97,5 +113,11 @@ class MaterialusepestController extends Controller
             $this->render('form',array('model'=>$model,'service_type_lists'=>$service_type_lists));
         }
     }
+    public static function allowReadWrite() {
+        return Yii::app()->user->validRWFunction('MS04');
+    }
 
+    public static function allowReadOnly() {
+        return Yii::app()->user->validFunction('MS04');
+    }
 }

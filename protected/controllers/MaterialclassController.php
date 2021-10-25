@@ -20,12 +20,27 @@ class MaterialclassController extends Controller
             'postOnly + delete', // we only allow deletion via POST request
         );
     }
-
+    public function accessRules()
+    {
+        return array(
+            array('allow',
+                'actions'=>array('new','edit','delete','save'),
+                'expression'=>array('MaterialclassController','allowReadWrite'),
+            ),
+            array('allow',
+                'actions'=>array('index','view'),
+                'expression'=>array('MaterialclassController','allowReadOnly'),
+            ),
+            array('deny',  // deny all users
+                'users'=>array('*'),
+            ),
+        );
+    }
     public function actionIndex($pageNum=0)
     {
-        $model = new Materialclass();
-        if (isset($_POST['Materialclass'])) {
-            $model->attributes = $_POST['Materialclass'];
+        $model = new MaterialclassList();
+        if (isset($_POST['MaterialclassList'])) {
+            $model->attributes = $_POST['MaterialclassList'];
         } else {
             $session = Yii::app()->session;
             if (isset($session['materialclass_ms02']) && !empty($session['materialclass_ms02'])) {
@@ -39,51 +54,51 @@ class MaterialclassController extends Controller
     }
     public function actionNew()
     {
-        $model = new Materialclass('new');
+        $model = new MaterialclassFrom('new');
         $this->render('form',array('model'=>$model,));
     }
     public function actionSave()
     {
-        $data = $_POST['Materialclass'];
-        $tab_suffix = Yii::app()->params['table_envSuffix'];
-        if ($data['id']>0){
-            $result = Yii::app()->db->createCommand()->update($tab_suffix .'material_classifys', array('name' => $data['name']), 'id=:id', array(':id' => $data['id']));
-            $id = $data['id'];
-        }else{
-            $city = Yii::app()->user->city();
-            $result = Yii::app()->db->createCommand()->insert($tab_suffix .'material_classifys', array('name' => $data['name'],'city'=>$city,'creat_time'=>date('Y-m-d H:i:s', time())));
-            $id = Yii::app()->db->getLastInsertID();
-        }
-        if ($result) {
-            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
-            $this->redirect(Yii::app()->createUrl('materialclass/edit',array('index'=>$id)));
-        } else {
-            Dialog::message(Yii::t('dialog','Validation Message'), Yii::t('dialog','Save no Done'));
-            $this->redirect(Yii::app()->createUrl('materialclass/edit',array('index'=>$id)));
+        if (isset($_POST['MaterialclassFrom'])) {
+            $model = new MaterialclassFrom($_POST['MaterialclassFrom']['scenario']);
+            $model->attributes = $_POST['MaterialclassFrom'];
+            if ($model->validate()) {
+                $model->saveData();
+                $model->scenario = 'edit';
+                Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+                $this->redirect(Yii::app()->createUrl('materialclass/edit',array('index'=>$model->id)));
+            } else {
+                $message = CHtml::errorSummary($model);
+                Dialog::message(Yii::t('dialog','Validation Message'), $message);
+                $this->render('form',array('model'=>$model));
+            }
         }
     }
     public function actionDelete()
     {
-        $tab_suffix = Yii::app()->params['table_envSuffix'];
-        $de = Yii::app()->db->createCommand()->delete($tab_suffix .'material_classifys', 'id=:id', array(':id' => $_POST['Materialclass']['id']));
-
-        if ($de) {
-            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Submission Done'));
-            $this->redirect(Yii::app()->createUrl('materialclass/index'));
-        } else {
-            Dialog::message(Yii::t('dialog','Validation Message'), Yii::t('dialog','Save no Done'));
-            $this->redirect(Yii::app()->createUrl('materialclass/index'));
+        $model = new MaterialclassFrom('delete');
+        if (isset($_POST['MaterialclassFrom'])) {
+            $model->attributes = $_POST['MaterialclassFrom'];
+            $model->saveData();
+            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Record Deleted'));
         }
+//		$this->actionIndex();
+        $this->redirect(Yii::app()->createUrl('materialclass/index'));
     }
     public function actionEdit($index)
     {
-        $model = new Materialclass('view');
+        $model = new MaterialclassFrom('edit');
         if (!$model->retrieveData($index)) {
             throw new CHttpException(404,'The requested page does not exist.');
         } else {
-            // print_r($model);exit();
             $this->render('form',array('model'=>$model));
         }
     }
+    public static function allowReadWrite() {
+        return Yii::app()->user->validRWFunction('MS02');
+    }
 
+    public static function allowReadOnly() {
+        return Yii::app()->user->validFunction('MS02');
+    }
 }

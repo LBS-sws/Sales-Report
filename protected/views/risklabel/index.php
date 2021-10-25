@@ -26,9 +26,7 @@ $this->pageTitle=Yii::app()->name . ' - Risklabel';
         'viewhdr'=>'//risklabel/_listhdr',
         'viewdtl'=>'//risklabel/_listdtl',
         'search'=>array(
-//            'city',
-//            'classify_id',
-//            'name',
+//            'label',
         ),
     ));
     ?>

@@ -20,12 +20,27 @@ class RisklabelController extends Controller
             'postOnly + delete', // we only allow deletion via POST request
         );
     }
-
+    public function accessRules()
+    {
+        return array(
+            array('allow',
+                'actions'=>array('new','edit','delete','save'),
+                'expression'=>array('RisklabelController','allowReadWrite'),
+            ),
+            array('allow',
+                'actions'=>array('index','view'),
+                'expression'=>array('RisklabelController','allowReadOnly'),
+            ),
+            array('deny',  // deny all users
+                'users'=>array('*'),
+            ),
+        );
+    }
     public function actionIndex($pageNum=0)
     {
-        $model = new Risklabel();
-        if (isset($_POST['Risklabe'])) {
-            $model->attributes = $_POST['Risklabe'];
+        $model = new RisklabelList();
+        if (isset($_POST['RisklabelList'])) {
+            $model->attributes = $_POST['RisklabelList'];
         } else {
             $session = Yii::app()->session;
             if (isset($session['risklabel_rs04']) && !empty($session['risklabel_rs04'])) {
@@ -40,49 +55,51 @@ class RisklabelController extends Controller
     }
     public function actionNew()
     {
-        $model = new Risklabel('new');
+        $model = new RisklabelFrom('new');
         $this->render('form',array('model'=>$model));
     }
     public function actionSave()
     {
-        $data = $_POST['Risklabel'];
-        $tab_suffix = Yii::app()->params['table_envSuffix'];
-        if ($data['id']>0){
-            $result = Yii::app()->db->createCommand()->update($tab_suffix .'risk_label_lists', array('label' => $data['label']), 'id=:id', array(':id' => $data['id']));
-            $id = $data['id'];
-        }else{
-            $city = Yii::app()->user->city();
-            $result = Yii::app()->db->createCommand()->insert($tab_suffix .'risk_label_lists', array('label' => $data['label'],'creat_time'=>date('Y-m-d H:i:s', time())));
-            $id = Yii::app()->db->getLastInsertID();
-        }
-        if ($result) {
-            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
-            $this->redirect(Yii::app()->createUrl('risklabel/edit',array('index'=>$id)));
-        } else {
-            Dialog::message(Yii::t('dialog','Validation Message'), Yii::t('dialog','Save no Done'));
-            $this->redirect(Yii::app()->createUrl('risklabel/edit',array('index'=>$id)));
+        if (isset($_POST['RisklabelFrom'])) {
+            $model = new RisklabelFrom($_POST['RisklabelFrom']['scenario']);
+            $model->attributes = $_POST['RisklabelFrom'];
+            if ($model->validate()) {
+                $model->saveData();
+                $model->scenario = 'edit';
+                Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+                $this->redirect(Yii::app()->createUrl('risklabel/edit',array('index'=>$model->id)));
+            } else {
+                $message = CHtml::errorSummary($model);
+                Dialog::message(Yii::t('dialog','Validation Message'), $message);
+                $this->render('form',array('model'=>$model));
+            }
         }
     }
     public function actionDelete()
     {
-        $tab_suffix = Yii::app()->params['table_envSuffix'];
-        $de = Yii::app()->db->createCommand()->delete($tab_suffix .'risk_label_lists', 'id=:id', array(':id' => $_POST['Risklabel']['id']));
-        if ($de) {
-            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Submission Done'));
-            $this->redirect(Yii::app()->createUrl('risklabel/index'));
-        } else {
-            Dialog::message(Yii::t('dialog','Validation Message'), Yii::t('dialog','Save no Done'));
-            $this->redirect(Yii::app()->createUrl('risklabel/index'));
+        $model = new RisklabelFrom('delete');
+        if (isset($_POST['RisklabelFrom'])) {
+            $model->attributes = $_POST['RisklabelFrom'];
+            $model->saveData();
+            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Record Deleted'));
         }
+//		$this->actionIndex();
+        $this->redirect(Yii::app()->createUrl('risklabel/index'));
     }
     public function actionEdit($index)
     {
-        $model = new Risklabel('view');
+        $model = new RisklabelFrom('edit');
         if (!$model->retrieveData($index)) {
             throw new CHttpException(404,'The requested page does not exist.');
         } else {
             $this->render('form',array('model'=>$model));
         }
     }
+    public static function allowReadWrite() {
+        return Yii::app()->user->validRWFunction('RS04');
+    }
 
+    public static function allowReadOnly() {
+        return Yii::app()->user->validFunction('RS04');
+    }
 }

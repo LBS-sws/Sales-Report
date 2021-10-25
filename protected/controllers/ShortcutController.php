@@ -20,12 +20,27 @@ class ShortcutController extends Controller
             'postOnly + delete', // we only allow deletion via POST request
         );
     }
-
+    public function accessRules()
+    {
+        return array(
+            array('allow',
+                'actions'=>array('new','edit','delete','save'),
+                'expression'=>array('ShortcutController','allowReadWrite'),
+            ),
+            array('allow',
+                'actions'=>array('index','view'),
+                'expression'=>array('ShortcutController','allowReadOnly'),
+            ),
+            array('deny',  // deny all users
+                'users'=>array('*'),
+            ),
+        );
+    }
     public function actionIndex($pageNum=0)
     {
-        $model = new Shortcut();
-        if (isset($_POST['Shortcut'])) {
-            $model->attributes = $_POST['Shortcut'];
+        $model = new ShortcutList();
+        if (isset($_POST['ShortcutList'])) {
+            $model->attributes = $_POST['ShortcutList'];
         } else {
             $session = Yii::app()->session;
             if (isset($session['shortcut_OS01']) && !empty($session['shortcut_OS01'])) {
@@ -39,8 +54,7 @@ class ShortcutController extends Controller
     }
     public function actionNew()
     {
-        $model = new Shortcut('new');
-        $city_allow = Yii::app()->user->city_allow();
+        $model = new ShortcutFrom('new');
         $sql = "select ServiceType,ServiceName from service where ServiceName is not null";
         $rows = Yii::app()->db->createCommand($sql)->queryAll();
         $service_type_lists = [];
@@ -51,43 +65,50 @@ class ShortcutController extends Controller
     }
     public function actionSave()
     {
-        $data = $_POST['Shortcut'];
-        $tab_suffix = Yii::app()->params['table_envSuffix'];
-        if ($data['id']>0){
-            $result = Yii::app()->db->createCommand()->update($tab_suffix.'shortcuts', array('shortcut_type' => $data['shortcut_type'],'shortcut_name' => $data['shortcut_name'],'service_type' => $data['service_type']), 'id=:id', array(':id' => $data['id']));
-            $id = $data['id'];
-        }else{
-            $city = Yii::app()->user->city();
-            $result = Yii::app()->db->createCommand()->insert($tab_suffix.'shortcuts', array('shortcut_type' => $data['shortcut_type'],'shortcut_name' => $data['shortcut_name'],'service_type' => $data['service_type'],'city'=>$city,'creat_time'=>date('Y-m-d H:i:s', time())));
-            $id = Yii::app()->db->getLastInsertID();
-        }
-        if ($result) {
-            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
-            $this->redirect(Yii::app()->createUrl('shortcut/edit',array('index'=>$id)));
-        } else {
-            Dialog::message(Yii::t('dialog','Validation Message'), Yii::t('dialog','Save no Done'));
-            $this->redirect(Yii::app()->createUrl('shortcut/edit',array('index'=>$id)));
+        if (isset($_POST['ShortcutFrom'])) {
+            $model = new ShortcutFrom($_POST['ShortcutFrom']['scenario']);
+            $model->attributes = $_POST['ShortcutFrom'];
+            if ($model->validate()) {
+                $model->saveData();
+                $model->scenario = 'edit';
+                Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+                $sql = "select ServiceType,ServiceName from service where ServiceName is not null";
+                $rows = Yii::app()->db->createCommand($sql)->queryAll();
+                $service_type_lists = [];
+                foreach ($rows as $row) {
+                    $service_type_lists[$row['ServiceType']] = $row['ServiceName'];
+                }
+                $this->redirect(Yii::app()->createUrl('shortcut/edit',array('index'=>$model->id,'service_type_lists'=>$service_type_lists)));
+            } else {
+                $message = CHtml::errorSummary($model);
+                Dialog::message(Yii::t('dialog','Validation Message'), $message);
+                $sql = "select ServiceType,ServiceName from service where ServiceName is not null";
+                $rows = Yii::app()->db->createCommand($sql)->queryAll();
+                $service_type_lists = [];
+                foreach ($rows as $row) {
+                    $service_type_lists[$row['ServiceType']] = $row['ServiceName'];
+                }
+                $this->render('form',array('model'=>$model,'service_type_lists'=>$service_type_lists));
+            }
         }
     }
     public function actionDelete()
     {
-        $tab_suffix = Yii::app()->params['table_envSuffix'];
-        $de = Yii::app()->db->createCommand()->delete($tab_suffix.'shortcuts', 'id=:id', array(':id' => $_POST['Shortcut']['id']));
-        if ($de) {
-            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Submission Done'));
-            $this->redirect(Yii::app()->createUrl('shortcut/index'));
-        } else {
-            Dialog::message(Yii::t('dialog','Validation Message'), Yii::t('dialog','Save no Done'));
-            $this->redirect(Yii::app()->createUrl('shortcut/index'));
+        $model = new ShortcutFrom('delete');
+        if (isset($_POST['ShortcutFrom'])) {
+            $model->attributes = $_POST['ShortcutFrom'];
+            $model->saveData();
+            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Record Deleted'));
         }
+//		$this->actionIndex();
+        $this->redirect(Yii::app()->createUrl('shortcut/index'));
     }
     public function actionEdit($index)
     {
-        $model = new Shortcut('view');
+        $model = new ShortcutFrom('edit');
         if (!$model->retrieveData($index)) {
             throw new CHttpException(404,'The requested page does not exist.');
         } else {
-            // print_r($model);exit();
             $sql = "select ServiceType,ServiceName from service where ServiceName is not null";
             $rows = Yii::app()->db->createCommand($sql)->queryAll();
             $service_type_lists = [];
@@ -95,8 +116,13 @@ class ShortcutController extends Controller
                 $service_type_lists[$row['ServiceType']] = $row['ServiceName'];
             }
             $this->render('form',array('model'=>$model,'service_type_lists'=>$service_type_lists));
-            $this->render('form',array('model'=>$model));
         }
     }
+    public static function allowReadWrite() {
+        return Yii::app()->user->validRWFunction('OS01');
+    }
 
+    public static function allowReadOnly() {
+        return Yii::app()->user->validFunction('OS01');
+    }
 }

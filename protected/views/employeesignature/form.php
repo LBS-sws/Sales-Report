@@ -51,7 +51,7 @@ $this->pageTitle=Yii::app()->name . ' - Credits for';
         <div class="box-body">
             <?php echo $form->hiddenField($model, 'scenario'); ?>
             <?php echo $form->hiddenField($model, 'id',array("id"=>"id")); ?>
-
+            <?php echo $form->hiddenField($model, 'signature',array("id"=>"signature")); ?>
 
             <div class="form-group">
                 <?php echo $form->labelEx($model,'staffid',array('class'=>"col-sm-2 control-label")); ?>
@@ -65,7 +65,7 @@ $this->pageTitle=Yii::app()->name . ' - Credits for';
                 <?php echo $form->labelEx($model,'signature',array('class'=>"col-sm-2 control-label")); ?>
                 <div class="col-sm-4">
                     <?php
-                    echo  $form->fileField($model, 'signature');
+                    echo  $form->fileField($model, 'signaturefile');
                     ?>
                 </div>
                 <div class='col-sm-3'><?php

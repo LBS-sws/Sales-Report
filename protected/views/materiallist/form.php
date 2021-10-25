@@ -59,7 +59,7 @@ $this->pageTitle=Yii::app()->name . ' - Credits for';
                 </div>
             </div>
             <div class="form-group">
-                <?php echo $form->labelEx($model,'classify',array('class'=>"col-sm-2 control-label")); ?>
+                <?php echo $form->labelEx($model,'classify_id',array('class'=>"col-sm-2 control-label")); ?>
                 <div class="col-sm-2">
                     <?php
                     echo $form->dropDownList($model, 'classify_id', $maclass);
@@ -108,11 +108,22 @@ $this->pageTitle=Yii::app()->name . ' - Credits for';
                 </div>
             </div>
             <div class="form-group">
+                <?php echo $form->labelEx($model,'status',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-2">
+                    <?php
+                    echo $form->dropDownList($model, 'status', $status_lists);
+                    ?>
+                </div>
+            </div>
+            <div class="form-group">
                 <?php echo $form->labelEx($model,'sort',array('class'=>"col-sm-2 control-label")); ?>
                 <div class="col-sm-4">
                     <?php echo $form->textField($model, 'sort',
                         array("id"=>"unit",'readonly'=>false)
                     ); ?>
+                </div>
+                <div class="col-sm-6">
+                    <p class="form-control-static" style="color: #c50303;">填写范围例如：1~100，（与小程序里选择物料的顺序是挂钩的，排序值越高则选择物料的顺序越靠前，反之越低则越靠后，1是最高，100是最低。）</p >
                 </div>
             </div>
             <div class="form-group">

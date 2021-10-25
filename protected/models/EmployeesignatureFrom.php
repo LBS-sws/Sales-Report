@@ -35,81 +35,9 @@ class EmployeesignatureFrom extends CFormModel
     public function rules()
     {
         return array(
-            array('signature','file','types'=>'jpg, png','allowEmpty'=>true),
-            array('city, staffid,signature_file_type','safe'),
-            array('extfields, oriextfields, oriextrights','safe'),
+            array('id,city,city_name,staffid,creat_time','safe'),
+            array('staffid,signature','required'),
         );
-    }
-    public function retrieveDataByPage($pageNum=1)
-    {
-        $tab_suffix = Yii::app()->params['table_envSuffix'];
-        $se_suffix = Yii::app()->params['envSuffix'];
-
-        $city_allow = Yii::app()->user->city_allow();
-        $sql1 = "select m.*,b.name city_name,s.StaffName as staffname from ".$tab_suffix."employee_signature as m left join staff as s on m.staffid=s.StaffID left join security".$se_suffix.".sec_city as b on m.city=b.code
-				";
-        $sql2 = "select count(m.id)
-				 from ".$tab_suffix."employee_signature as m left join staff as s on m.staffid=s.StaffID left join security".$se_suffix.".sec_city as b on m.city=b.code
-				";
-        $clause = "";
-        if (!empty($this->searchField) && !empty($this->searchValue)) {
-            $svalue = str_replace("'","\'",$this->searchValue);
-            switch ($this->searchField) {
-                case 'city':
-                    $clause .= General::getSqlConditionClause('b.name',$svalue);
-                    break;
-                case 'staffid':
-                    $clause .= General::getSqlConditionClause('m.staffid',$svalue);
-                    break;
-                case 'staffname':
-                    $clause .= General::getSqlConditionClause('s.staffname',$svalue);
-                    break;
-            }
-        }
-
-        $order = "";
-        if (!empty($this->orderField)) {
-            switch ($this->orderField) {
-                case 'city':
-                $order .= " order by b.name ";
-                break;
-                case 'staffid':
-                    $order .= " order by m.staffid ";
-                    break;
-                case 'staffname':
-                    $order .= " order by s.staffname ";
-                    break;
-            }
-            if ($this->orderType=='D') $order .= "desc ";
-        }
-
-        $sql = $sql2.$clause;
-        $this->totalRow = Yii::app()->db->createCommand($sql)->queryScalar();
-
-        $ct_where = " where m.city in(".$city_allow.")";
-        $sql = $sql1.$ct_where.$clause.$order;
-        $sql = $this->sqlWithPageCriteria($sql, $this->pageNum);
-        $records = Yii::app()->db->createCommand($sql)->queryAll();
-
-        $list = array();
-        $this->attr = array();
-        if (count($records) > 0) {
-            foreach ($records as $k=>$record) {
-                $this->attr[] = array(
-                    'id'=>$record['id'],
-                    'city'=>$record['city'],
-                    'city_name'=>$record['city_name'],
-                    'creat_time'=>$record['creat_time'],
-                    'staffname'=>$record['staffname'],
-                    'staffid'=>$record['staffid'],
-                    'signature'=>$record['signature'],
-                    'creat_time'=>$record['creat_time'],
-                );
-            }
-        }
-        $session = Yii::app()->session;
-        $session['employeesignature_ss01'] = $this->getCriteria();
-        return true;
     }
     function retrieveData($index) {
         $tab_suffix = Yii::app()->params['table_envSuffix'];
@@ -136,5 +64,59 @@ class EmployeesignatureFrom extends CFormModel
         }
         return $rtn;
     }
+    public function saveData()
+    {
+        $connection = Yii::app()->db;
+        $transaction=$connection->beginTransaction();
+        try {
+            $this->saveEmployeesignature($connection);
+            $transaction->commit();
+        }
+        catch(Exception $e) {
+            $transaction->rollback();
+            throw new CHttpException(404,'Cannot update. ('.$e->getMessage().')');
+        }
+    }
+    protected function saveEmployeesignature(&$connection)
+    {
+        $tab_suffix = Yii::app()->params['table_envSuffix'];
+        $sql = '';
+        switch ($this->scenario) {
+            case 'delete':
+                $sql = "delete from ".$tab_suffix."employee_signature where id = :id";
+                break;
+            case 'new':
+                $sql = "insert into ".$tab_suffix."employee_signature(
+                        city,staffid, signature,creat_time) values (
+						:city,:staffid, :signature,:creat_time)";
+                break;
+            case 'edit':
+                $sql = "update  ".$tab_suffix."employee_signature set 
+					city = :city,
+					staffid = :staffid,
+					signature = :signature
+					where id = :id";
+                break;
+        }
+        //查询是否存在
+        $sql1 = "select e.Text from staff  as s left join officecity as o on o.City = s.City left join enums as e on e.EnumID = o.Office where  e.EnumType=8 and s.StaffID =".$this->staffid;
+        $row = Yii::app()->db->createCommand($sql1)->queryRow();
+        $city = $row['Text'];
+        $command=$connection->createCommand($sql);
+        if (strpos($sql,':id')!==false)
+            $command->bindParam(':id',$this->id,PDO::PARAM_INT);
+        if (strpos($sql,':city')!==false)
+            $command->bindParam(':city',$this->city?$this->city:$city,PDO::PARAM_STR);
+        if (strpos($sql,':staffid')!==false)
+            $command->bindParam(':staffid',$this->staffid,PDO::PARAM_STR);
+        if (strpos($sql,':signature')!==false)
+            $command->bindParam(':signature',$this->signature,PDO::PARAM_STR);
+        if (strpos($sql,':creat_time')!==false)
+            $command->bindParam(':creat_time',date('Y-m-d h:i:s', time()),PDO::PARAM_STR);
+        $command->execute();
 
+        if ($this->scenario=='new')
+            $this->id = Yii::app()->db->getLastInsertID();
+        return true;
+    }
 }

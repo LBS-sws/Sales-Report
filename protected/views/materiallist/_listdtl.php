@@ -11,6 +11,7 @@
     <td class="name"><?php echo $this->record['ratio']; ?></td>
     <td class="name"><?php echo $this->record['unit']; ?></td>
     <td class="name"><?php echo $this->record['validity']; ?></td>
+    <td class="name"><?php echo $this->record['status']==1?"启用":"未启用"; ?></td>
     <td class="name"><?php echo $this->record['creat_time']; ?></td>
 </tr>
 

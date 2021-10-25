@@ -20,12 +20,27 @@ class UseareaController extends Controller
             'postOnly + delete', // we only allow deletion via POST request
         );
     }
-
+    public function accessRules()
+    {
+        return array(
+            array('allow',
+                'actions'=>array('new','edit','delete','save'),
+                'expression'=>array('UseareaController','allowReadWrite'),
+            ),
+            array('allow',
+                'actions'=>array('index','view'),
+                'expression'=>array('UseareaController','allowReadOnly'),
+            ),
+            array('deny',  // deny all users
+                'users'=>array('*'),
+            ),
+        );
+    }
     public function actionIndex($pageNum=0)
     {
-        $model = new Usearea();
-        if (isset($_POST['Usearea'])) {
-            $model->attributes = $_POST['Usearea'];
+        $model = new UseareaList();
+        if (isset($_POST['UseareaList'])) {
+            $model->attributes = $_POST['UseareaList'];
         } else {
             $session = Yii::app()->session;
             if (isset($session['usearea_os05']) && !empty($session['usearea_os05'])) {
@@ -39,45 +54,43 @@ class UseareaController extends Controller
     }
     public function actionNew()
     {
-        $model = new Usearea('new');
+        $model = new UseareaFrom('new');
         $service_type_lists = ['material'=>'物料使用','equipment'=>'设备放置区域'];
         $this->render('form',array('model'=>$model,'service_type_lists'=>$service_type_lists));
     }
     public function actionSave()
     {
-        $data = $_POST['Usearea'];
-        $tab_suffix = Yii::app()->params['table_envSuffix'];
-        if ($data['id']>0){
-            $result = Yii::app()->db->createCommand()->update($tab_suffix .'use_areas', array('area_type' => $data['area_type'],'use_area' => $data['use_area']), 'id=:id', array(':id' => $data['id']));
-            $id = $data['id'];
-        }else{
-            $city = Yii::app()->user->city();
-            $result = Yii::app()->db->createCommand()->insert($tab_suffix .'use_areas', array('area_type' => $data['area_type'],'use_area' => $data['use_area'],'city'=>$city,'creat_time'=>date('Y-m-d H:i:s', time())));
-            $id = Yii::app()->db->getLastInsertID();
-        }
-        if ($result) {
-            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
-            $this->redirect(Yii::app()->createUrl('usearea/edit',array('index'=>$id)));
-        } else {
-            Dialog::message(Yii::t('dialog','Validation Message'), Yii::t('dialog','Save no Done'));
-            $this->redirect(Yii::app()->createUrl('usearea/edit',array('index'=>$id)));
+        if (isset($_POST['UseareaFrom'])) {
+            $model = new UseareaFrom($_POST['UseareaFrom']['scenario']);
+            $model->attributes = $_POST['UseareaFrom'];
+            if ($model->validate()) {
+                $model->saveData();
+                $model->scenario = 'edit';
+                Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
+                $service_type_lists = ['material'=>'物料使用','equipment'=>'设备放置区域'];
+                $this->redirect(Yii::app()->createUrl('usearea/edit',array('index'=>$model->id,'service_type_lists'=>$service_type_lists)));
+            } else {
+                $message = CHtml::errorSummary($model);
+                Dialog::message(Yii::t('dialog','Validation Message'), $message);
+                $service_type_lists = ['material'=>'物料使用','equipment'=>'设备放置区域'];
+                $this->render('form',array('model'=>$model,'service_type_lists'=>$service_type_lists));
+            }
         }
     }
     public function actionDelete()
     {
-        $tab_suffix = Yii::app()->params['table_envSuffix'];
-        $de = Yii::app()->db->createCommand()->delete($tab_suffix .'use_areas', 'id=:id', array(':id' => $_POST['Usearea']['id']));
-        if ($de) {
-            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Submission Done'));
-            $this->redirect(Yii::app()->createUrl('usearea/index'));
-        } else {
-            Dialog::message(Yii::t('dialog','Validation Message'), Yii::t('dialog','Save no Done'));
-            $this->redirect(Yii::app()->createUrl('usearea/index'));
+        $model = new UseareaFrom('delete');
+        if (isset($_POST['UseareaFrom'])) {
+            $model->attributes = $_POST['UseareaFrom'];
+            $model->saveData();
+            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Record Deleted'));
         }
+//		$this->actionIndex();
+        $this->redirect(Yii::app()->createUrl('usearea/index'));
     }
     public function actionEdit($index)
     {
-        $model = new Usearea('view');
+        $model = new UseareaFrom('edit');
         if (!$model->retrieveData($index)) {
             throw new CHttpException(404,'The requested page does not exist.');
         } else {
@@ -85,5 +98,11 @@ class UseareaController extends Controller
             $this->render('form',array('model'=>$model,'service_type_lists'=>$service_type_lists));
         }
     }
+    public static function allowReadWrite() {
+        return Yii::app()->user->validRWFunction('OS05');
+    }
 
+    public static function allowReadOnly() {
+        return Yii::app()->user->validFunction('OS05');
+    }
 }
