@@ -1,7 +1,7 @@
 <?php
 if($flashes = Yii::app()->user->getFlashes()) {
     foreach($flashes as $key => $message) {
-        if($key != 'counters') {
+        if($key >= 1) {
 			if ($message['confirm']=='N') {
 				$content = '<p>'.$message['content'].'</p>';
 				$this->widget('bootstrap.widgets.TbModal', array(
