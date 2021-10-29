@@ -82,11 +82,11 @@ class MaterialData {
 		$status = trim($data['status'])=='未启用' ? 0 : 1;
 		$brief = $data['brief'];
 
-//		$sql = "select id from lbs_service_material_lists where name=:name and classify_id=:classify_id";
-		$sql = "select id from lbs_service_material_lists where name=:name";
+		$sql = "select id from lbs_service_material_lists where name=:name and classify_id=:classify_id";
+//		$sql = "select id from lbs_service_material_lists where name=:name";
 		$command=$connection->createCommand($sql);
 		$command->bindParam(':name',$name,PDO::PARAM_STR);
-//		$command->bindParam(':classify_id',$classify_id,PDO::PARAM_INT);
+		$command->bindParam(':classify_id',$classify_id,PDO::PARAM_INT);
 		$row = $command->queryRow();
 		$exist = ($row!==false);
 		$id = (!$exist) ? 0 : $row['id'];
