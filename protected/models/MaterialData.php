@@ -38,7 +38,7 @@ class MaterialData {
 		
 		// Validity
 		$dt = is_numeric($data['validity']) ? $this->convertExcelDate($data['validity']) : $data['validity'];
-		$rtn = !empty($dt) && $this->validateDate($dt,'Y-m-d') ? '' : $name['validity'].' '.Yii::t('import','is not valid').' /';
+		$rtn = empty($dt) || $this->validateDate($dt,'Y-m-d') ? '' : $name['validity'].' '.Yii::t('import','is not valid').' /';
 		// Name
 		$rtn .= !empty($data['name']) 
 				? (mb_strlen(trim($data['name']), 'UTF-8')>20 ? $name['name'].' '.Yii::t('import','is too long').' /' : '') 
