@@ -13,6 +13,7 @@ class MaterialList extends CListPageModel
      * If not declared here, an attribute would have a label that is
      * the same as its name with the first letter in upper case.
      */
+/*
     public $id;
     public $city;
     public $city_name;
@@ -28,6 +29,8 @@ class MaterialList extends CListPageModel
     public $sort;
     public $status;
     public $creat_time;
+*/	
+	public $import_file;
     public function attributeLabels()
     {
         return array(
@@ -46,8 +49,21 @@ class MaterialList extends CListPageModel
             'sort'=>Yii::t('material','Sort'),
             'status'=>Yii::t('material','Status'),
             'creat_time'=>Yii::t('material','Creat_time'),
+			'import_file'=>Yii::t('import','Import File'),
         );
     }
+	public function rules()
+	{
+		return array(
+			array('attr, pageNum, noOfItem, totalRow, searchField, searchValue, orderField, orderType, filter, dateRangeValue','safe',),
+			array('import_file','file','types'=>'xls,xlsx','allowEmpty'=>false),
+		);
+/*
+		$rtn = parent::rules();
+		$rtn[] = array('import_file','file','types'=>'xls,xlsx','allowEmpty'=>false);
+		return $rtn;
+*/		
+	}
     public function retrieveDataByPage($pageNum=1)
     {
         $tab_suffix = Yii::app()->params['table_envSuffix'];
