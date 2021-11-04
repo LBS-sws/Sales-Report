@@ -69,6 +69,14 @@ return array(
                 'access'=>'OS05',
                 'url'=>'/usearea/index',
             ),
+            'Service equipment'=>array(
+                'access'=>'OS06',
+                'url'=>'/serviceequipment/index',
+            ),
+            'Report section'=>array(
+                'access'=>'OS07',
+                'url'=>'/reportsection/index',
+            ),
         ),
     ),
     'Signature settings'=>array(

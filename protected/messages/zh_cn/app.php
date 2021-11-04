@@ -67,6 +67,8 @@ return array(
     'Equipment Type Select'=>'设备类型检查常见选项',
     'Equipment and material use area'=>'设备及物料使用区域',
 	'Employeesignature'=>'员工签名',
+	'Service equipment'=>'服务设备',
+	'Report section'=>'报告板块',
 
 );
 ?>

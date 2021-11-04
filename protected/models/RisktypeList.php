@@ -67,10 +67,10 @@ class RisktypeList extends CListPageModel
             if ($this->orderType=='D') $order .= "desc ";
         }
 
-        $sql = $sql2.$clause;
+        $ct_where = " where c.city in(".$city_allow.")";
+        $sql = $sql2.$ct_where.$clause;
         $this->totalRow = Yii::app()->db->createCommand($sql)->queryScalar();
 
-        $ct_where = " where c.city in(".$city_allow.")";
         $sql = $sql1.$ct_where.$clause.$order;
         $sql = $this->sqlWithPageCriteria($sql, $this->pageNum);
         $records = Yii::app()->db->createCommand($sql)->queryAll();
