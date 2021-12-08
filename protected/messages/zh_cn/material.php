@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Created by PhpStorm.
  * User: Administrator
@@ -15,7 +15,7 @@ return array(
     'Classify_id'=>'分类id',
     'Classify'=>'分类',
     'Registration_no'=>'登记证号',
-    'Validity'=>'有效期',
+    'Validity'=>'登记证有效期',
     'Active_ingredient'=>'有效成分',
     'Ratio'=>'物料配比',
     'Brief'=>'简介',
