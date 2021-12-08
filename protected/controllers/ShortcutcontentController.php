@@ -24,11 +24,11 @@ class ShortcutcontentController extends Controller
     {
         return array(
             array('allow',
-                'actions'=>array('new','edit','delete','save'),
+                'actions'=>array('new','edit','delete','save','import'),
                 'expression'=>array('ShortcutcontentController','allowReadWrite'),
             ),
             array('allow',
-                'actions'=>array('index','view'),
+                'actions'=>array('index','view','export'),
                 'expression'=>array('ShortcutcontentController','allowReadOnly'),
             ),
             array('deny',  // deny all users
@@ -126,7 +126,56 @@ class ShortcutcontentController extends Controller
             $this->render('form',array('model'=>$model,'service_type_lists'=>$service_type_lists));
         }
     }
-    public static function allowReadWrite() {
+ 	public function actionImport() {
+        $model = new ShortcutcontentList;
+        if (isset($_POST['ShortcutcontentList'])) {
+            $model->attributes = $_POST['ShortcutcontentList'];
+			if ($model->validate()) {
+				if ($file = CUploadedFile::getInstance($model,'import_file')) {
+					$objImport = new Import;
+					$objData = new ShortcutcontentData;
+				
+					$objImport->readerType = $objImport->getReaderTypefromFileExtension($file->extensionName);
+					$objImport->fileName = $file->tempName;
+					$objImport->dataModel = $objData;
+					$message = $objImport->run();
+				
+					$model->determinePageNum(0);
+					$model->retrieveDataByPage($model->pageNum);
+					Dialog::message(Yii::t('import','View Log'), $message, -999);
+				} else {
+					$message = Yii::t('import','Upload file error');
+					Dialog::message(Yii::t('dialog','Error Message'), $message);
+				}		
+			} else {
+				$message = CHtml::errorSummary($model);
+				Dialog::message(Yii::t('dialog','Validation Message'), $message);
+			}
+		}
+        $this->render('index',array('model'=>$model));
+	}
+	
+	public function actionExport() {
+		$model = new ShortcutcontentList;
+		$session = Yii::app()->session;
+		if (isset($session['shortcutcontent_os02']) && !empty($session['shortcutcontent_os02'])) {
+			$Shortcutcontentlist = $session['shortcutcontent_os02'];
+			$model->setCriteria($Shortcutcontentlist);
+		}
+		$model->noOfItem = 0;
+        $model->determinePageNum(0);
+        $model->retrieveDataByPage($model->pageNum);
+		
+		$objData = new RptShortcutcontentlist;
+		$objData->data = $model->attr;
+		$objExport = new Export;
+		$objExport->dataModel = $objData;
+		
+		$filename = 'shortcutcontent.xlsx';
+		$objExport->exportExcel($filename);
+	}
+
+   public static function allowReadWrite() {
         return Yii::app()->user->validRWFunction('OS02');
     }
 

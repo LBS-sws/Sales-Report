@@ -13,11 +13,14 @@ class RiskpestList extends CListPageModel
      * If not declared here, an attribute would have a label that is
      * the same as its name with the first letter in upper case.
      */
+/*
     public $id = 0;
     public $city;
     public $city_name;
     public $target;
     public $creat_time;
+*/
+	public $import_file;
     public function attributeLabels()
     {
         return array(
@@ -26,9 +29,17 @@ class RiskpestList extends CListPageModel
             'target'=>Yii::t('risk','Target'),
             'id'=>Yii::t('risk','id'),
             'creat_time'=>Yii::t('risk','Creat_time'),
+			'import_file'=>Yii::t('import','Import File'),
         );
     }
-    public function retrieveDataByPage($pageNum=1)
+ 	public function rules()
+	{
+		return array(
+			array('attr, pageNum, noOfItem, totalRow, searchField, searchValue, orderField, orderType, filter, dateRangeValue','safe',),
+			array('import_file','file','types'=>'xls,xlsx','allowEmpty'=>false),
+		);
+	}
+   public function retrieveDataByPage($pageNum=1)
     {
         $tab_suffix = Yii::app()->params['table_envSuffix'];
         $se_suffix = Yii::app()->params['envSuffix'];

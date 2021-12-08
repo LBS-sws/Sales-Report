@@ -13,6 +13,7 @@ class ShortcutcontentList extends CListPageModel
      * If not declared here, an attribute would have a label that is
      * the same as its name with the first letter in upper case.
      */
+/*
     public $id = 0;
     public $city_name;
     public $service_name;
@@ -20,6 +21,8 @@ class ShortcutcontentList extends CListPageModel
     public $shortcut_name;
     public $content;
     public $creat_time;
+*/
+	public $import_file;
     public function attributeLabels()
     {
         return array(
@@ -31,8 +34,16 @@ class ShortcutcontentList extends CListPageModel
             'content'=>Yii::t('shortcut','Content'),
             'id'=>Yii::t('shortcut','id'),
             'creat_time'=>Yii::t('shortcut','Creat_time'),
+			'import_file'=>Yii::t('import','Import File'),
         );
     }
+ 	public function rules()
+	{
+		return array(
+			array('attr, pageNum, noOfItem, totalRow, searchField, searchValue, orderField, orderType, filter, dateRangeValue','safe',),
+			array('import_file','file','types'=>'xls,xlsx','allowEmpty'=>false),
+		);
+	}
     public function retrieveDataByPage($pageNum=1)
     {
         $tab_suffix = Yii::app()->params['table_envSuffix'];

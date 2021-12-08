@@ -28,6 +28,7 @@ return array(
 
 'INSERT'=>'新增',
 'UPDATE'=>'更新',
+'SKIP'=>'跳過',
 'ERROR'=>'錯誤',
 'Row No.'=>'行號',
 
