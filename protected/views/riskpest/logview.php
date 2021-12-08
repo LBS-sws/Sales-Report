@@ -12,8 +12,14 @@ if($flashes = Yii::app()->user->getFlashes(false)) {
 				));
 
 			echo '<div class="form-group">';
-			echo '<div class="col-sm-7">';
-			echo TbHtml::textArea('log_content', $message['content'], array('rows'=>10,'cols'=>80,'readonly'=>true));
+			echo '<div class="col-sm-11">';
+			echo TbHtml::textArea('log_content', $message['content'], 
+				array(
+					'rows'=>10,
+					'cols'=>70,
+					'readonly'=>true,
+					'style'=>'resize: both; display: inline-block;',
+				));
 			echo '</div>';
 			echo '</div>';
 			
