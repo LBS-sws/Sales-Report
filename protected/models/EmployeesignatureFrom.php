@@ -99,7 +99,7 @@ class EmployeesignatureFrom extends CFormModel
                 break;
         }
         //查询是否存在
-        $sql1 = "select e.Text from staff  as s left join officecity as o on o.City = s.City left join enums as e on e.EnumID = o.Office where  e.EnumType=8 and s.StaffID =".$this->staffid;
+        $sql1 = "select e.Text from staff  as s left join officecity as o on o.City = s.City left join enums as e on e.EnumID = o.Office where  e.EnumType=8 and s.StaffID ='".$this->staffid."'";
         $row = Yii::app()->db->createCommand($sql1)->queryRow();
         $city = $row['Text'];
         $command=$connection->createCommand($sql);
