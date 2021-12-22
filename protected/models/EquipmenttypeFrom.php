@@ -109,7 +109,7 @@ class EquipmenttypeFrom extends CFormModel
         if (strpos($sql,':check_handles')!==false)
             $command->bindParam(':check_handles',$this->check_handles,PDO::PARAM_STR);
         if (strpos($sql,':creat_time')!==false)
-            $command->bindParam(':creat_time',date('Y-m-d h:i:s', time()),PDO::PARAM_STR);
+            $command->bindParam(':creat_time',date('Y-m-d H:i:s', time()),PDO::PARAM_STR);
         $command->execute();
 
         if ($this->scenario=='new')
