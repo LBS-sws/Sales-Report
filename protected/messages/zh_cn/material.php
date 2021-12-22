@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Created by PhpStorm.
  * User: Administrator
@@ -41,3 +41,4 @@ return array(
     'Service_name'=>'服务名称',
     'Materialusepest Form'=>'使用害虫详情'
 );
+?>

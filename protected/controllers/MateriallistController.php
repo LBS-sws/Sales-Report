@@ -202,3 +202,4 @@ class MateriallistController extends Controller
         return Yii::app()->user->validFunction('MS01');
     }
 }
+?>
