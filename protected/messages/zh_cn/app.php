@@ -69,6 +69,8 @@ return array(
 	'Employeesignature'=>'员工签名',
 	'Service equipment'=>'服务设备',
 	'Report section'=>'报告板块',
-
+	'Report query'=>'报告查询',
+	'Reportjoblist'=>'工作单报告列表',
+    'Reportfollowlist'=>'跟进单报告列表',
 );
 ?>

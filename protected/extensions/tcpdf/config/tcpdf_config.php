@@ -45,7 +45,7 @@
  * Installation path (/var/www/tcpdf/).
  * By default it is automatically calculated but you can also set it as a fixed string to improve performances.
  */
-define ('K_PATH_MAIN', '/var/www/html/ac-uat/protected/extensions/tcpdf/');
+//define ('K_PATH_MAIN', '');
 
 /**
  * URL path to tcpdf installation folder (http://localhost/tcpdf/).
@@ -57,7 +57,7 @@ define ('K_PATH_MAIN', '/var/www/html/ac-uat/protected/extensions/tcpdf/');
  * Path for PDF fonts.
  * By default it is automatically set but you can also set it as a fixed string to improve performances.
  */
-define ('K_PATH_FONTS', K_PATH_MAIN.'fonts/');
+//define ('K_PATH_FONTS', K_PATH_MAIN.'fonts/');
 
 /**
  * Default images directory.
@@ -154,7 +154,7 @@ define ('PDF_MARGIN_RIGHT', 15);
 /**
  * Default main font name.
  */
-define ('PDF_FONT_NAME_MAIN', 'helvetica');
+define ('PDF_FONT_NAME_MAIN', 'droidsansfallback');//helvetica
 
 /**
  * Default main font size.
@@ -164,7 +164,7 @@ define ('PDF_FONT_SIZE_MAIN', 10);
 /**
  * Default data font name.
  */
-define ('PDF_FONT_NAME_DATA', 'helvetica');
+define ('PDF_FONT_NAME_DATA', 'droidsansfallback');
 
 /**
  * Default data font size.
@@ -222,7 +222,8 @@ define('K_TCPDF_THROW_EXCEPTION_ERROR', false);
  */
 define('K_TIMEZONE', 'UTC');
 
+//add
+//require_once(dirname(__FILE__).'/lang/chi.php');
 //============================================================+
 // END OF FILE
 //============================================================+
-?>

@@ -89,4 +89,18 @@ return array(
             ),
         ),
     ),
+    'Report query'=>array(
+        'access'=>'RQ',
+        'icon'=>'fa-edit',
+        'items'=>array(
+            'Reportjoblist'=>array(
+                'access'=>'RQ01',
+                'url'=>'/reportjob/index',
+            ),
+            'Reportfollowlist'=>array(
+                'access'=>'RQ02',
+                'url'=>'/reportfollow/index',
+            ),
+        ),
+    ),
 );
