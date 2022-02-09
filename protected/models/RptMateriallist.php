@@ -3,7 +3,10 @@ class RptMateriallist extends CReport {
 	public $show_report_title = false;
 	
 	protected function fields() {
-		return array(
+		$part1 = array(
+            'city_name'=>array('label'=>Yii::t('material','City_name'),'width'=>10,'align'=>'C'),
+		);
+		$part2 = array(
             'name'=>array('label'=>Yii::t('material','Name'),'width'=>30,'align'=>'L'),
             'classify'=>array('label'=>Yii::t('material','Classify'),'width'=>15,'align'=>'L'),
             'registration_no'=>array('label'=>Yii::t('material','Registration_no'),'width'=>30,'align'=>'L'),
@@ -15,6 +18,7 @@ class RptMateriallist extends CReport {
             'sort'=>array('label'=>Yii::t('material','Sort'),'width'=>15,'align'=>'C'),
             'brief'=>array('label'=>Yii::t('material','Brief'),'width'=>50,'align'=>'L'),
 		);
+		return Yii::app()->user->isSingleCity() ? $part2 : array_merge($part1, $part2);
 	}
 
 	public function genReport() {
