@@ -1,4 +1,4 @@
-<tr class='clickable-row' data-href='<?php echo $this->getLink('RQ01', 'reportjob/edit', 'reportjob/view', array('index'=>$this->record['JobID']));?>'>
+<tr class='clickable-row' data-href='<?php echo $this->getLink('RQ02', 'reportfollow/edit', 'reportfollow/view', array('index'=>$this->record['JobID']));?>'>
 <!--    <td class="che"> <input value="--><?php //echo $this->record['JobID']; ?><!--"  type="checkbox" name="Reportjob[attr][]" ></td>-->
     <?php if (!Yii::app()->user->isSingleCity()) : ?>
         <td><?php echo $this->record['City']; ?></td>
