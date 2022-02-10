@@ -31,9 +31,9 @@ class ReportjobList extends CListPageModel
 	{
         $se_suffix = Yii::app()->params['envSuffix'];
 		$city = Yii::app()->user->city_allow();
-		$sql1 = "select *,b.name city_name  from joborder as j left join officecity as o on j.City=o.City  left join enums as e on e.EnumID=o.Office left join service as s on s.ServiceType=j.ServiceType left join staff as t on t.StaffID=j.Staff01 left join security".$se_suffix.".sec_city as b on e.Text=b.code where e.EnumType=8 and j.Status=3 and e.Text in ($city) and j.JobDate>='2022-02-01'
+		$sql1 = "select *,b.name city_name  from joborder as j left join officecity as o on j.City=o.City  left join enums as e on e.EnumID=o.Office left join service as s on s.ServiceType=j.ServiceType left join staff as t on t.StaffID=j.Staff01 left join security".$se_suffix.".sec_city as b on e.Text=b.code where e.EnumType=8 and j.Status=3 and e.Text in ($city) and j.JobDate>='2022-02-10'
 			";
-		$sql2 = "select count(JobID) from joborder as j left join officecity as o on j.City=o.City  left join enums as e on e.EnumID=o.Office left join service as s on s.ServiceType=j.ServiceType left join staff as t on t.StaffID=j.Staff01 where e.EnumType=8 and j.Status=3 and e.Text in ($city) and j.JobDate>='2022-02-01'
+		$sql2 = "select count(JobID) from joborder as j left join officecity as o on j.City=o.City  left join enums as e on e.EnumID=o.Office left join service as s on s.ServiceType=j.ServiceType left join staff as t on t.StaffID=j.Staff01 left join security".$se_suffix.".sec_city as b on e.Text=b.code where e.EnumType=8 and j.Status=3 and e.Text in ($city) and j.JobDate>='2022-02-10'
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
