@@ -10,5 +10,10 @@
     <td><?php echo $this->record['Staff01']; ?></td>
     <td><?php echo $this->record['StartTime']; ?></td>
     <td><?php echo $this->record['FinishTime']; ?></td>
-
+    <td>
+        <?php
+        $dlnk = Yii::app()->createUrl('reportjob/down',array('index'=>$this->record['JobID']));
+        echo TbHtml::Button('<span class="fa fa-download"></span> '.Yii::t('misc','Download'), array('submit'=>$dlnk,'size' => TbHtml::BUTTON_SIZE_SMALL));
+        ?>
+    </td>
 </tr>

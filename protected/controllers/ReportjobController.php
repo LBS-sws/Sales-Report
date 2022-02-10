@@ -107,7 +107,7 @@ class ReportjobController extends Controller
 	public function actionEdit($index)
 	{
 		$model = new ReportjobForm('edit');
-		if (!$model->retrieveData($index)) {
+		if (!$model->retrieveData($index,1)) {
 			throw new CHttpException(404,'The requested page does not exist.');
 		} else {
 			$this->render('form',array('model'=>$model,));
@@ -140,17 +140,12 @@ class ReportjobController extends Controller
 
     }
 
-    public function actionDown()
+    public function actionDown($index)
     {
         $model = new ReportjobForm;
-        if(isset($_POST['ReportjobList']['attr'])){
-            foreach ($_POST['ReportjobList']['attr'] as $a){
-                $model->retrieveData($a);
-                $address[]=$model->allDowns($model);
-            }
-        //    print_r($address);exit();
-            $model->zip($address);
-        }else{
+        if (!$model->retrieveData($index,0)) {
+            throw new CHttpException(404,'The requested page does not exist.');
+        } else {
             Dialog::message(Yii::t('dialog','Warning'), Yii::t('dialog','No Record Found'));
             $this->redirect(Yii::app()->createUrl('reportjob/index'));
         }

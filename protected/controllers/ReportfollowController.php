@@ -64,13 +64,22 @@ class ReportfollowController extends Controller
 	public function actionEdit($index)
 	{
 		$model = new ReportfollowForm('edit');
-		if (!$model->retrieveData($index)) {
+		if (!$model->retrieveData($index,1)) {
 			throw new CHttpException(404,'The requested page does not exist.');
 		} else {
 			$this->render('form',array('model'=>$model,));
 		}
 	}
-
+    public function actionDown($index)
+    {
+        $model = new ReportfollowForm;
+        if (!$model->retrieveData($index,0)) {
+            throw new CHttpException(404,'The requested page does not exist.');
+        } else {
+            Dialog::message(Yii::t('dialog','Warning'), Yii::t('dialog','No Record Found'));
+            $this->redirect(Yii::app()->createUrl('reportfollow/index'));
+        }
+    }
 	public static function allowReadWrite() {
 		return Yii::app()->user->validRWFunction('RQ02');
 	}

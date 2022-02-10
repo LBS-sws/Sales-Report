@@ -100,7 +100,7 @@ class ReportfollowForm extends CFormModel
         //生成新图
         imagepng($newImg, $url);
     }
-	public function retrieveData($index)
+	public function retrieveData($index,$status)
 	{
         $suffix = Yii::app()->params['envSuffix'];
 		$city = Yii::app()->user->city_allow();
@@ -124,7 +124,7 @@ class ReportfollowForm extends CFormModel
                 if ($this->basic['equipments'] == '') {
                     $this->basic['equipments'] = $equipment['name'].'-'.$number;
                 }else{
-                    $$this->basic['equipments'] =$this->basic['equipments'].','.$equipment['name'].'-'.$number;
+                    $this->basic['equipments'] =$this->basic['equipments'].','.$equipment['name'].'-'.$number;
                 }
             }
         }
@@ -155,33 +155,37 @@ class ReportfollowForm extends CFormModel
                 $sql_equipmenthz_count = "select count(id) from lbs_service_equipments where job_type=1 and job_id=".$index." and equipment_type_id=".$type_id['equipment_type_id']." and equipment_area is  not  null and check_datas is  not  null";
                 $equipmenthz_count = Yii::app()->db->createCommand($sql_equipmenthz_count)->queryScalar();
                 $sql_equipment_type = "select name from lbs_service_equipment_type where id=".$type_id['equipment_type_id'];
-                $equipment_type= Yii::app()->db->createCommand($sql_equipment_type)->queryAll();
+                $equipment_type= Yii::app()->db->createCommand($sql_equipment_type)->queryRow();
                 $equipmenthz_data['title'] = $equipment_type['name']."(".$equipmenthz_count."/".$equipmenthz_allcount.")";
-                $sql_check_datas = "select * from lbs_service_equipments order by id asc where job_type=1 and job_id=".$index." and equipment_type_id=".$type_id['equipment_type_id']." and equipment_area is  not  null and check_datas is  not  null";
+                $sql_check_datas = "select * from lbs_service_equipments where job_type=1 and job_id=".$index." and equipment_type_id=".$type_id['equipment_type_id']." and equipment_area is  not  null and check_datas is  not  null order by id asc";
                 $check_datas= Yii::app()->db->createCommand($sql_check_datas)->queryAll();
                 if (count($check_datas) > 0) {
                     foreach ($check_datas as $j=>$check_data) {
-                        $check_data = json_decode($check_data['check_datas'],true);
+                        $check_data = $this->array_to_object($check_data);
                         $equipmenthz_data['table_title'][0] = '编号';
                         $equipmenthz_data['content'][$j][0] = sprintf('%02s', $j+1);
                         $equipmenthz_data['table_title'][1] = '区域';
-                        $equipmenthz_data['content'][$j][1] = $check_datas['equipment_area'];
-                        for ($m=0; $m < count($check_data); $m++) {
-                            $equipmenthz_data['table_title'][$m+2] = $check_data[$m]['label'];
-                            $equipmenthz_data['content'][$j][$m+2] = $check_data[$m]['value'];
+                        $equipmenthz_data['content'][$j][1] = $check_data->equipment_area;
+
+                        $check_datas_xq = json_decode($check_data['check_datas']);
+                        foreach ($check_datas_xq as $m=>$check_data_xq) {
+                            $equipmenthz_data['table_title'][$m+2] = $check_data_xq->label;
+                            $equipmenthz_data['content'][$j][$m+2] = $check_data_xq->value;
                         }
+                        $m = count($check_datas_xq);
                         $equipmenthz_data['table_title'][$m+2] = '检查与处理';
-                        $equipmenthz_data['content'][$j][$m+2] = $check_datas['check_handle'];
+                        $equipmenthz_data['content'][$j][$m+2] = $check_data->check_handle;
                         $equipmenthz_data['table_title'][$m+3] = '补充说明';
-                        $equipmenthz_data['content'][$j][$m+3] = $check_datas['more_info'];
-                        $equipmenthz_data['site_photos'][$j] = $check_datas['site_photos'];
+                        $equipmenthz_data['content'][$j][$m+3] = $check_data->more_info;
+                        $equipmenthz_data['site_photos'][$j] = $check_data->site_photos;
+                        array_push($equipmenthz_datas,$equipmenthz_data);
                     }
                 }
             }
         }
-        $this->equipment = $equipmenthz_datas;
+        $this->equipment = json_decode(json_encode($equipmenthz_datas,true));
 
-        $sql_photo = "select * from lbs_report_autograph where job_type=1 and job_id=".$index;
+        $sql_photo = "select * from lbs_service_photos where job_type=1 and job_id=".$index;
         $this->photo = Yii::app()->db->createCommand($sql_photo)->queryAll();
 
         $sql_autograph = "select * from lbs_report_autograph where job_type=1 and job_id=".$index;
@@ -199,12 +203,12 @@ class ReportfollowForm extends CFormModel
 
         $basic = $this->array_to_object ($this->basic);
         $briefing = $this->briefing?$this->array_to_object ($this->briefing):'';
-        $material = $this->material?$this->array_to_object ($this->material):'';
-        $risk = $this->risk?$this->array_to_object ($this->risk):'';
-        $equipment = $this->equipment?$this->array_to_object ($this->equipment):'';
-        $photo = $this->photo?$this->array_to_object ($this->photo):'';
-        $autograph = $this->autograph?$this->array_to_object ($this->autograph):'';
-//        var_dump($briefing);die();
+        $material = $this->material;
+        $risk = $this->risk;
+        $equipment = $this->equipment;
+        $photo = $this->photo;
+        $autograph = $this->autograph;
+//        var_dump($equipment);die();
         $baseUrl_imgs = "https://operation.lbsapps.cn/";
         $company_img = $baseUrl_imgs."pdf/company/".$city.".jpg";
         $logo_img = $baseUrl_imgs."pdf/logo.png";
@@ -323,17 +327,17 @@ EOD;
                         </tr>
 EOD;
                 for ($p=0; $p < count($photo); $p++) {
-
+                    $photox = $this->array_to_object($photo[$p]);
                     $html .= <<<EOD
                         <tr>
-                        <td width="20%" align="left">$photo[$p]['remarks']}</td>
+                        <td width="20%" align="left">$photox->remarks</td>
 EOD;
-                        $site_photos = explode(',',$photo[$p]['site_photos']);
-                        for ($sp=0; $sp < count($site_photos); $sp++) {
-                            $spa = $baseUrl_imgs.'/public'.str_replace("\/",'/',trim($site_photos[$sp],'"'));
-                            $html .= <<<EOD
+                    $site_photos = explode(',',$photox->site_photos);
+                    for ($sp=0; $sp < count($site_photos); $sp++) {
+                        $spa = $baseUrl_imgs.'public'.str_replace("\/",'/',trim($site_photos[$sp],'"'));
+                        $html .= <<<EOD
                             <td width="20%" align="center">
-                            <img src="${spa}" width="80" height="100" style="padding:20px 50px;">
+                            <img src="$spa}=" width="80" height="100" style="padding:20px 50px;">
                             </td>
 EOD;
                         }
@@ -365,15 +369,16 @@ EOD;
                             </tr>
 EOD;
                 for ($m=0; $m < count($material); $m++) {
+                    $materialx = $this->array_to_object($material[$m]);
                     $html .= <<<EOD
                         <tr>
-                        <td width="15%">$material[$m]['material_name']</td>
-                        <td width="10%">$material[$m]['material_ratio']</td>
-                        <td width="8%">$material[$m]['dosage'] $material[$m]['unit']</td>
-                        <td width="15%" align="left">$material[$m]['use_mode']</td>
-                        <td width="15%" align="left">$material[$m]['targets']</td>
-                        <td width="12%" align="left">$material[$m]['use_area']</td>
-                        <td width="25%" align="left">$material[$m]['matters_needing_attention']</td>
+                        <td width="15%">$materialx->material_name</td>
+                        <td width="10%">$materialx->material_ratio</td>
+                        <td width="8%">$materialx->dosage $materialx->unit</td>
+                        <td width="15%" align="left">$materialx->use_mode</td>
+                        <td width="15%" align="left">$materialx->targets</td>
+                        <td width="12%" align="left">$materialx->use_area</td>
+                        <td width="25%" align="left">$materialx->matters_needing_attention</td>
                         </tr>  
 EOD;
                 }
@@ -395,73 +400,81 @@ EOD;
                             </tr>
 EOD;
                 for ($r=0; $r < count($risk); $r++) {
-                    $c_t =  date('Y-m-d',strtotime($risk[$r]['creat_time']));
+                    $riskx = $this->array_to_object($risk[$r]);
+                    $c_t =  date('Y-m-d',strtotime($riskx->creat_time));
+
                     $html .= <<<EOD
                         <tr>
-                        <td width="17%">$risk[$r]['risk_types']</td>
-                        <td width="18%" align="left">$risk[$r]['risk_description']</td>
-                        <td width="13%" align="left">$risk[$r]['risk_targets']</td>
-                        <td width="7%">$risk[$r]['risk_rank']</td>
-                        <td width="15%" align="left">$risk[$r]['risk_proposal']</td>
-                        <td width="15%" align="left">$risk[$r]['take_steps']</td>
-                        <td width="15%">{$c_t}</td>
+                        <td width="17%">$riskx->risk_types</td>
+                        <td width="18%" align="left">$riskx->risk_description</td>
+                        <td width="13%" align="left">$riskx->risk_targets</td>
+                        <td width="7%">$riskx->risk_rank</td>
+                        <td width="15%" align="left">$riskx->risk_proposal</td>
+                        <td width="15%" align="left">$riskx->take_steps</td>
+                        <td width="15%">$c_t</td>
                         </tr>
 EOD;
                 }
             }}
+
         if($equipment!=''){
-        if(($this->service_sections!='' && in_array('3',$this->service_sections)) || $this->service_sections==''){
-            //设备巡查
-            $total = count($equipment);
-            $html .= <<<EOD
+            if(($this->service_sections!='' && in_array('3',$this->service_sections)) || $this->service_sections==''){
+                //设备巡查
+                $total = count($equipment);
+                $html .= <<<EOD
                             <tr class="myTitle">
                                 <th  width="100%" align="left">设备巡查</th>
                             </tr>
 EOD;
                 for ($e=0; $e < count($equipment); $e++) {
+                    $titlex = json_encode($equipment[$e]['title'], JSON_UNESCAPED_UNICODE);
+                    $titlex = str_replace("\/",'/',trim($titlex,'"'));
                     if(count($equipment[$e])>1){
                         $total01 = count($equipment[$e]['table_title']);
                         $html .= <<<EOD
                             <tr>
-                                <th width="100%" align="left">$equipment[$e]['title']</th>
+                                <th width="100%" align="left">$titlex</th>
                             </tr>
                             <tr>
 EOD;
                         $targs = (31/($total01-4))."%";
-                        for ($t=0; $t < count($equipment[$e]['table_title']); $t++) {
-                            if ($t==0) {
+                        $table_titlex = $equipment[$e]['table_title'];
+                        foreach ($table_titlex as $ti=>$record) {
+                            if ($ti==0) {
                                 $wi01 = '8%';
-                            }else if ($t==1) {
-                               $wi01 = "11%";
-                            }else if($t>1 && $t<count($equipment[$e]['table_title'])-2){
+                            }else if ($ti==1) {
+                                $wi01 = "11%";
+                            }else if($ti>1 && $ti<count($table_titlex)-2){
                                 $wi01 = $targs;
-                            }else if ((($t+1)==count($equipment[$e]['table_title'])) || (($t+2)==count($equipment[$e]['table_title']))) {
-                               $wi01 = "25%";
+                            }else if ((($ti+1)==count($table_titlex)) || (($ti+2)==count($table_titlex))) {
+                                $wi01 = "25%";
                             }
                             $html .= <<<EOD
-                                        <td width="{$wi01}">{$equipment[$e]['table_title'][$t]}</td>
+                                        <td width="{$wi01}">$record</td>
 EOD;
                         }
                         $html .= <<<EOD
                                     </tr>
 EOD;
-                        for ($c=0; $c < count($equipment[$e]['content']); $c++) {
+
+                        $contentx= $equipment[$e]['content'];
+                        foreach ($contentx as $c=>$record1) {
                             $html .= <<<EOD
                                     <tr>
 EOD;
-                            for ($cd=0; $cd < count($equipment[$e]['content'][$c]); $cd++) {
+                            for ($cd=0; $cd < count($record1); $cd++) {
                                 if ($cd==0) {
                                     $wi02 = '8%';
                                 }else if ($cd==1) {
-                                   $wi02 = "11%";
-                                }else if($cd>1 && $cd<count($equipment[$e]['content'][$c])-2){
+                                    $wi02 = "11%";
+                                }else if($cd>1 && $cd<count($record1)-2){
                                     $wi02 = $targs;
-                                }else if ((($cd+1)==count($equipment[$e]['content'][$c])) || (($cd+2)==count($equipment[$e]['content'][$c]))) {
-                                   $wi02 = "25%";
+                                }else if ((($cd+1)==count($record1)) || (($cd+2)==count($record1))) {
+                                    $wi02 = "25%";
                                 }
 
                                 $html .= <<<EOD
-                                            <td width="{$wi02}">$equipment[$e]['content'][$c][$cd]</td>
+                                            <td width="{$wi02}">$record1[$cd]</td>
 EOD;
                             }
                             $html .= <<<EOD
@@ -551,7 +564,13 @@ EOD;
         $pdf->AddPage();
         $pdf->WriteHTML($html, 1);
         //Close and output PDF document
-        $pdf->Output('服务报告.pdf', 'I');
+        $filename = $basic->CustomerName.$basic->JobDate.".pdf";
+//        var_dump($filename);die();
+        if ($status>0){
+            $pdf->Output($filename, 'I');
+        }else{
+            $pdf->Output($filename, 'D');
+        }
 //        var_dump($this);die();
 //		return true;
 	}
