@@ -29,8 +29,9 @@ class ReportfollowList extends CListPageModel
 	public function retrieveDataByPage($pageNum=1)
 	{
 		$suffix = Yii::app()->params['envSuffix'];
+        $se_suffix = Yii::app()->params['envSuffix'];
 		$city = Yii::app()->user->city_allow();
-		$sql1 = "select *  from followuporder as j left join officecity as o on j.City=o.City  left join enums as e on e.EnumID=o.Office left join service as s on s.ServiceType=j.SType left join staff as t on t.StaffID=j.Staff01 where e.EnumType=8 and j.Status=3 and e.Text in ($city) 
+		$sql1 = "select *,b.name city_name  from followuporder as j left join officecity as o on j.City=o.City  left join enums as e on e.EnumID=o.Office left join service as s on s.ServiceType=j.SType left join staff as t on t.StaffID=j.Staff01 left join security".$se_suffix.".sec_city as b on e.Text=b.code where e.EnumType=8 and j.Status=3 and e.Text in ($city) 
 			";
 		$sql2 = "select count(FollowUpID) from followuporder as j left join officecity as o on j.City=o.City  left join enums as e on e.EnumID=o.Office left join service as s on s.ServiceType=j.SType left join staff as t on t.StaffID=j.Staff01 where e.EnumType=8 and j.Status=3 and e.Text in ($city) 
 			";
@@ -69,7 +70,7 @@ class ReportfollowList extends CListPageModel
 		if (count($records) > 0) {
 			foreach ($records as $k=>$record) {
 				$this->attr[] = array(
-					'City'=>$record['City'],
+					'City'=>$record['city_name'],
                     'JobID'=>$record['FollowUpID'],
 					'JobDate'=>$record['JobDate'],
 					'CustomerID'=>$record['CustomerID'],
