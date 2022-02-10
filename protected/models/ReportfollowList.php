@@ -15,6 +15,7 @@ class ReportfollowList extends CListPageModel
 			'customer_account'=>Yii::t('invoice','Customer Account'),
 			'invoice_company'=>Yii::t('invoice','Invoice Company'),
             'City'=>Yii::t('reportjob','City'),
+            'city_name'=>Yii::t('reportjob','City'),
             'JobID'=>Yii::t('reportjob','JobID'),
             'JobDate'=>Yii::t('reportjob','JobDate'),
             'CustomerID'=>Yii::t('reportjob','CustomerID'),
@@ -48,6 +49,9 @@ class ReportfollowList extends CListPageModel
 				case 'Staff01':
 					$clause .= General::getSqlConditionClause('t.StaffName',$svalue);
 					break;
+                case 'city_name':
+                    $clause .= General::getSqlConditionClause('b.name',$svalue);
+                    break;
 			}
 		}
 
