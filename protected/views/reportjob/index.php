@@ -33,7 +33,9 @@ $this->pageTitle=Yii::app()->name . ' - Reportjob';
 	<?php 
 		$search = array(
 						'JobDate',
+						'CustomerID',
 						'CustomerName',
+						'ServiceType',
 						'Staff01',
 
 					);

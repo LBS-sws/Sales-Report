@@ -52,6 +52,12 @@ class ReportfollowList extends CListPageModel
                 case 'city_name':
                     $clause .= General::getSqlConditionClause('b.name',$svalue);
                     break;
+                case 'CustomerID':
+                    $clause .= General::getSqlConditionClause('j.CustomerID',$svalue);
+                    break;
+                case 'ServiceType':
+                    $clause .= General::getSqlConditionClause('s.ServiceName',$svalue);
+                    break;
 			}
 		}
 
@@ -81,8 +87,8 @@ class ReportfollowList extends CListPageModel
 					'CustomerName'=>$record['CustomerName'],
                     'ServiceType'=>$record['ServiceName'],
                     'Staff01'=>$record['StaffName'],
-                    'StartTime'=>$record['StartTime'],
-                    'FinishTime'=>$record['FinishTime'],
+                    'StartTime'=>$record['JobDate'].' '.$record['StartTime'],
+                    'FinishTime'=>$record['JobDate'].' '.$record['FinishTime'],
 				);
 			}
 		}

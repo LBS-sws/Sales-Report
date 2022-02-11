@@ -32,9 +32,11 @@ $this->pageTitle=Yii::app()->name . ' - Reportfollow';
 <!--	</div></div>-->
 	<?php 
 		$search = array(
-						'JobDate',
-						'CustomerName',
-						'Staff01',
+            'JobDate',
+            'CustomerID',
+            'CustomerName',
+            'ServiceType',
+            'Staff01',
 
 					);
 		if (!Yii::app()->user->isSingleCity()) $search[] = 'city_name';
