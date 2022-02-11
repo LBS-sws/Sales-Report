@@ -208,8 +208,7 @@ class ReportjobForm extends CFormModel
                 if (count($check_datas) > 0) {
 //                    var_dump($check_datas);die();
                     foreach ($check_datas as $j=>$check_data) {
-//                        var_dump($check_data['equipment_area']);die();
-//                        $check_data = $this->array_to_object($check_data);
+
                         $equipmenthz_data['table_title'][0] = '编号';
                         $equipmenthz_data['content'][$j][0] = sprintf('%02s', $j+1);
                         $equipmenthz_data['table_title'][1] = '区域';
@@ -226,11 +225,12 @@ class ReportjobForm extends CFormModel
                         $equipmenthz_data['content'][$j][$m+3] = $check_data['more_info'];
                         $equipmenthz_data['site_photos'][$j] = $check_data['site_photos'];
                         array_push($equipmenthz_datas,$equipmenthz_data);
+                        $equipmenthz_data = [];
+
                     }
                 }
             }
         }
-//                        var_dump($equipmenthz_datas);
 
         $this->equipment = $equipmenthz_datas;
 

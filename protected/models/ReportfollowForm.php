@@ -179,6 +179,7 @@ class ReportfollowForm extends CFormModel
                         $equipmenthz_data['content'][$j][$m+3] = $check_data->more_info;
                         $equipmenthz_data['site_photos'][$j] = $check_data->site_photos;
                         array_push($equipmenthz_datas,$equipmenthz_data);
+                        $equipmenthz_data = [];
                     }
                 }
             }
