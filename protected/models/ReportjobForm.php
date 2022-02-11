@@ -567,7 +567,6 @@ EOD;
         $eimageSrc03= $path."/". $eimageName03;
         if($employee03_signature!='') file_put_contents($eimageSrc03,base64_decode($employee03_signature));
 
-            var_dump($eimageSrc01);die();
         $cimageName = "lbs_".date("His",time())."_".rand(111,999).'.png';
         $cimageSrc= $path."/". $cimageName;
         $customer_signature = str_replace("data:image/png;base64,","",$autograph['customer_signature']);
