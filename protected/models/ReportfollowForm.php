@@ -546,12 +546,12 @@ EOD;
                         <td width="50%" align="left">客户签字</td>
                         </tr>
                         <tr>
-                        <td width="50%" align="left">
+                        <td width="50%" height="80" align="left">
                             <img src="{$eimageSrc01}" width="130" height="80" style="magin:20px 50px;">
                             <img src="{$eimageSrc02}" width="130" height="80" style="magin:20px 50px;">
                             <img src="{$eimageSrc03}" width="130" height="80" style="magin:20px 50px;">
                         </td>
-                        <td width="50%" align="left"><img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px;"></td>
+                        <td width="50%" height="80" align="left"><img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px;"></td>
                         </tr>
 EOD;
         }

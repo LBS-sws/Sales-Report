@@ -259,7 +259,7 @@ class ReportjobForm extends CFormModel
         $autograph = $this->autograph;
 
         $baseUrl_imgs = "https://operation.lbsapps.cn/";
-        $company_img = $baseUrl_imgs."public/pdf/company/".$city.".jpg";
+        $company_img = $baseUrl_imgs."pdf/company/".$city.".jpg";
 //        $company_img = $baseUrl_imgs."pdf/company/ZY.jpg";
         $logo_img = $baseUrl_imgs."pdf/logo.png";
         include_once Yii::app()->basePath . '/extensions/tcpdf/tcpdf.php';//引入库
@@ -597,12 +597,12 @@ EOD;
                         <td width="50%" align="left">客户签字</td>
                         </tr>
                         <tr>
-                        <td width="50%" align="left">
+                        <td width="50%" height="80" align="left">
                             <img src="{$eimageSrc01}" width="130" height="80" style="magin:20px 50px;">
                             <img src="{$eimageSrc02}" width="130" height="80" style="magin:20px 50px;">
                             <img src="{$eimageSrc03}" width="130" height="80" style="magin:20px 50px;">
                         </td>
-                        <td width="50%" align="left"><img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px;"></td>
+                        <td width="50%" height="80" align="left"><img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px;"></td>
                         </tr>
 EOD;
         }
