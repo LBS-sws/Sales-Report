@@ -369,6 +369,7 @@ EOD;
                     </tr>
 EOD;
             }}
+
         if(count($photo)>0){
         if(($this->service_sections!='' && in_array('5',$this->service_sections)) || $this->service_sections==''){
             $html .= <<<EOD
@@ -387,7 +388,7 @@ EOD;
                             $spa = $baseUrl_imgs.str_replace("\/",'/',trim($site_photos[$sp],'"'));
                             $html .= <<<EOD
                             <td width="20%" align="center">
-                            <img src="$spa}=" width="80" height="100" style="padding:20px 50px;">
+                            <img src="$spa" width="80" height="100" style="padding:20px 50px;">
                             </td>
 EOD;
                         }
