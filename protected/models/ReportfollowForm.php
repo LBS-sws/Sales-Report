@@ -501,7 +501,7 @@ EOD;
         $eimageName02 = "lbs_".date("His",time())."_".rand(111,999).'.png';
         $eimageName03 = "lbs_".date("His",time())."_".rand(111,999).'.png';
         //设置图片保存路径
-        $path = "../images/pdf/".date("Ymd",time());
+        $path = Yii::app()->basePath."/images/pdf/".date("Ymd",time());
         //判断目录是否存在 不存在就创建
         if (!is_dir($path)){
             mkdir($path,0777,true);

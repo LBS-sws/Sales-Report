@@ -549,7 +549,7 @@ EOD;
         $eimageName02 = "lbs_".date("His",time())."_".rand(111,999).'.png';
         $eimageName03 = "lbs_".date("His",time())."_".rand(111,999).'.png';
         //设置图片保存路径
-        $path = "../images/pdf/".date("Ymd",time());
+        $path = Yii::app()->basePath."/images/pdf/".date("Ymd",time());
         //判断目录是否存在 不存在就创建
         if (!is_dir($path)){
             mkdir($path,0777,true);
@@ -567,6 +567,7 @@ EOD;
         $eimageSrc03= $path."/". $eimageName03;
         if($employee03_signature!='') file_put_contents($eimageSrc03,base64_decode($employee03_signature));
 
+            var_dump($eimageSrc01);die();
         $cimageName = "lbs_".date("His",time())."_".rand(111,999).'.png';
         $cimageSrc= $path."/". $cimageName;
         $customer_signature = str_replace("data:image/png;base64,","",$autograph['customer_signature']);
