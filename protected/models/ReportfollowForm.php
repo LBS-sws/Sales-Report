@@ -320,7 +320,7 @@ EOD;
                     </tr>
 EOD;
             }}
-        if($photo!=''){
+        if(count($photo)>0){
         if(($this->service_sections!='' && in_array('5',$this->service_sections)) || $this->service_sections==''){
             $html .= <<<EOD
                         <tr class="myTitle">
@@ -335,7 +335,7 @@ EOD;
 EOD;
                     $site_photos = explode(',',$photox->site_photos);
                     for ($sp=0; $sp < count($site_photos); $sp++) {
-                        $spa = $baseUrl_imgs.'public'.str_replace("\/",'/',trim($site_photos[$sp],'"'));
+                        $spa = $baseUrl_imgs.str_replace("\/",'/',trim($site_photos[$sp],'"'));
                         $html .= <<<EOD
                             <td width="20%" align="center">
                             <img src="$spa}=" width="80" height="100" style="padding:20px 50px;">
@@ -353,7 +353,7 @@ EOD;
 EOD;
                 }
             }}
-        if($material!=''){
+        if(count($material)>0){
         if(($this->service_sections!='' && in_array('2',$this->service_sections)) || $this->service_sections==''){
             $html .= <<<EOD
                             <tr class="myTitle">
@@ -384,7 +384,7 @@ EOD;
 EOD;
                 }
             }}
-        if($risk!=''){
+        if(count($risk)>0){
         if(($this->service_sections!='' && in_array('4',$this->service_sections)) || $this->service_sections==''){
             $html .= <<<EOD
                             <tr class="myTitle">
@@ -418,7 +418,7 @@ EOD;
                 }
             }}
 
-        if($equipment!=''){
+        if(count($equipment)>0){
             if(($this->service_sections!='' && in_array('3',$this->service_sections)) || $this->service_sections==''){
                 //设备巡查
                 $total = count($equipment);
@@ -496,7 +496,7 @@ EOD;
                 }
             }}
         //签名点评
-        if($autograph!='') {
+        if(count($autograph)>0) {
         $eimageName01 = "lbs_".date("His",time())."_".rand(111,999).'.png';
         $eimageName02 = "lbs_".date("His",time())."_".rand(111,999).'.png';
         $eimageName03 = "lbs_".date("His",time())."_".rand(111,999).'.png';
@@ -518,14 +518,17 @@ EOD;
         $eimageSrc03= $path."/". $eimageName03;
         if($employee03_signature!='') file_put_contents($eimageSrc03,base64_decode($employee03_signature));
 
-        $cimageName = "lbs_".date("His",time())."_".rand(111,999).'.png';
-        $cimageSrc= $path."/". $cimageName;
-        $customer_signature = str_replace("data:image/png;base64,","",$autograph['customer_signature']);
-        file_put_contents($cimageSrc, base64_decode($customer_signature));
-
-        $degrees = 90;      //旋转角度
-        $url = $cimageSrc;  //图片存放位置
-        $this->pic_rotating($degrees,$url);
+        if($employee01_signature!=''){
+            $cimageName = "lbs_".date("His",time())."_".rand(111,999).'.png';
+            $cimageSrc= $path."/". $cimageName;
+            $customer_signature = str_replace("data:image/png;base64,","",$autograph['customer_signature']);
+            file_put_contents($cimageSrc, base64_decode($customer_signature));
+            $degrees = 90;      //旋转角度
+            $url = $cimageSrc;  //图片存放位置
+            $this->pic_rotating($degrees,$url);
+        }else{
+            $cimageSrc='';
+        }
 
             $html .= <<<EOD
                         <tr class="myTitle">
