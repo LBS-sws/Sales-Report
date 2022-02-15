@@ -198,15 +198,14 @@ class ReportjobForm extends CFormModel
             foreach ($equipment_type_ids as $k=>$type_id) {
                 $sql_equipmenthz_allcount = "select count(id) from lbs_service_equipments where job_type=1 and job_id=".$index." and equipment_type_id=".$type_id['equipment_type_id'];
                 $equipmenthz_allcount = Yii::app()->db->createCommand($sql_equipmenthz_allcount)->queryScalar();
-                $sql_equipmenthz_count = "select count(id) from lbs_service_equipments where job_type=1 and job_id=".$index." and equipment_type_id=".$type_id['equipment_type_id']." and equipment_area is  not  null and check_datas is  not  null";
+                $sql_equipmenthz_count = "select count(id) from lbs_service_equipments where job_type=1 and job_id=".$index." and equipment_type_id=".$type_id['equipment_type_id']." and equipment_area!='' and check_datas!=''";
                 $equipmenthz_count = Yii::app()->db->createCommand($sql_equipmenthz_count)->queryScalar();
                 $sql_equipment_type = "select name from lbs_service_equipment_type where id=".$type_id['equipment_type_id'];
                 $equipment_type= Yii::app()->db->createCommand($sql_equipment_type)->queryRow();
                 $equipmenthz_data['title'] = $equipment_type['name']."(".$equipmenthz_count."/".$equipmenthz_allcount.")";
-                $sql_check_datas = "select * from lbs_service_equipments where job_type=1 and job_id=".$index." and equipment_type_id=".$type_id['equipment_type_id']." and equipment_area is  not  null and check_datas is  not  null order by id asc";
+                $sql_check_datas = "select * from lbs_service_equipments where job_type=1 and job_id=".$index." and equipment_type_id=".$type_id['equipment_type_id']." and equipment_area!='' and check_datas!='' order by id asc";
                 $check_datas= Yii::app()->db->createCommand($sql_check_datas)->queryAll();
                 if (count($check_datas) > 0) {
-//                    var_dump($check_datas);die();
                     foreach ($check_datas as $j=>$check_data) {
 
                         $equipmenthz_data['table_title'][0] = '编号';
@@ -231,7 +230,6 @@ class ReportjobForm extends CFormModel
                 }
             }
         }
-
         $this->equipment = $equipmenthz_datas;
 
         $sql_photo = "select * from lbs_service_photos where job_type=1 and job_id=".$index;
@@ -597,12 +595,12 @@ EOD;
                         <td width="50%" align="left">客户签字</td>
                         </tr>
                         <tr>
-                        <td width="50%" height="80" align="left">
-                            <img src="{$eimageSrc01}" width="130" height="80" style="magin:20px 50px;">
-                            <img src="{$eimageSrc02}" width="130" height="80" style="magin:20px 50px;">
-                            <img src="{$eimageSrc03}" width="130" height="80" style="magin:20px 50px;">
+                        <td width="50%" align="left">
+                            <img src="{$eimageSrc01}" style="magin:20px 50px;">
+                            <img src="{$eimageSrc02}" style="magin:20px 50px;">
+                            <img src="{$eimageSrc03}" style="magin:20px 50px;">
                         </td>
-                        <td width="50%" height="80" align="left"><img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px;"></td>
+                        <td width="50%" align="left"><img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px;"></td>
                         </tr>
 EOD;
         }
