@@ -198,13 +198,14 @@ class ReportjobForm extends CFormModel
             foreach ($equipment_type_ids as $k=>$type_id) {
                 $sql_equipmenthz_allcount = "select count(id) from lbs_service_equipments where job_type=1 and job_id=".$index." and equipment_type_id=".$type_id['equipment_type_id'];
                 $equipmenthz_allcount = Yii::app()->db->createCommand($sql_equipmenthz_allcount)->queryScalar();
-                $sql_equipmenthz_count = "select count(id) from lbs_service_equipments where job_type=1 and job_id=".$index." and equipment_type_id=".$type_id['equipment_type_id']." and equipment_area!='' and check_datas!=''";
+                $sql_equipmenthz_count = "select count(id) from lbs_service_equipments where job_type=1 and job_id=".$index." and equipment_type_id=".$type_id['equipment_type_id']." and equipment_area is not null and equipment_area!='' and check_datas is not null and check_datas!=''";
                 $equipmenthz_count = Yii::app()->db->createCommand($sql_equipmenthz_count)->queryScalar();
                 $sql_equipment_type = "select name from lbs_service_equipment_type where id=".$type_id['equipment_type_id'];
                 $equipment_type= Yii::app()->db->createCommand($sql_equipment_type)->queryRow();
                 $equipmenthz_data['title'] = $equipment_type['name']."(".$equipmenthz_count."/".$equipmenthz_allcount.")";
-                $sql_check_datas = "select * from lbs_service_equipments where job_type=1 and job_id=".$index." and equipment_type_id=".$type_id['equipment_type_id']." and equipment_area!='' and check_datas!='' order by id asc";
+                $sql_check_datas = "select * from lbs_service_equipments where job_type=1 and job_id=".$index." and equipment_type_id=".$type_id['equipment_type_id']." and equipment_area is not null and equipment_area!='' and check_datas is not null and check_datas!='' order by id asc";
                 $check_datas= Yii::app()->db->createCommand($sql_check_datas)->queryAll();
+//                var_dump($check_datas);die();
                 if (count($check_datas) > 0) {
                     foreach ($check_datas as $j=>$check_data) {
 
