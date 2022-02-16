@@ -205,7 +205,7 @@ class ReportjobForm extends CFormModel
                 $equipmenthz_data['title'] = $equipment_type['name']."(".$equipmenthz_count."/".$equipmenthz_allcount.")";
                 $sql_check_datas = "select * from lbs_service_equipments where job_type=1 and job_id=".$index." and equipment_type_id=".$type_id['equipment_type_id']." and equipment_area is not null and equipment_area!='' and check_datas is not null and check_datas!='' order by id asc";
                 $check_datas= Yii::app()->db->createCommand($sql_check_datas)->queryAll();
-//                var_dump($check_datas);die();
+                var_dump($check_datas);die();
                 if (count($check_datas) > 0) {
                     foreach ($check_datas as $j=>$check_data) {
 
