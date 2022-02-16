@@ -214,8 +214,8 @@ class ReportjobForm extends CFormModel
                         $equipmenthz_data['content'][$j][1] = $check_data['equipment_area'];
 
                         $check_datas_xq = json_decode($check_data['check_datas']);
-                        var_dump($check_data['check_datas']);
-                        var_dump($check_datas_xq);die();
+//                        var_dump($check_data['check_datas']);
+//                        var_dump($check_datas_xq);die();
                         foreach ($check_datas_xq as $m=>$check_data_xq) {
                             $equipmenthz_data['table_title'][$m+2] = $check_data_xq->label;
                             $equipmenthz_data['content'][$j][$m+2] = $check_data_xq->value;
