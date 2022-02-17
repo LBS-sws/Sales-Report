@@ -195,45 +195,38 @@ class ReportjobForm extends CFormModel
         $sql_equipment_type_ids = "select distinct equipment_type_id from lbs_service_equipments where job_type=1 and job_id=".$index;
         $equipment_type_ids =  Yii::app()->db->createCommand($sql_equipment_type_ids)->queryAll();
         if (count($equipment_type_ids) > 0) {
-            foreach ($equipment_type_ids as $k=>$type_id) {
+            foreach ($equipment_type_ids as $i=>$type_id) {
                 $sql_equipmenthz_allcount = "select count(id) from lbs_service_equipments where job_type=1 and job_id=".$index." and equipment_type_id=".$type_id['equipment_type_id'];
                 $equipmenthz_allcount = Yii::app()->db->createCommand($sql_equipmenthz_allcount)->queryScalar();
                 $sql_equipmenthz_count = "select count(id) from lbs_service_equipments where job_type=1 and job_id=".$index." and equipment_type_id=".$type_id['equipment_type_id']." and equipment_area is not null and equipment_area!='' and check_datas is not null and check_datas!=''";
                 $equipmenthz_count = Yii::app()->db->createCommand($sql_equipmenthz_count)->queryScalar();
                 $sql_equipment_type = "select name from lbs_service_equipment_type where id=".$type_id['equipment_type_id'];
                 $equipment_type= Yii::app()->db->createCommand($sql_equipment_type)->queryRow();
-                $equipmenthz_data['title'] = $equipment_type['name']."(".$equipmenthz_count."/".$equipmenthz_allcount.")";
+                $equipmenthz_datas[$i]['title'] = $equipment_type['name']."(".$equipmenthz_count."/".$equipmenthz_allcount.")";
+
                 $sql_check_datas = "select * from lbs_service_equipments where job_type=1 and job_id=".$index." and equipment_type_id=".$type_id['equipment_type_id']." and equipment_area is not null and equipment_area!='' and check_datas is not null and check_datas!='' order by id asc";
                 $check_datas= Yii::app()->db->createCommand($sql_check_datas)->queryAll();
                 if (count($check_datas) > 0) {
-                    foreach ($check_datas as $j=>$check_data) {
+                    for($j=0; $j < count($check_datas); $j++){
+                        $check_data = json_decode($check_datas[$j]['check_datas'],true);
 
-                        $equipmenthz_data['table_title'][0] = '编号';
-                        $equipmenthz_data['content'][$j][0] = sprintf('%02s', $j+1);
-                        $equipmenthz_data['table_title'][1] = '区域';
-                        $equipmenthz_data['content'][$j][1] = $check_data['equipment_area'];
-
-                        $check_datas_xq = json_decode($check_data['check_datas']);
-//                        var_dump($check_data['check_datas']);
-//                        var_dump($check_datas_xq);die();
-                        foreach ($check_datas_xq as $m=>$check_data_xq) {
-                            $equipmenthz_data['table_title'][$m+2] = $check_data_xq->label;
-                            $equipmenthz_data['content'][$j][$m+2] = $check_data_xq->value;
+                        $equipmenthz_datas[$i]['table_title'][0] = '编号';
+                        $equipmenthz_datas[$i]['content'][$j][0] = sprintf('%02s', $j+1);
+                        $equipmenthz_datas[$i]['table_title'][1] = '区域';
+                        $equipmenthz_datas[$i]['content'][$j][1] = $check_datas[$j]['equipment_area'];
+                        for ($m=0; $m < count($check_data); $m++) {
+                            $equipmenthz_datas[$i]['table_title'][$m+2] = $check_data[$m]['label'];
+                            $equipmenthz_datas[$i]['content'][$j][$m+2] = $check_data[$m]['value'];
                         }
-                        $m = count($check_datas_xq);
-                        $equipmenthz_data['table_title'][$m+2] = '检查与处理';
-                        $equipmenthz_data['content'][$j][$m+2] = $check_data['check_handle'];
-                        $equipmenthz_data['table_title'][$m+3] = '补充说明';
-                        $equipmenthz_data['content'][$j][$m+3] = $check_data['more_info'];
-                        $equipmenthz_data['site_photos'][$j] = $check_data['site_photos'];
-                        array_push($equipmenthz_datas,$equipmenthz_data);
-                        $equipmenthz_data = [];
-
+                        $equipmenthz_datas[$i]['table_title'][$m+2] = '检查与处理';
+                        $equipmenthz_datas[$i]['content'][$j][$m+2] = $check_datas[$j]['check_handle'];
+                        $equipmenthz_datas[$i]['table_title'][$m+3] = '补充说明';
+                        $equipmenthz_datas[$i]['content'][$j][$m+3] = $check_datas[$j]['more_info'];
+                        $equipmenthz_datas[$i]['site_photos'][$j] = $check_datas[$j]['site_photos'];
                     }
                 }
             }
         }
-
         $this->equipment = $equipmenthz_datas;
 
         $sql_photo = "select * from lbs_service_photos where job_type=1 and job_id=".$index;
@@ -569,7 +562,7 @@ EOD;
         $eimageSrc03= $path."/". $eimageName03;
         if($employee03_signature!='') file_put_contents($eimageSrc03,base64_decode($employee03_signature));
 
-        if($employee01_signature!=''){
+        if($autograph['customer_signature']!='' && $autograph['customer_signature']!='undefined'){
         $cimageName = "lbs_".date("His",time())."_".rand(111,999).'.png';
         $cimageSrc= $path."/". $cimageName;
         $customer_signature = str_replace("data:image/png;base64,","",$autograph['customer_signature']);
@@ -580,7 +573,7 @@ EOD;
         }else{
             $cimageSrc='';
         }
-
+//var_dump($autograph);die();
 
 
             $html .= <<<EOD
