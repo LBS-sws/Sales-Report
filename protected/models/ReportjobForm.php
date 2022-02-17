@@ -208,6 +208,7 @@ class ReportjobForm extends CFormModel
                 $check_datas= Yii::app()->db->createCommand($sql_check_datas)->queryAll();
                 if (count($check_datas) > 0) {
                     for($j=0; $j < count($check_datas); $j++){
+                        var_dump($check_datas[$j]['check_datas']);
                         $check_data = json_decode($check_datas[$j]['check_datas'],true);
                         $equipmenthz_datas[$i]['table_title'][0] = '编号';
                         $equipmenthz_datas[$i]['content'][$j][0] = sprintf('%02s', $j+1);
@@ -226,7 +227,7 @@ class ReportjobForm extends CFormModel
                 }
             }
         }
-        var_dump($equipmenthz_datas);die();
+//        var_dump($equipmenthz_datas);die();
         $this->equipment = $equipmenthz_datas;
 
         $sql_photo = "select * from lbs_service_photos where job_type=1 and job_id=".$index;
