@@ -233,7 +233,6 @@ class ReportjobForm extends CFormModel
 
         $sql_autograph = "select * from lbs_report_autograph where job_type=1 and job_id=".$index;
         $this->autograph = Yii::app()->db->createCommand($sql_autograph)->queryRow();
-        var_dump($this->autograph);die();
         //查询服务板块
         $sql_service_sections = "select * from lbs_service_reportsections where city='".$city."' and service_type=".$service_type;
         $service_sections = Yii::app()->db->createCommand($sql_service_sections)->queryRow();
