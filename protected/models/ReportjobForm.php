@@ -209,7 +209,6 @@ class ReportjobForm extends CFormModel
                 if (count($check_datas) > 0) {
                     for($j=0; $j < count($check_datas); $j++){
                         $check_data = json_decode($check_datas[$j]['check_datas'],true);
-                        var_dump($check_data);
                         $equipmenthz_datas[$i]['table_title'][0] = '编号';
                         $equipmenthz_datas[$i]['content'][$j][0] = sprintf('%02s', $j+1);
                         $equipmenthz_datas[$i]['table_title'][1] = '区域';
