@@ -115,16 +115,18 @@ class ReportfollowForm extends CFormModel
         $city = $this->city['Text'];
         $service_type = $this->basic['ServiceType'];
         $this->basic['equipments'] = '';
-        $sql_basic_equipments = "select distinct e.equipment_type_id,t.name,e.* from lbs_service_equipments as e left join lbs_service_equipment_type as t on t.id=e.equipment_type_id where e.job_type=1 and e.job_id=".$index;
+        $sql_basic_equipments = "select distinct equipment_type_id from lbs_service_equipments where job_type=2 and job_id=".$index;
         $basic_equipments =  Yii::app()->db->createCommand($sql_basic_equipments)->queryAll();
         if (count($basic_equipments) > 0) {
             foreach ($basic_equipments as $k=>$equipment) {
-                $sql_number = "select count(id) from lbs_service_equipments where job_type=1 and job_id=".$index." and equipment_type_id=".$equipment['equipment_type_id'];
+                $sql_name = "select name from lbs_service_equipment_type where id=".$equipment['equipment_type_id'];
+                $basic_name =  Yii::app()->db->createCommand($sql_name)->queryRow();
+                $sql_number = "select count(id) from lbs_service_equipments where job_type=2 and job_id=".$index." and equipment_type_id=".$equipment['equipment_type_id'];
                 $number = Yii::app()->db->createCommand($sql_number)->queryScalar();
                 if ($this->basic['equipments'] == '') {
-                    $this->basic['equipments'] = $equipment['name'].'-'.$number;
+                    $this->basic['equipments'] = $basic_name['name'].'-'.$number;
                 }else{
-                    $this->basic['equipments'] =$this->basic['equipments'].','.$equipment['name'].'-'.$number;
+                    $this->basic['equipments'] =$this->basic['equipments'].','.$basic_name['name'].'-'.$number;
                 }
             }
         }
@@ -136,28 +138,28 @@ class ReportfollowForm extends CFormModel
         $service_projects = '';
         $this->basic['service_projects'] = $service_projects;
 
-        $sql_briefing = "select * from lbs_service_briefings where job_type=1 and job_id=".$index;
+        $sql_briefing = "select * from lbs_service_briefings where job_type=2 and job_id=".$index;
         $this->briefing = Yii::app()->db->createCommand($sql_briefing)->queryRow();
 
-        $sql_material = "select * from lbs_service_materials where job_type=1 and job_id=".$index;
+        $sql_material = "select * from lbs_service_materials where job_type=2 and job_id=".$index;
         $this->material = Yii::app()->db->createCommand($sql_material)->queryAll();
 
-        $sql_risk = "select * from lbs_service_risks where job_type=1 and job_id=".$index;
+        $sql_risk = "select * from lbs_service_risks where job_type=2 and job_id=".$index;
         $this->risk = Yii::app()->db->createCommand($sql_risk)->queryAll();
 
         $equipmenthz_datas = [];
-        $sql_equipment_type_ids = "select distinct equipment_type_id from lbs_service_equipments where job_type=1 and job_id=".$index;
+        $sql_equipment_type_ids = "select distinct equipment_type_id from lbs_service_equipments where job_type=2 and job_id=".$index;
         $equipment_type_ids =  Yii::app()->db->createCommand($sql_equipment_type_ids)->queryAll();
         if (count($equipment_type_ids) > 0) {
             foreach ($equipment_type_ids as $i=>$type_id) {
-                $sql_equipmenthz_allcount = "select count(id) from lbs_service_equipments where job_type=1 and job_id=".$index." and equipment_type_id=".$type_id['equipment_type_id'];
+                $sql_equipmenthz_allcount = "select count(id) from lbs_service_equipments where job_type=2 and job_id=".$index." and equipment_type_id=".$type_id['equipment_type_id'];
                 $equipmenthz_allcount = Yii::app()->db->createCommand($sql_equipmenthz_allcount)->queryScalar();
-                $sql_equipmenthz_count = "select count(id) from lbs_service_equipments where job_type=1 and job_id=".$index." and equipment_type_id=".$type_id['equipment_type_id']." and equipment_area!='' and check_datas!=''";
+                $sql_equipmenthz_count = "select count(id) from lbs_service_equipments where job_type=2 and job_id=".$index." and equipment_type_id=".$type_id['equipment_type_id']." and equipment_area!='' and check_datas!=''";
                 $equipmenthz_count = Yii::app()->db->createCommand($sql_equipmenthz_count)->queryScalar();
                 $sql_equipment_type = "select name from lbs_service_equipment_type where id=".$type_id['equipment_type_id'];
                 $equipment_type= Yii::app()->db->createCommand($sql_equipment_type)->queryRow();
                 $equipmenthz_datas[$i]['title'] = $equipment_type['name']."(".$equipmenthz_count."/".$equipmenthz_allcount.")";
-                $sql_check_datas = "select * from lbs_service_equipments where job_type=1 and job_id=".$index." and equipment_type_id=".$type_id['equipment_type_id']." and equipment_area!='' and check_datas!='' order by id asc";
+                $sql_check_datas = "select * from lbs_service_equipments where job_type=2 and job_id=".$index." and equipment_type_id=".$type_id['equipment_type_id']." and equipment_area!='' and check_datas!='' order by id asc";
                 $check_datas= Yii::app()->db->createCommand($sql_check_datas)->queryAll();
                 if (count($check_datas) > 0) {
                     for($j=0; $j < count($check_datas); $j++){
@@ -182,10 +184,10 @@ class ReportfollowForm extends CFormModel
         }
         $this->equipment = json_decode(json_encode($equipmenthz_datas,true));
 
-        $sql_photo = "select * from lbs_service_photos where job_type=1 and job_id=".$index;
+        $sql_photo = "select * from lbs_service_photos where job_type=2 and job_id=".$index;
         $this->photo = Yii::app()->db->createCommand($sql_photo)->queryAll();
 
-        $sql_autograph = "select * from lbs_report_autograph where job_type=1 and job_id=".$index;
+        $sql_autograph = "select * from lbs_report_autograph where job_type=2 and job_id=".$index;
         $this->autograph = Yii::app()->db->createCommand($sql_autograph)->queryRow();
 
         //查询服务板块

@@ -115,16 +115,18 @@ class ReportjobForm extends CFormModel
         $city = $this->city['Text'];
         $service_type = $this->basic['ServiceType'];
         $this->basic['equipments'] = '';
-        $sql_basic_equipments = "select distinct e.equipment_type_id,t.name,e.* from lbs_service_equipments as e left join lbs_service_equipment_type as t on t.id=e.equipment_type_id where e.job_type=1 and e.job_id=".$index;
+        $sql_basic_equipments = "select distinct equipment_type_id from lbs_service_equipments where job_type=1 and job_id=".$index;
         $basic_equipments =  Yii::app()->db->createCommand($sql_basic_equipments)->queryAll();
         if (count($basic_equipments) > 0) {
             foreach ($basic_equipments as $k=>$equipment) {
+                $sql_name = "select name from lbs_service_equipment_type where id=".$equipment['equipment_type_id'];
+                $basic_name =  Yii::app()->db->createCommand($sql_name)->queryRow();
                 $sql_number = "select count(id) from lbs_service_equipments where job_type=1 and job_id=".$index." and equipment_type_id=".$equipment['equipment_type_id'];
                 $number = Yii::app()->db->createCommand($sql_number)->queryScalar();
                 if ($this->basic['equipments'] == '') {
-                    $this->basic['equipments'] = $equipment['name'].'-'.$number;
+                    $this->basic['equipments'] = $basic_name['name'].'-'.$number;
                 }else{
-                    $this->basic['equipments'] =$this->basic['equipments'].','.$equipment['name'].'-'.$number;
+                    $this->basic['equipments'] =$this->basic['equipments'].','.$basic_name['name'].'-'.$number;
                 }
             }
         }
