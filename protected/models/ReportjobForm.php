@@ -530,7 +530,7 @@ EOD;
                     }else{
                         $html .= <<<EOD
                                     <tr>
-                                        <th width="100%" align="left">$equipment[$e]['title']</th>
+                                        <th width="100%" align="left">$titlex</th>
                                     </tr>
                                     <tr>
                                     <td width="100%">设备正常，无处理数据！</td>
