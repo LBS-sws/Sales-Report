@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 return array(
 	'Daily Report System'=>'日报表系统',
 	'Daily Report System - UAT'=>'日报表系统 - 测试版',
