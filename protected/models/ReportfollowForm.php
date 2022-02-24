@@ -240,12 +240,10 @@ class ReportfollowForm extends CFormModel
             }
             td {
                 font-size: 16px;
-                padding-top:30px;
             }
             th,td {
                 border: solid 1px #eeeeee;
                 text-align: center;
-                line-height: 1.42857;
             }
             p{
                 font-size: 18px;
@@ -253,7 +251,7 @@ class ReportfollowForm extends CFormModel
             }
             </style>
             <body>
-            <table class="myTable" CELLPADDING="5">
+            <table class="myTable" cellpadding="5">
                 <tr style="border: none;border-top: none;border-right:none;border-left:none;">
                     <td width="25%" style="float:left;border: none;border-top: none;">
                         <img src="$logo_img" width="60" height="70">
