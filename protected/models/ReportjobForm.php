@@ -253,7 +253,8 @@ class ReportjobForm extends CFormModel
         $photo = $this->photo;
         $autograph = $this->autograph;
 
-        $baseUrl_imgs = "https://operation.lbsapps.cn/";
+        $baseUrl_imgs = "https://xcx.lbsapps.cn/";
+//        正式版：https://xcx.lbsapps.cn/ 测试版：https://operation.lbsapps.cn/
         $company_img = $baseUrl_imgs."pdf/company/".$city.".jpg";
 //        $company_img = $baseUrl_imgs."pdf/company/ZY.jpg";
         $logo_img = $baseUrl_imgs."pdf/logo.png";
