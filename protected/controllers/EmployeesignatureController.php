@@ -68,7 +68,7 @@ class EmployeesignatureController extends Controller
         //当前城市员工列表
         $se_suffix = Yii::app()->params['envSuffix'];
         $city_allow = Yii::app()->user->city_allow();
-        $sql = "select s.StaffID,s.StaffName,b.name city_name from staff  as s left join officecity as o on o.City = s.City left join enums as e on e.EnumID = o.Office left join security".$se_suffix.".sec_city as b on e.Text=b.code where  e.EnumType=8 and s.Status in('1,2,5') and e.Text in(".$city_allow.")";
+        $sql = "select s.StaffID,s.StaffName,b.name city_name from staff  as s left join officecity as o on o.City = s.City left join enums as e on e.EnumID = o.Office left join security".$se_suffix.".sec_city as b on e.Text=b.code where  e.EnumType=8 and s.Status in(1,2,5) and e.Text in(".$city_allow.")";
         $rows = Yii::app()->db->createCommand($sql)->queryAll();
         $employee_lists = [];
         foreach ($rows as $row) {
@@ -95,7 +95,7 @@ class EmployeesignatureController extends Controller
                 //当前城市员工列表
                 $se_suffix = Yii::app()->params['envSuffix'];
                 $city_allow = Yii::app()->user->city_allow();
-                $sql = "select s.StaffID,s.StaffName,b.name city_name from staff  as s left join officecity as o on o.City = s.City left join enums as e on e.EnumID = o.Office left join security".$se_suffix.".sec_city as b on e.Text=b.code where  e.EnumType=8 and s.Status in('1,2,5') and e.Text in(".$city_allow.")";
+                $sql = "select s.StaffID,s.StaffName,b.name city_name from staff  as s left join officecity as o on o.City = s.City left join enums as e on e.EnumID = o.Office left join security".$se_suffix.".sec_city as b on e.Text=b.code where  e.EnumType=8 and s.Status in(1,2,5) and e.Text in(".$city_allow.")";
                 $rows = Yii::app()->db->createCommand($sql)->queryAll();
                 $employee_lists = [];
                 foreach ($rows as $row) {
@@ -108,7 +108,7 @@ class EmployeesignatureController extends Controller
                 //当前城市员工列表
                 $se_suffix = Yii::app()->params['envSuffix'];
                 $city_allow = Yii::app()->user->city_allow();
-                $sql = "select s.StaffID,s.StaffName,b.name city_name from staff  as s left join officecity as o on o.City = s.City left join enums as e on e.EnumID = o.Office left join security".$se_suffix.".sec_city as b on e.Text=b.code where  e.EnumType=8 and s.Status in('1,2,5') and e.Text in(".$city_allow.")";
+                $sql = "select s.StaffID,s.StaffName,b.name city_name from staff  as s left join officecity as o on o.City = s.City left join enums as e on e.EnumID = o.Office left join security".$se_suffix.".sec_city as b on e.Text=b.code where  e.EnumType=8 and s.Status in(1,2,5) and e.Text in(".$city_allow.")";
                 $rows = Yii::app()->db->createCommand($sql)->queryAll();
                 $employee_lists = [];
                 foreach ($rows as $row) {
@@ -138,7 +138,7 @@ class EmployeesignatureController extends Controller
             //当前城市员工列表
             $se_suffix = Yii::app()->params['envSuffix'];
             $city_allow = Yii::app()->user->city_allow();
-            $sql = "select s.StaffID,s.StaffName,b.name city_name from staff  as s left join officecity as o on o.City = s.City left join enums as e on e.EnumID = o.Office left join security".$se_suffix.".sec_city as b on e.Text=b.code where  e.EnumType=8 and s.Status in('1,2,5') and e.Text in(".$city_allow.")";
+            $sql = "select s.StaffID,s.StaffName,b.name city_name from staff  as s left join officecity as o on o.City = s.City left join enums as e on e.EnumID = o.Office left join security".$se_suffix.".sec_city as b on e.Text=b.code where  e.EnumType=8 and s.Status in(1,2,5) and e.Text in(".$city_allow.")";
             $rows = Yii::app()->db->createCommand($sql)->queryAll();
             $employee_lists = [];
             foreach ($rows as $row) {
