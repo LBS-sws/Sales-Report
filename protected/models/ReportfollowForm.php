@@ -182,7 +182,7 @@ class ReportfollowForm extends CFormModel
                 }
             }
         }
-        $this->equipment = json_decode(json_encode($equipmenthz_datas,true));
+        $this->equipment = $equipmenthz_datas;
 
         $sql_photo = "select * from lbs_service_photos where job_type=2 and job_id=".$index;
         $this->photo = Yii::app()->db->createCommand($sql_photo)->queryAll();
@@ -208,7 +208,8 @@ class ReportfollowForm extends CFormModel
         $photo = $this->photo;
         $autograph = $this->autograph;
 //        var_dump($equipment);die();
-        $baseUrl_imgs = "https://operation.lbsapps.cn/";
+        $baseUrl_imgs = "https://xcx.lbsapps.cn/";
+        //        正式版：https://xcx.lbsapps.cn/ 测试版：https://operation.lbsapps.cn/
         $company_img = $baseUrl_imgs."pdf/company/".$city.".jpg";
         $logo_img = $baseUrl_imgs."pdf/logo.png";
         include_once Yii::app()->basePath . '/extensions/tcpdf/tcpdf.php';//引入库
@@ -240,12 +241,10 @@ class ReportfollowForm extends CFormModel
             }
             td {
                 font-size: 16px;
-                padding-top:30px;
             }
             th,td {
                 border: solid 1px #eeeeee;
                 text-align: center;
-                line-height: 1.42857;
             }
             p{
                 font-size: 18px;
@@ -253,7 +252,7 @@ class ReportfollowForm extends CFormModel
             }
             </style>
             <body>
-            <table class="myTable" CELLPADDING="5">
+            <table class="myTable" cellpadding="5">
                 <tr style="border: none;border-top: none;border-right:none;border-left:none;">
                     <td width="25%" style="float:left;border: none;border-top: none;">
                         <img src="$logo_img" width="60" height="70">

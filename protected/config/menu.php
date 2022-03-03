@@ -77,6 +77,10 @@ return array(
                 'access'=>'OS07',
                 'url'=>'/reportsection/index',
             ),
+            'City Launch Date'=>array(
+                'access'=>'OS08',
+                'url'=>'/citylaunchdate/index',
+            ),
         ),
     ),
     'Signature settings'=>array(
