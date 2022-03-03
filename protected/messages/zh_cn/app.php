@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 return array(
 	'Daily Report System'=>'日报表系统',
 	'Daily Report System - UAT'=>'日报表系统 - 测试版',
@@ -72,5 +72,6 @@ return array(
 	'Report query'=>'报告查询',
 	'Reportjoblist'=>'工作单报告列表',
     'Reportfollowlist'=>'跟进单报告列表',
+	'City Launch Date'=>'城市上线日期',
 );
 ?>
