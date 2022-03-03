@@ -72,13 +72,17 @@ class MaterialData {
 		$name = trim($data['name']);
 		$validity = is_numeric($data['validity']) ? $this->convertExcelDate($data['validity']) : $data['validity'];
 		$registration_no= $data['registration_no'];
+		if (is_null($registration_no)) $registration_no = '';
 		$classify_id = $this->getClassifyId($connection, trim($data['classify']), $data['city']);
 		$active_ingredient = $data['active_ingredient'];
+		if (is_null($active_ingredient)) $active_ingredient = '';
 		$ratio = $data['ratio'];
+		if (is_null($ratio)) $ratio = '';
 		$unit = $data['unit'];
 		$sort = empty($data['sort']) ? null : $data['sort'];
 		$status = trim($data['status'])=='未启用' ? 0 : 1;
 		$brief = $data['brief'];
+		if (is_null($brief)) $brief = '';
 
 		$sql = "select id from lbs_service_material_lists where name=:name and classify_id=:classify_id";
 //		$sql = "select id from lbs_service_material_lists where name=:name";
