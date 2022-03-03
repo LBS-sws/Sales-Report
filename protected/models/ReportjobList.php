@@ -30,10 +30,19 @@ class ReportjobList extends CListPageModel
 	public function retrieveDataByPage($pageNum=1)
 	{
         $se_suffix = Yii::app()->params['envSuffix'];
+        $tab_suffix = Yii::app()->params['table_envSuffix'];
 		$city = Yii::app()->user->city_allow();
-		$sql1 = "select *,b.name city_name  from joborder as j left join officecity as o on j.City=o.City  left join enums as e on e.EnumID=o.Office left join service as s on s.ServiceType=j.ServiceType left join staff as t on t.StaffID=j.Staff01 left join security".$se_suffix.".sec_city as b on e.Text=b.code where e.EnumType=8 and j.Status=3 and e.Text in ($city) and j.JobDate>='2022-02-10'
+        $lainch_date_r = Yii::app()->db->createCommand()->select("*")
+            ->from($tab_suffix."city_launch_date")->where("city=:city",array(":city"=>Yii::app()->user->city()))->queryRow();
+        if ($lainch_date_r){
+            $lainch_date = $lainch_date_r['launch_date'];
+        }else{
+            $lainch_date = '2022-02-10';
+        }
+
+		$sql1 = "select *,b.name city_name  from joborder as j left join officecity as o on j.City=o.City  left join enums as e on e.EnumID=o.Office left join service as s on s.ServiceType=j.ServiceType left join staff as t on t.StaffID=j.Staff01 left join security".$se_suffix.".sec_city as b on e.Text=b.code where e.EnumType=8 and j.Status=3 and e.Text in ($city) and j.JobDate>='".$lainch_date."'
 			";
-		$sql2 = "select count(JobID) from joborder as j left join officecity as o on j.City=o.City  left join enums as e on e.EnumID=o.Office left join service as s on s.ServiceType=j.ServiceType left join staff as t on t.StaffID=j.Staff01 left join security".$se_suffix.".sec_city as b on e.Text=b.code where e.EnumType=8 and j.Status=3 and e.Text in ($city) and j.JobDate>='2022-02-10'
+		$sql2 = "select count(JobID) from joborder as j left join officecity as o on j.City=o.City  left join enums as e on e.EnumID=o.Office left join service as s on s.ServiceType=j.ServiceType left join staff as t on t.StaffID=j.Staff01 left join security".$se_suffix.".sec_city as b on e.Text=b.code where e.EnumType=8 and j.Status=3 and e.Text in ($city) and j.JobDate>='".$lainch_date."'
 			";
 		$clause = "";
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
