@@ -368,11 +368,12 @@ EOD;
 EOD;
                 for ($m=0; $m < count($material); $m++) {
                     $materialx = $this->array_to_object($material[$m]);
+                    $degrees = $materialx->dosage.$materialx->unit;
                     $html .= <<<EOD
                         <tr>
                         <td width="15%">$materialx->material_name</td>
                         <td width="10%">$materialx->material_ratio</td>
-                        <td width="8%">$materialx->dosage $materialx->unit</td>
+                        <td width="8%">$degrees</td>
                         <td width="15%" align="left">$materialx->use_mode</td>
                         <td width="15%" align="left">$materialx->targets</td>
                         <td width="12%" align="left">$materialx->use_area</td>
