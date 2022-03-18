@@ -615,7 +615,7 @@ EOD;
         $pdf->WriteHTML($html, 1);
         //Close and output PDF document
 
-        $filename = $basic->CustomerName.$basic->JobDate.".pdf";
+        $filename = $basic->CustomerName."-(".$basic->ServiceName.")".$basic->JobDate.".pdf";
 //        var_dump($filename);die();
         if ($status>0){
             $pdf->Output($filename, 'I');
