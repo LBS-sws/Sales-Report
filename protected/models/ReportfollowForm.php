@@ -208,7 +208,7 @@ class ReportfollowForm extends CFormModel
         $photo = $this->photo;
         $autograph = $this->autograph;
 //        var_dump($equipment);die();
-        $baseUrl_imgs = "https://xcx.lbsapps.cn/";
+        $baseUrl_imgs = "https://operation.lbsapps.cn/";
         //        正式版：https://xcx.lbsapps.cn/ 测试版：https://operation.lbsapps.cn/
         $company_img = $baseUrl_imgs."pdf/company/".$city.".jpg";
         $logo_img = $baseUrl_imgs."pdf/logo.png";
