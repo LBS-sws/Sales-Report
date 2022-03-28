@@ -184,7 +184,7 @@ class ReportfollowForm extends CFormModel
         }
         $this->equipment = $equipmenthz_datas;
 
-        $sql_photo = "select * from lbs_service_photos where job_type=2 and job_id=".$index;
+        $sql_photo = "select * from lbs_service_photos where job_type=2 and job_id=".$index." limit 4";
         $this->photo = Yii::app()->db->createCommand($sql_photo)->queryAll();
 
         $sql_autograph = "select * from lbs_report_autograph where job_type=2 and job_id=".$index;
@@ -208,7 +208,7 @@ class ReportfollowForm extends CFormModel
         $photo = $this->photo;
         $autograph = $this->autograph;
 //        var_dump($equipment);die();
-        $baseUrl_imgs = "https://xcx.lbsapps.cn/";
+        $baseUrl_imgs = "https://operation.lbsapps.cn/";
         //        正式版：https://xcx.lbsapps.cn/ 测试版：https://operation.lbsapps.cn/
         $company_img = $baseUrl_imgs."pdf/company/".$city.".jpg";
         $logo_img = $baseUrl_imgs."pdf/logo.png";
