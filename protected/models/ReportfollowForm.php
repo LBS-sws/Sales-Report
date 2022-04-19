@@ -113,6 +113,21 @@ class ReportfollowForm extends CFormModel
         $sql_city = "select * from enums as e left join officecity as o on o.Office=e.EnumID where o.City=".$this->basic['City']." and e.EnumType=8";
         $this->city = Yii::app()->db->createCommand($sql_city)->queryRow();
         $city = $this->city['Text'];
+
+        //判断是否存在PDF
+        $reportfile = Yii::app()->basePath."/images/report/".$city."/".$this->basic['JobDate']."/".$index.'.pdf';
+        if(file_exists($reportfile)){
+            if ($status>0){
+                header("Content-type: application/pdf");
+            }else{
+                $filename = $this->basic['CustomerName']."-(".$this->basic['ServiceName'].")".$this->basic['JobDate'].".pdf";
+                header('Content-Type: application-x/force-download');
+                header('Content-Disposition: attachment; filename='.$filename );
+            }
+            header("Content-Length: " . filesize($reportfile));
+            // 将文件发送到浏览器。
+            return readfile($reportfile);
+        }
         $service_type = $this->basic['ServiceType'];
         $this->basic['equipments'] = '';
         $sql_basic_equipments = "select distinct equipment_type_id from lbs_service_equipments where job_type=2 and job_id=".$index;
@@ -568,6 +583,16 @@ EOD;
         //Close and output PDF document
         $filename = $basic->CustomerName."-(".$basic->ServiceName.")".$basic->JobDate.".pdf";
 //        var_dump($filename);die();
+
+        //设置pdf保存路径
+        $reportpath = Yii::app()->basePath."/images/report/".$city."/".$basic->JobDate;
+        //判断目录是否存在 不存在就创建
+        if (!is_dir($reportpath)){
+            mkdir($reportpath,0777,true);
+        }
+        ob_clean();
+        $pdf->Output($reportpath."/".$index.'.pdf', 'F');
+
         if ($status>0){
             $pdf->Output($filename, 'I');
         }else{
