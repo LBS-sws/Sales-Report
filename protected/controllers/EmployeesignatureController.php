@@ -92,29 +92,11 @@ class EmployeesignatureController extends Controller
                 $model->saveData();
                 $model->scenario = 'edit';
                 Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
-                //当前城市员工列表
-                $se_suffix = Yii::app()->params['envSuffix'];
-                $city_allow = Yii::app()->user->city_allow();
-                $sql = "select s.StaffID,s.StaffName,b.name city_name from staff  as s left join officecity as o on o.City = s.City left join enums as e on e.EnumID = o.Office left join security".$se_suffix.".sec_city as b on e.Text=b.code where  e.EnumType=8 and s.Status in(1,2,5) and e.Text in(".$city_allow.")";
-                $rows = Yii::app()->db->createCommand($sql)->queryAll();
-                $employee_lists = [];
-                foreach ($rows as $row) {
-                    $employee_lists[$row['StaffID']] = $row['StaffName']."(".$row['city_name'].")";
-                }
-                $this->redirect(Yii::app()->createUrl('employeesignature/edit',array('index'=>$model->id,'employee_lists'=>$employee_lists)));
+                $this->redirect(Yii::app()->createUrl('employeesignature/edit',array('index'=>$model->id)));
             } else {
                 $message = CHtml::errorSummary($model);
                 Dialog::message(Yii::t('dialog','Validation Message'), $message);
-                //当前城市员工列表
-                $se_suffix = Yii::app()->params['envSuffix'];
-                $city_allow = Yii::app()->user->city_allow();
-                $sql = "select s.StaffID,s.StaffName,b.name city_name from staff  as s left join officecity as o on o.City = s.City left join enums as e on e.EnumID = o.Office left join security".$se_suffix.".sec_city as b on e.Text=b.code where  e.EnumType=8 and s.Status in(1,2,5) and e.Text in(".$city_allow.")";
-                $rows = Yii::app()->db->createCommand($sql)->queryAll();
-                $employee_lists = [];
-                foreach ($rows as $row) {
-                    $employee_lists[$row['StaffID']] = $row['StaffName']."(".$row['city_name'].")";
-                }
-                $this->render('form',array('model'=>$model,'employee_lists'=>$employee_lists));
+                $this->redirect(Yii::app()->createUrl('employeesignature/edit',array('index'=>$model->id)));
             }
         }
     }
