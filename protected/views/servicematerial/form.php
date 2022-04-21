@@ -2,7 +2,7 @@
 $this->pageTitle=Yii::app()->name . ' - Credits for';
 ?>
 <?php $form=$this->beginWidget('TbActiveForm', array(
-'id'=>'Serviceequipment-form',
+'id'=>'Servicematerial-form',
 'enableClientValidation'=>true,
 'clientOptions'=>array('validateOnSubmit'=>true,),
 'layout'=>TbHtml::FORM_LAYOUT_HORIZONTAL,
@@ -10,7 +10,7 @@ $this->pageTitle=Yii::app()->name . ' - Credits for';
 
 <section class="content-header">
 	<h1>
-		<strong><?php echo Yii::t('serviceequipment','Serviceequipment Form'); ?></strong>
+		<strong><?php echo Yii::t('servicematerial','Servicematerial Form'); ?></strong>
 	</h1>
 <!--
 	<ol class="breadcrumb">
@@ -27,17 +27,17 @@ $this->pageTitle=Yii::app()->name . ' - Credits for';
         <?php
         if ($model->scenario!='new' && $model->scenario!='view') {
             echo TbHtml::button('<span class="fa fa-file-o"></span> '.Yii::t('misc','Add Another'), array(
-                'submit'=>Yii::app()->createUrl('serviceequipment/new')));
+                'submit'=>Yii::app()->createUrl('servicematerial/new')));
         }
         ?>
 		<?php echo TbHtml::button('<span class="fa fa-reply"></span> '.Yii::t('misc','Back'), array(
-				'submit'=>Yii::app()->createUrl('serviceequipment/index')));
+				'submit'=>Yii::app()->createUrl('servicematerial/index')));
 		?>
         <?php
         echo TbHtml::button('<span class="fa fa-upload"></span> '.Yii::t('misc','Save'), array(
-            'submit'=>Yii::app()->createUrl('serviceequipment/save')));
+            'submit'=>Yii::app()->createUrl('servicematerial/save')));
         ?>
-        <?php if($model->id){ echo TbHtml::button('<span class="fa fa-remove"></span> '.Yii::t('misc','Delete'), array( 'submit'=>Yii::app()->createUrl('serviceequipment/delete'))
+        <?php if($model->id){ echo TbHtml::button('<span class="fa fa-remove"></span> '.Yii::t('misc','Delete'), array( 'submit'=>Yii::app()->createUrl('servicematerial/delete'))
         );}
         ?>
 	</div>
@@ -64,9 +64,9 @@ $this->pageTitle=Yii::app()->name . ' - Credits for';
                 </div>
             </div>
             <div class="form-group">
-                <?php echo $form->labelEx($model,'equipment_ids',array('class'=>"col-sm-2 control-label")); ?>
+                <?php echo $form->labelEx($model,'material_ids',array('class'=>"col-sm-2 control-label")); ?>
                 <div class="col-sm-4">
-                    <?php echo $form->checkBoxList($model, 'equipment_ids',$service_equipments); ?>
+                    <?php echo $form->checkBoxList($model, 'material_ids',$service_materials); ?>
                 </div>
             </div>
 

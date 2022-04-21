@@ -68,6 +68,7 @@ return array(
     'Equipment and material use area'=>'设备及物料使用区域',
 	'Employeesignature'=>'员工签名',
 	'Service equipment'=>'服务设备',
+    'Service material'=>'服务物料',
 	'Report section'=>'报告板块',
 	'Report query'=>'报告查询',
 	'Reportjoblist'=>'工作单报告列表',

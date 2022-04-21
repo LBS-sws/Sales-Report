@@ -73,6 +73,10 @@ return array(
                 'access'=>'OS06',
                 'url'=>'/serviceequipment/index',
             ),
+            'Service material'=>array(
+                'access'=>'OS09',
+                'url'=>'/servicematerial/index',
+            ),
             'Report section'=>array(
                 'access'=>'OS07',
                 'url'=>'/reportsection/index',
