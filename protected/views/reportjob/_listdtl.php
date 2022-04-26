@@ -15,5 +15,9 @@
         $dlnk = Yii::app()->createUrl('reportjob/down',array('index'=>$this->record['JobID']));
         echo TbHtml::Button('<span class="fa fa-download"></span> '.Yii::t('misc','Download'), array('submit'=>$dlnk,'size' => TbHtml::BUTTON_SIZE_SMALL));
         ?>
+        <?php
+        $dlnk = Yii::app()->createUrl('reportjob/delcache',array('index'=>$this->record['JobID'],'jobdate'=>$this->record['JobDate'],'city'=>$this->record['Citycode']));
+        echo TbHtml::Button('<span class="fa fa-remove"></span> '."删除缓存", array('submit'=>$dlnk,'size' => TbHtml::BUTTON_SIZE_SMALL));
+        ?>
     </td>
 </tr>

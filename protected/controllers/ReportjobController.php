@@ -30,7 +30,7 @@ class ReportjobController extends Controller
 			),
 */
 			array('allow', 
-				'actions'=>array('new','edit','delete','save','add','down','AllDelete'),
+				'actions'=>array('new','edit','delete','save','add','down','AllDelete','delcache'),
 				'expression'=>array('ReportjobController','allowReadWrite'),
 			),
 			array('allow', 
@@ -144,13 +144,26 @@ class ReportjobController extends Controller
     {
         $model = new ReportjobForm;
         if (!$model->retrieveData($index,0)) {
+
             throw new CHttpException(404,'The requested page does not exist.');
         } else {
             Dialog::message(Yii::t('dialog','Warning'), Yii::t('dialog','No Record Found'));
             $this->redirect(Yii::app()->createUrl('reportjob/index'));
         }
     }
-	
+    public function actionDelcache($index,$jobdate,$city)
+    {
+        $reportfile = Yii::app()->basePath."/images/report/".$city."/".$jobdate."/".$index.'.pdf';
+        $isc = file_exists($reportfile);
+        if ($isc){
+            unlink ($reportfile);
+            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Record Deleted'));
+        }else {
+            Dialog::message(Yii::t('dialog','Warning'), Yii::t('dialog','No Record Found'));
+        }
+        $this->redirect(Yii::app()->createUrl('reportjob/index'));
+    }
+
 
 	public static function allowReadWrite() {
 		return Yii::app()->user->validRWFunction('RQ01');

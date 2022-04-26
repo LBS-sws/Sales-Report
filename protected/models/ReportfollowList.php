@@ -39,7 +39,7 @@ class ReportfollowList extends CListPageModel
         }else{
             $lainch_date = '2022-02-10';
         }
-		$sql1 = "select *,b.name city_name  from followuporder as j left join officecity as o on j.City=o.City  left join enums as e on e.EnumID=o.Office left join service as s on s.ServiceType=j.SType left join staff as t on t.StaffID=j.Staff01 left join security".$se_suffix.".sec_city as b on e.Text=b.code where e.EnumType=8 and j.Status=3 and e.Text in ($city)  and j.JobDate>='".$lainch_date."'
+		$sql1 = "select *,b.name city_name,b.code  from followuporder as j left join officecity as o on j.City=o.City  left join enums as e on e.EnumID=o.Office left join service as s on s.ServiceType=j.SType left join staff as t on t.StaffID=j.Staff01 left join security".$se_suffix.".sec_city as b on e.Text=b.code where e.EnumType=8 and j.Status=3 and e.Text in ($city)  and j.JobDate>='".$lainch_date."'
 			";
 		$sql2 = "select count(FollowUpID) from followuporder as j left join officecity as o on j.City=o.City  left join enums as e on e.EnumID=o.Office left join service as s on s.ServiceType=j.SType left join staff as t on t.StaffID=j.Staff01 left join security".$se_suffix.".sec_city as b on e.Text=b.code where e.EnumType=8 and j.Status=3 and e.Text in ($city) and j.JobDate>='".$lainch_date."'
 			";
@@ -88,6 +88,7 @@ class ReportfollowList extends CListPageModel
 			foreach ($records as $k=>$record) {
 				$this->attr[] = array(
 					'City'=>$record['city_name'],
+                    'Citycode'=>$record['code'],
                     'JobID'=>$record['FollowUpID'],
 					'JobDate'=>$record['JobDate'],
 					'CustomerID'=>$record['CustomerID'],
