@@ -21,7 +21,7 @@ class ReportjobForm extends CFormModel
     public $start_dt;
     public $end_dt;
     public $fields;
-    public $baseUrl_imgs = "https://xcx.lbsapps.cn/";
+    public $baseUrl_imgs = "https://operation.lbsapps.cn/";
 //        正式版：https://xcx.lbsapps.cn/ 测试版：https://operation.lbsapps.cn/
 	/**
 	 * Declares customized attribute labels.
@@ -143,7 +143,7 @@ class ReportjobForm extends CFormModel
                 $this->basic = Yii::app()->db->createCommand($sql_basic)->queryRow();
                 //判断是否存在PDF
                 $reportfile = Yii::app()->basePath . "/images/report/" . $city . "/" . $this->basic['JobDate'] . "/" . $index . '.pdf';
-                if (file_exists($reportfile)) {
+                if (!file_exists($reportfile)) {
                     $sql_job = "select * from joborder where JobID=" . $index;
                     $this->job = Yii::app()->db->createCommand($sql_job)->queryRow();
 
