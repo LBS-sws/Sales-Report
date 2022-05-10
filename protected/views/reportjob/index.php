@@ -23,13 +23,12 @@ $this->pageTitle=Yii::app()->name . ' - Reportjob';
 <!--</section>-->
 
 <section class="content">
-<!--	<div class="box"><div class="box-body">-->
-<!--	<div class="btn-group" role="group">-->
-<!--        --><?php //echo TbHtml::button('<span class="fa fa-download"></span> '.Yii::t('misc','Down'), array(
-//            'submit'=>Yii::app()->createUrl('reportjob/down')));
-//        ?>
-<!--	</div>-->
-<!--	</div></div>-->
+	<div class="box"><div class="box-body">
+	<div class="btn-group" role="group">
+        <?php echo TbHtml::button('<span class="fa fa-download"></span> '.Yii::t('misc','Batch'), array('submit'=>Yii::app()->createUrl('reportjob/batch')));
+        ?>
+	</div>
+	</div></div>
 	<?php 
 		$search = array(
 						'JobDate',

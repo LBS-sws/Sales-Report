@@ -17,5 +17,9 @@ return array(
 	'Content'=>'内容',
 	'User'=>'帐户',
 	'-- All --'=>'-- 全部 --',
+
+    'Batch Form'=>'批量处理',
+    'Start_dt'=>'开始时间',
+    'End_dt'=>'结束时间',
 );
 ?>

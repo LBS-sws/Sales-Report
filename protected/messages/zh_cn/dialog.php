@@ -68,5 +68,10 @@ return array(
 
     'Submission Done'=>'保存成功',
     'Save no Done'=>'保存失败',
+
+    'Save Report Done'=>'生成报告成功',
+    'Save Report no Done'=>'生成报告失败',
+    'Download Report Done'=>'生成报告成功',
+    'Download Report no Done'=>'生成报告失败',
 );
 ?>

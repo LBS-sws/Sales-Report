@@ -95,6 +95,10 @@ return array(
 	'6 months'=>'6个月內',
 	'1 year'=>'1年內',
 	'Rollback'=>'退回',
+
+    'Batch'=>'批量处理',
+    'Batch Create'=>'生成报告',
+    'Batch Down'=>'下载报告',
 );
 
 ?>

@@ -30,7 +30,7 @@ class ReportjobController extends Controller
 			),
 */
 			array('allow', 
-				'actions'=>array('new','edit','delete','save','add','down','AllDelete','delcache'),
+				'actions'=>array('new','edit','delete','save','add','down','AllDelete','delcache','batch','batchcreate','batchdown'),
 				'expression'=>array('ReportjobController','allowReadWrite'),
 			),
 			array('allow', 
@@ -103,7 +103,6 @@ class ReportjobController extends Controller
 		$model = new ReportjobForm('new');
 		$this->render('form',array('model'=>$model,));
 	}
-	
 	public function actionEdit($index)
 	{
 		$model = new ReportjobForm('edit');
@@ -164,7 +163,35 @@ class ReportjobController extends Controller
         $this->redirect(Yii::app()->createUrl('reportjob/index'));
     }
 
-
+    public function actionBatch()
+    {
+        $model = new ReportjobForm('batch');
+        $this->render('batch',array('model'=>$model,));
+    }
+    public function actionBatchcreate()
+    {
+        $model = new ReportjobForm('batch');
+        if(isset($_POST['ReportjobForm'])){
+            $model->batchcreate($_POST['ReportjobForm']);
+            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Report Done'));
+            $this->redirect(Yii::app()->createUrl('reportjob/batch'));
+        }else{
+            Dialog::message(Yii::t('dialog','Warning'), Yii::t('dialog','Save Report no Done'));
+            $this->redirect(Yii::app()->createUrl('reportjob/batch'));
+        }
+    }
+    public function actionBatchdown()
+    {
+        $model = new ReportjobForm('batch');
+        if(isset($_POST['ReportjobForm'])){
+            $model->batchdown($_POST['ReportjobForm']);
+            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Download Report Done'));
+            $this->redirect(Yii::app()->createUrl('reportjob/batch'));
+        }else{
+            Dialog::message(Yii::t('dialog','Warning'), Yii::t('dialog','Save Download no Done'));
+            $this->redirect(Yii::app()->createUrl('reportjob/batch'));
+        }
+    }
 	public static function allowReadWrite() {
 		return Yii::app()->user->validRWFunction('RQ01');
 	}
