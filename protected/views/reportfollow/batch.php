@@ -1,9 +1,9 @@
 <?php
-$this->pageTitle=Yii::app()->name . ' - Report';
+$this->pageTitle=Yii::app()->name . ' - Reportfollow';
 ?>
 
 <?php $form=$this->beginWidget('TbActiveForm', array(
-    'id'=>'report-form',
+    'id'=>'Reportfollow-form',
     'action'=>Yii::app()->createUrl('report/generate'),
     'enableClientValidation'=>true,
     'clientOptions'=>array('validateOnSubmit'=>true,),
@@ -27,7 +27,7 @@ $this->pageTitle=Yii::app()->name . ' - Report';
     <div class="box"><div class="box-body">
             <div class="btn-group" role="group">
                 <?php  echo TbHtml::button('<span class="fa fa-check"></span> '.Yii::t('misc','Batch Create'), array(
-                    'submit'=>Yii::app()->createUrl('reportjob/batchcreate')));
+                    'submit'=>Yii::app()->createUrl('reportfollow/batchcreate')));
                 ?>
             </div>
 <!--            <div class="btn-group" role="group">-->

@@ -270,7 +270,7 @@ class ReportjobForm extends CFormModel
                     $sql_photo = "select * from lbs_service_photos where job_type=1 and job_id=" . $index . " limit 4";
                     $this->photo = Yii::app()->db->createCommand($sql_photo)->queryAll();
 
-                    $sql_autograph = "select * from lbs_report_autograph where job_type=1 and job_id=" . $index;
+                    $sql_autograph = "select * from lbs_report_autograph where job_type='1' and job_id='" . $index."'";
                     $this->autograph = Yii::app()->db->createCommand($sql_autograph)->queryRow();
                     //查询服务板块
                     $sql_service_sections = "select * from lbs_service_reportsections where city='" . $city . "' and service_type=" . $service_type;
@@ -826,7 +826,7 @@ EOD;
         $sql_photo = "select * from lbs_service_photos where job_type=1 and job_id=".$index." limit 4";
         $this->photo = Yii::app()->db->createCommand($sql_photo)->queryAll();
 
-        $sql_autograph = "select * from lbs_report_autograph where job_type=1 and job_id=".$index;
+        $sql_autograph = "select * from lbs_report_autograph where job_type='1' and job_id='".$index."'";
         $this->autograph = Yii::app()->db->createCommand($sql_autograph)->queryRow();
         //查询服务板块
         $sql_service_sections = "select * from lbs_service_reportsections where city='".$city."' and service_type=".$service_type;

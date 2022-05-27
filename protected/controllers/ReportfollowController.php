@@ -30,7 +30,7 @@ class ReportfollowController extends Controller
 			),
 */
 			array('allow', 
-				'actions'=>array('new','edit','delete','save','add','down','AllDelete','delcache'),
+				'actions'=>array('new','edit','delete','save','add','down','AllDelete','delcache','batch','batchcreate','batchdown'),
 				'expression'=>array('ReportfollowController','allowReadWrite'),
 			),
 			array('allow', 
@@ -91,6 +91,35 @@ class ReportfollowController extends Controller
             Dialog::message(Yii::t('dialog','Warning'), Yii::t('dialog','No Record Found'));
         }
         $this->redirect(Yii::app()->createUrl('reportfollow/index'));
+    }
+    public function actionBatch()
+    {
+        $model = new ReportfollowForm('batch');
+        $this->render('batch',array('model'=>$model,));
+    }
+    public function actionBatchcreate()
+    {
+        $model = new ReportfollowForm('batch');
+        if(isset($_POST['ReportfollowForm'])){
+            $model->batchcreate($_POST['ReportfollowForm']);
+            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Report Done'));
+            $this->redirect(Yii::app()->createUrl('reportfollow/batch'));
+        }else{
+            Dialog::message(Yii::t('dialog','Warning'), Yii::t('dialog','Save Report no Done'));
+            $this->redirect(Yii::app()->createUrl('reportfollow/batch'));
+        }
+    }
+    public function actionBatchdown()
+    {
+        $model = new ReportfollowForm('batch');
+        if(isset($_POST['ReportfollowForm'])){
+            $model->batchdown($_POST['ReportfollowForm']);
+            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Download Report Done'));
+            $this->redirect(Yii::app()->createUrl('reportfollow/batch'));
+        }else{
+            Dialog::message(Yii::t('dialog','Warning'), Yii::t('dialog','Save Download no Done'));
+            $this->redirect(Yii::app()->createUrl('reportfollow/batch'));
+        }
     }
 	public static function allowReadWrite() {
 		return Yii::app()->user->validRWFunction('RQ02');

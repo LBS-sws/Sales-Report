@@ -74,7 +74,7 @@ class ReportjobList extends CListPageModel
 			$order .= " order by ".$this->orderField." ";
 			if ($this->orderType=='D') $order .= "desc ";
 		}else{
-		    $order ="order by JobDate desc";
+		    $order ="order by JobDate desc,FinishTime desc";
         }
 		$sql = $sql2.$clause;
 		$this->totalRow = Yii::app()->db->createCommand($sql)->queryScalar();

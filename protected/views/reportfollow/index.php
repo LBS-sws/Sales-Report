@@ -23,13 +23,12 @@ $this->pageTitle=Yii::app()->name . ' - Reportfollow';
 <!--</section>-->
 
 <section class="content">
-<!--	<div class="box"><div class="box-body">-->
-<!--	<div class="btn-group" role="group">-->
-<!--        --><?php //echo TbHtml::button('<span class="fa fa-download"></span> '.Yii::t('misc','Down'), array(
-//            'submit'=>Yii::app()->createUrl('reportfollow/down')));
-//        ?>
-<!--	</div>-->
-<!--	</div></div>-->
+	<div class="box"><div class="box-body">
+            <div class="btn-group" role="group">
+                <?php echo TbHtml::button('<span class="fa fa-download"></span> '.Yii::t('misc','Batch'), array('submit'=>Yii::app()->createUrl('reportfollow/batch')));
+                ?>
+            </div>
+	</div></div>
 	<?php 
 		$search = array(
             'JobDate',
@@ -48,6 +47,8 @@ $this->pageTitle=Yii::app()->name . ' - Reportfollow';
 				'gridsize'=>'24',
 				'height'=>'600',
 				'search'=>$search,
+//                'advancedSearch'=>true,
+//                'hasDateButton'=>true,
 		));
 	?>
 </section>
