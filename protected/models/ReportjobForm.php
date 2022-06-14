@@ -21,7 +21,7 @@ class ReportjobForm extends CFormModel
     public $start_dt;
     public $end_dt;
     public $fields;
-    public $baseUrl_imgs = "https://xcx.lbsapps.cn/";
+    public $baseUrl_imgs = "https://operation.lbsapps.cn/";
 //        正式版：https://xcx.lbsapps.cn/ 测试版：https://operation.lbsapps.cn/
 	/**
 	 * Declares customized attribute labels.
@@ -637,8 +637,18 @@ EOD;
                         <tr>
                         <td width="50%" align="left">
                             <img src="{$eimageSrc01}" width="130" height="80" style="magin:20px 50px;">
-                            <img src="{$eimageSrc02}" width="130" height="80" style="magin:20px 50px;">
+EOD;
+                        if ($employee02_signature != ''){
+                        $html .= <<<EOD
+                        <img src="{$eimageSrc02}" width="130" height="80" style="magin:20px 50px;">
+EOD;
+                        }
+                        if ($employee03_signature != ''){
+                            $html .= <<<EOD
                             <img src="{$eimageSrc03}" width="130" height="80" style="magin:20px 50px;">
+EOD;
+                        }
+                        $html .= <<<EOD
                         </td>
                         <td width="50%" align="left"><img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px;"></td>
                         </tr>
@@ -1188,8 +1198,19 @@ EOD;
                         <tr>
                         <td width="50%" align="left">
                             <img src="{$eimageSrc01}" width="130" height="80" style="magin:20px 50px;">
-                            <img src="{$eimageSrc02}" width="130" height="80" style="magin:20px 50px;">
+
+EOD;
+                    if ($employee02_signature != ''){
+                        $html .= <<<EOD
+                        <img src="{$eimageSrc02}" width="130" height="80" style="magin:20px 50px;">
+EOD;
+                    }
+                    if ($employee03_signature != ''){
+                        $html .= <<<EOD
                             <img src="{$eimageSrc03}" width="130" height="80" style="magin:20px 50px;">
+EOD;
+                    }
+                    $html .= <<<EOD
                         </td>
                         <td width="50%" align="left"><img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px;"></td>
                         </tr>
