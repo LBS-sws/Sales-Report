@@ -21,7 +21,7 @@ class ReportfollowForm extends CFormModel
     public $start_dt;
     public $end_dt;
     public $fields;
-    public $baseUrl_imgs = "https://xcx.lbsapps.cn/";
+    public $baseUrl_imgs = "https://operation.lbsapps.cn/";
 //        正式版：https://xcx.lbsapps.cn/ 测试版：https://operation.lbsapps.cn/
 	/**
 	 * Declares customized attribute labels.
@@ -392,12 +392,13 @@ EOD;
                             </tr>  
                             <tr>
                             <td width="15%">名称</td>
-                            <td width="10%">配比</td>
+                            <td width="12%">处理面积</td>
+                            <td width="7%">配比</td>
                             <td width="8%">用量</td>
-                            <td width="15%">使用方式</td>
-                            <td width="15%">靶标</td>
+                            <td width="12%">使用方式</td>
+                            <td width="12%">靶标</td>
                             <td width="12%">使用区域</td>
-                            <td width="25%">备注</td>
+                            <td width="22%">备注</td>
                             </tr>
 EOD;
                             for ($m=0; $m < count($material); $m++) {
@@ -406,12 +407,13 @@ EOD;
                                 $html .= <<<EOD
                         <tr>
                         <td width="15%">$materialx->material_name</td>
-                        <td width="10%">$materialx->material_ratio</td>
+                        <td width="12%">$materialx->processing_space</td>
+                        <td width="7%">$materialx->material_ratio</td>
                         <td width="8%">$degrees</td>
-                        <td width="15%" align="left">$materialx->use_mode</td>
-                        <td width="15%" align="left">$materialx->targets</td>
+                        <td width="12%" align="left">$materialx->use_mode</td>
+                        <td width="12%" align="left">$materialx->targets</td>
                         <td width="12%" align="left">$materialx->use_area</td>
-                        <td width="25%" align="left">$materialx->matters_needing_attention</td>
+                        <td width="22%" align="left">$materialx->matters_needing_attention</td>
                         </tr>  
 EOD;
                             }
@@ -429,7 +431,7 @@ EOD;
                             <td width="7%">级别</td>
                             <td width="15%">整改建议</td>
                             <td width="15%">采取措施</td>
-                            <td width="15%">跟进情况</td>
+                            <td width="15%">跟进时间</td>
                             </tr>
 EOD;
                             for ($r=0; $r < count($risk); $r++) {
@@ -900,12 +902,13 @@ EOD;
                             </tr>  
                             <tr>
                             <td width="15%">名称</td>
-                            <td width="10%">配比</td>
+                            <td width="12%">处理面积</td>
+                            <td width="7%">配比</td>
                             <td width="8%">用量</td>
-                            <td width="15%">使用方式</td>
-                            <td width="15%">靶标</td>
+                            <td width="12%">使用方式</td>
+                            <td width="12%">靶标</td>
                             <td width="12%">使用区域</td>
-                            <td width="25%">备注</td>
+                            <td width="22%">备注</td>
                             </tr>
 EOD;
                 for ($m=0; $m < count($material); $m++) {
@@ -914,12 +917,13 @@ EOD;
                     $html .= <<<EOD
                         <tr>
                         <td width="15%">$materialx->material_name</td>
-                        <td width="10%">$materialx->material_ratio</td>
+                        <td width="12%">$materialx->processing_space</td>
+                        <td width="7%">$materialx->material_ratio</td>
                         <td width="8%">$degrees</td>
-                        <td width="15%" align="left">$materialx->use_mode</td>
-                        <td width="15%" align="left">$materialx->targets</td>
+                        <td width="12%" align="left">$materialx->use_mode</td>
+                        <td width="12%" align="left">$materialx->targets</td>
                         <td width="12%" align="left">$materialx->use_area</td>
-                        <td width="25%" align="left">$materialx->matters_needing_attention</td>
+                        <td width="22%" align="left">$materialx->matters_needing_attention</td>
                         </tr>  
 EOD;
                 }
@@ -937,7 +941,7 @@ EOD;
                             <td width="7%">级别</td>
                             <td width="15%">整改建议</td>
                             <td width="15%">采取措施</td>
-                            <td width="15%">跟进情况</td>
+                            <td width="15%">跟进时间</td>
                             </tr>
 EOD;
                 for ($r=0; $r < count($risk); $r++) {
