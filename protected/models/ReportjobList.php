@@ -87,6 +87,11 @@ class ReportjobList extends CListPageModel
 		$this->attr = array();
 		if (count($records) > 0) {
 			foreach ($records as $k=>$record) {
+			    if($record['StartTime']>=$record['FinishTime']){
+                    $FinishDate_s = date("Y-m-d",strtotime("-1 day",strtotime($record['FinishDate'])));
+                }else{
+                    $FinishDate_s = $record['FinishDate'];
+                }
 				$this->attr[] = array(
 					'City'=>$record['city_name'],
                     'Citycode'=>$record['code'],
@@ -96,7 +101,7 @@ class ReportjobList extends CListPageModel
 					'CustomerName'=>$record['CustomerName'],
                     'ServiceType'=>$record['ServiceName'],
                     'Staff01'=>$record['StaffName'],
-                    'StartTime'=>$record['FinishDate'].' '.$record['StartTime'],
+                    'StartTime'=>$FinishDate_s.' '.$record['StartTime'],
                     'FinishTime'=>$record['FinishDate'].' '.$record['FinishTime'],
 				);
 			}

@@ -21,7 +21,7 @@ class ReportjobForm extends CFormModel
     public $start_dt;
     public $end_dt;
     public $fields;
-    public $baseUrl_imgs = "https://xcx.lbsapps.cn/";
+    public $baseUrl_imgs = "https://operation.lbsapps.cn/";
 //        正式版：https://xcx.lbsapps.cn/ 测试版：https://operation.lbsapps.cn/
 	/**
 	 * Declares customized attribute labels.
@@ -351,7 +351,7 @@ class ReportjobForm extends CFormModel
                 <tr>
                     <td width="15%">客户名称</td>
                     <td width="35%" align="left">$basic->CustomerName</td>
-                    <td width="15%">任务日期</td>
+                    <td width="15%">服务日期</td>
                     <td width="35%" align="left">$basic->JobDate</td>
                 </tr>
                 <tr>
@@ -366,22 +366,20 @@ class ReportjobForm extends CFormModel
                     <td width="35%" align="left">$basic->service_projects</td>
                 </tr>
                 <tr>
-                    <td width="15%">联系人</td>
+                    <td width="15%">联系人员</td>
                     <td width="35%" align="left">$basic->ContactName</td>
                     <td width="15%">联系电话</td>
                     <td width="35%" align="left">$basic->Mobile</td>
                 </tr>
                 <tr>
-                    <td width="15%">服务时间</td>
-                    <td width="35%" align="left">$basic->FinishDate&nbsp;$basic->StartTime~$basic->FinishTime</td>
                     <td width="15%">任务类型</td>
                     <td width="35%" align="left">$basic->task_type</td>
+                    <td width="15%">服务人员</td>
+                    <td width="35%" align="left">$basic->Staffall</td>
                 </tr>
                 <tr>
                     <td width="15%">监测设备</td>
-                    <td width="35%" align="left">$basic->equipments</td>
-                    <td width="15%">服务人员</td>
-                    <td width="35%" align="left">$basic->Staffall</td>
+                    <td width="85%" align="left">$basic->equipments</td>
                 </tr>
 EOD;
                     if ($briefing != '') {
@@ -919,7 +917,7 @@ EOD;
                 <tr>
                     <td width="15%">客户名称</td>
                     <td width="35%" align="left">$basic->CustomerName</td>
-                    <td width="15%">任务日期</td>
+                    <td width="15%">服务日期</td>
                     <td width="35%" align="left">$basic->JobDate</td>
                 </tr>
                 <tr>
@@ -934,22 +932,20 @@ EOD;
                     <td width="35%" align="left">$basic->service_projects</td>
                 </tr>
                 <tr>
-                    <td width="15%">联系人</td>
+                    <td width="15%">联系人员</td>
                     <td width="35%" align="left">$basic->ContactName</td>
                     <td width="15%">联系电话</td>
                     <td width="35%" align="left">$basic->Mobile</td>
                 </tr>
                 <tr>
-                    <td width="15%">服务时间</td>
-                    <td width="35%" align="left">$basic->FinishDate&nbsp;$basic->StartTime~$basic->FinishTime</td>
                     <td width="15%">任务类型</td>
                     <td width="35%" align="left">$basic->task_type</td>
+                    <td width="15%">服务人员</td>
+                    <td width="35%" align="left">$basic->Staffall</td>
                 </tr>
                 <tr>
                     <td width="15%">监测设备</td>
-                    <td width="35%" align="left">$basic->equipments</td>
-                    <td width="15%">服务人员</td>
-                    <td width="35%" align="left">$basic->Staffall</td>
+                    <td width="85%" align="left">$basic->equipments</td>
                 </tr>
 EOD;
         if($briefing!=''){
