@@ -482,7 +482,7 @@ EOD;
                             <td width="7%">级别</td>
                             <td width="15%">整改建议</td>
                             <td width="15%">采取措施</td>
-                            <td width="15%">跟进时间</td>
+                            <td width="15%">跟进日期</td>
                             </tr>
 EOD;
                             for ($r = 0; $r < count($risk); $r++) {
@@ -1045,7 +1045,7 @@ EOD;
                             <td width="7%">级别</td>
                             <td width="15%">整改建议</td>
                             <td width="15%">采取措施</td>
-                            <td width="15%">跟进时间</td>
+                            <td width="15%">跟进日期</td>
                             </tr>
 EOD;
                 for ($r=0; $r < count($risk); $r++) {
