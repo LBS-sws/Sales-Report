@@ -21,7 +21,7 @@ class ReportfollowForm extends CFormModel
     public $start_dt;
     public $end_dt;
     public $fields;
-    public $baseUrl_imgs = "https://xcx.lbsapps.cn/";
+    public $baseUrl_imgs = "https://operation.lbsapps.cn/";
 //        正式版：https://xcx.lbsapps.cn/ 测试版：https://operation.lbsapps.cn/
 	/**
 	 * Declares customized attribute labels.
