@@ -21,8 +21,6 @@ class ReportfollowForm extends CFormModel
     public $start_dt;
     public $end_dt;
     public $fields;
-    public $baseUrl_imgs = "https://xcx.lbsapps.cn/";
-//        正式版：https://xcx.lbsapps.cn/ 测试版：https://operation.lbsapps.cn/
 	/**
 	 * Declares customized attribute labels.
 	 * If not declared here, an attribute would have a label that is
@@ -242,8 +240,7 @@ class ReportfollowForm extends CFormModel
                     $equipment = $this->equipment;
                     $photo = $this->photo;
                     $autograph = $this->autograph;
-//        var_dump($equipment);die();
-                    $baseUrl_imgs = $this->baseUrl_imgs;
+                    $baseUrl_imgs = Yii::app()->params['baseUrl_imgs'];
                     $company_img = $baseUrl_imgs."pdf/company/".$city.".jpg";
                     $logo_img = $baseUrl_imgs."pdf/logo.png";
                     include_once Yii::app()->basePath . '/extensions/tcpdf/tcpdf.php';//引入库
@@ -567,8 +564,7 @@ EOD;
                             <th width="100%" align="left">客户点评</th>
                         </tr>
                         <tr>
-                        <td width="50%" align="left">{$autograph['customer_grade']}星(1~5)</td>
-                    <td width="50%" align="left">{$autograph['creat_time']}</td>
+                        <td width="100%" align="left">{$autograph['customer_grade']}星(1~5)</td>
                         </tr>
                         <tr class="myTitle">
                             <th  width="100%" align="left">报告签名</th>
@@ -611,8 +607,6 @@ EOD;
                     $pdf->WriteHTML($html, 1);
                     //Close and output PDF document
                     $filename = $basic->CustomerName."-(".$basic->ServiceName.")".$basic->JobDate.".pdf";
-//        var_dump($filename);die();
-
                     //设置pdf保存路径
                     $reportpath = Yii::app()->basePath."/images/report/".$city."/".$basic->JobDate;
                     //判断目录是否存在 不存在就创建
@@ -750,8 +744,7 @@ EOD;
         $equipment = $this->equipment;
         $photo = $this->photo;
         $autograph = $this->autograph;
-//        var_dump($equipment);die();
-        $baseUrl_imgs = $this->baseUrl_imgs;
+        $baseUrl_imgs = Yii::app()->params['baseUrl_imgs'];
         $company_img = $baseUrl_imgs."pdf/company/".$city.".jpg";
         $logo_img = $baseUrl_imgs."pdf/logo.png";
         include_once Yii::app()->basePath . '/extensions/tcpdf/tcpdf.php';//引入库
@@ -1075,8 +1068,7 @@ EOD;
                             <th width="100%" align="left">客户点评</th>
                         </tr>
                         <tr>
-                        <td width="50%" align="left">{$autograph['customer_grade']}星(1~5)</td>
-                    <td width="50%" align="left">{$autograph['creat_time']}</td>
+                        <td width="100%" align="left">{$autograph['customer_grade']}星(1~5)</td>
                         </tr>
                         <tr class="myTitle">
                             <th  width="100%" align="left">报告签名</th>
@@ -1119,7 +1111,6 @@ EOD;
         $pdf->WriteHTML($html, 1);
         //Close and output PDF document
         $filename = $basic->CustomerName."-(".$basic->ServiceName.")".$basic->JobDate.".pdf";
-//        var_dump($filename);die();
 
         //设置pdf保存路径
         $reportpath = Yii::app()->basePath."/images/report/".$city."/".$basic->JobDate;
@@ -1135,8 +1126,6 @@ EOD;
         }else{
             $pdf->Output($filename, 'D');
         }
-//        var_dump($this);die();
-//		return true;
 	}
    
 }

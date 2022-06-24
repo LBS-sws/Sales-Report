@@ -34,10 +34,10 @@ return array(
     'Use_mode'=>'使用方式',
 
     'Service_type'=>'服务类型',
-    'Targets'=>'害虫',
-    'Add Materialusepest'=>'新增使用害虫',
-    'Materialusepest'=>'使用害虫',
-    'Use_pest'=>'使用害虫',
+    'Targets'=>'靶标',
+    'Add Materialusepest'=>'新增使用靶标',
+    'Materialusepest'=>'使用靶标',
+    'Use_pest'=>'使用靶标',
     'Service_name'=>'服务名称',
-    'Materialusepest Form'=>'使用害虫详情'
+    'Materialusepest Form'=>'使用靶标详情'
 );

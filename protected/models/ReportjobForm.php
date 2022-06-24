@@ -21,8 +21,6 @@ class ReportjobForm extends CFormModel
     public $start_dt;
     public $end_dt;
     public $fields;
-    public $baseUrl_imgs = "https://xcx.lbsapps.cn/";
-//        正式版：https://xcx.lbsapps.cn/ 测试版：https://operation.lbsapps.cn/
 	/**
 	 * Declares customized attribute labels.
 	 * If not declared here, an attribute would have a label that is
@@ -282,18 +280,14 @@ class ReportjobForm extends CFormModel
                     }
 
                     $basic = $this->array_to_object($this->basic);
-//        var_dump($basic->CustomerName);die();
                     $briefing = $this->briefing ? $this->array_to_object($this->briefing) : '';
                     $material = $this->material;
                     $risk = $this->risk;
                     $equipment = $this->equipment;
                     $photo = $this->photo;
                     $autograph = $this->autograph;
-//        var_dump($this);die();
-                    $baseUrl_imgs = $this->baseUrl_imgs;
-//        正式版：https://xcx.lbsapps.cn/ 测试版：https://operation.lbsapps.cn/
+                    $baseUrl_imgs = Yii::app()->params['baseUrl_imgs'];
                     $company_img = $baseUrl_imgs . "pdf/company/" . $city . ".jpg";
-//        $company_img = $baseUrl_imgs."pdf/company/ZY.jpg";
                     $logo_img = $baseUrl_imgs . "pdf/logo.png";
                     include_once Yii::app()->basePath . '/extensions/tcpdf/tcpdf.php';//引入库
                     include_once Yii::app()->basePath . '/extensions/tcpdf/config/tcpdf_config.php';//引入库
@@ -604,7 +598,6 @@ EOD;
                         $eimageSrc03 = $path . "/" . $eimageName03;
                         if ($employee03_signature != '') file_put_contents($eimageSrc03, base64_decode($employee03_signature));
 
-//        var_dump($eimageSrc01);die();
                         if ($autograph['customer_signature'] != '' && $autograph['customer_signature'] != 'undefined') {
                             $cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
                             $cimageSrc = $path . "/" . $cimageName;
@@ -616,16 +609,12 @@ EOD;
                         } else {
                             $cimageSrc = '';
                         }
-//var_dump($autograph);die();
-
-
                         $html .= <<<EOD
                         <tr class="myTitle">
                             <th width="100%" align="left">客户点评</th>
                         </tr>
                         <tr>
-                        <td width="50%" align="left">{$autograph['customer_grade']}星(1~5)</td>
-                    <td width="50%" align="left">{$autograph['creat_time']}</td>
+                        <td width="100%" align="left">{$autograph['customer_grade']}星(1~5)</td>
                         </tr>
                         <tr class="myTitle">
                             <th  width="100%" align="left">报告签名</th>
@@ -848,18 +837,14 @@ EOD;
         }
 
         $basic = $this->array_to_object ($this->basic);
-//        var_dump($basic->CustomerName);die();
         $briefing = $this->briefing?$this->array_to_object ($this->briefing):'';
         $material = $this->material;
         $risk = $this->risk;
         $equipment = $this->equipment;
         $photo = $this->photo;
         $autograph = $this->autograph;
-//        var_dump($this);die();
-        $baseUrl_imgs = $this->baseUrl_imgs;
-//        正式版：https://xcx.lbsapps.cn/ 测试版：https://operation.lbsapps.cn/
+        $baseUrl_imgs = Yii::app()->params['baseUrl_imgs'];
         $company_img = $baseUrl_imgs."pdf/company/".$city.".jpg";
-//        $company_img = $baseUrl_imgs."pdf/company/ZY.jpg";
         $logo_img = $baseUrl_imgs."pdf/logo.png";
         include_once Yii::app()->basePath . '/extensions/tcpdf/tcpdf.php';//引入库
         include_once Yii::app()->basePath . '/extensions/tcpdf/config/tcpdf_config.php';//引入库
@@ -1165,7 +1150,6 @@ EOD;
         $eimageSrc03= $path."/". $eimageName03;
         if($employee03_signature!='') file_put_contents($eimageSrc03,base64_decode($employee03_signature));
 
-//        var_dump($eimageSrc01);die();
         if($autograph['customer_signature']!='' && $autograph['customer_signature']!='undefined'){
         $cimageName = "lbs_".date("His",time())."_".rand(111,999).'.png';
         $cimageSrc= $path."/". $cimageName;
@@ -1177,16 +1161,12 @@ EOD;
         }else{
             $cimageSrc='';
         }
-//var_dump($autograph);die();
-
-
             $html .= <<<EOD
                         <tr class="myTitle">
                             <th width="100%" align="left">客户点评</th>
                         </tr>
                         <tr>
-                        <td width="50%" align="left">{$autograph['customer_grade']}星(1~5)</td>
-                    <td width="50%" align="left">{$autograph['creat_time']}</td>
+                        <td width="100%" align="left">{$autograph['customer_grade']}星(1~5)</td>
                         </tr>
                         <tr class="myTitle">
                             <th  width="100%" align="left">报告签名</th>
@@ -1228,8 +1208,6 @@ EOD;
         $pdf->SetPrintFooter(false);
         $pdf->AddPage();
         $pdf->WriteHTML($html, 1);
-        //Close and output PDF document
-
         $filename = $basic->CustomerName."-(".$basic->ServiceName.")".$basic->JobDate.".pdf";
 
         //设置pdf保存路径
@@ -1240,15 +1218,11 @@ EOD;
         }
         ob_clean();
         $pdf->Output($reportpath."/".$index.'.pdf', 'F');
-//        var_dump($filename);die();
         if ($status>0){
             $pdf->Output($filename, 'I');
         }else{
             $pdf->Output($filename, 'D');
         }
-
-//        var_dump($this);die();
-//		return true;
 	}
     public function showField($name) {
         $a = explode(',',$this->fields);

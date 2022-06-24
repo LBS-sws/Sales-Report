@@ -53,7 +53,7 @@ return array(
     'Material Class'=>'物料分类',
     'Material Usearea'=>'物料使用区域',
     'Material Usemode'=>'物料使用方式',
-    'Material Usepest'=>'物料使用害虫',
+    'Material Usepest'=>'物料使用靶标',
     'Risk settings'=>'风险跟进设置',
     'Risk Pest'=>'风险害虫',
     'Risk Grade'=>'风险等级',
