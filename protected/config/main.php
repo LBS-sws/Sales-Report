@@ -118,6 +118,6 @@ return array(
         'appname'=>'LBS DMS (UAT)',
         'appcolor'=>'skin-purple-light',
         'showRank'=>'on',
-        'baseUrl_imgs'=>'https://operation.lbsapps.cn/',// 正式版：https://xcx.lbsapps.cn/ 测试版：https://operation.lbsapps.cn/
+        'baseUrl_imgs'=>'https://xcx.lbsapps.cn/',// 正式版：https://xcx.lbsapps.cn/ 测试版：https://operation.lbsapps.cn/
     ),
 );
