@@ -463,15 +463,15 @@ EOD;
                             }
                         }
                     }
-                    if (count($risk)) {
-                        if (($this->service_sections != '' && in_array('4', $this->service_sections)) || $this->service_sections == '') {
+                    if(count($risk)>0){
+                        if(($this->service_sections!='' && in_array('4',$this->service_sections)) || $this->service_sections==''){
                             $html .= <<<EOD
                             <tr class="myTitle">
                                 <th width="100%"align="left">现场风险评估与建议</th>
                             </tr>  
                             <tr>
-                            <td width="17%">风险类别</td>
-                            <td width="18%">风险描述</td>
+                            <td width="16%">风险类别</td>
+                            <td width="19%">风险描述</td>
                             <td width="13%">靶标</td>
                             <td width="7%">级别</td>
                             <td width="15%">整改建议</td>
@@ -479,24 +479,43 @@ EOD;
                             <td width="15%">跟进日期</td>
                             </tr>
 EOD;
-                            for ($r = 0; $r < count($risk); $r++) {
+                            for ($r=0; $r < count($risk); $r++) {
                                 $riskx = $this->array_to_object($risk[$r]);
-                                $c_t = date('Y-m-d', strtotime($riskx->creat_time));
+                                $c_t =  date('Y-m-d',strtotime($riskx->creat_time));
 
                                 $html .= <<<EOD
                         <tr>
-                        <td width="17%">$riskx->risk_types</td>
-                        <td width="18%" align="left">$riskx->risk_description</td>
+                        <td width="16%">$riskx->risk_types</td>
+                        <td width="19%" align="left">$riskx->risk_description</td>
                         <td width="13%" align="left">$riskx->risk_targets</td>
                         <td width="7%">$riskx->risk_rank</td>
                         <td width="15%" align="left">$riskx->risk_proposal</td>
                         <td width="15%" align="left">$riskx->take_steps</td>
                         <td width="15%">$c_t</td>
                         </tr>
+                        <tr>
+                        <td width="16%">风险图片</td>
+EOD;
+                                $site_photos = explode(',',$riskx->site_photos);
+                                for ($sp=0; $sp < count($site_photos); $sp++) {
+                                    $spa = $baseUrl_imgs.str_replace("\/",'/',trim($site_photos[$sp],'"'));
+                                    $html .= <<<EOD
+                        <td width="21%" align="center">
+                            <img src="${spa}" width="80" height="100" style="padding:20px 50px;">
+                        </td>
+EOD;
+                    }
+                    $sy_unm = 4-count($site_photos);
+                        for($j=0;$j<$sy_unm;$j++){
+                            $html .= <<<EOD
+                            <td width="21%" align="center"></td>
+EOD;
+                                }
+                                $html .= <<<EOD
+                        </tr>  
 EOD;
                             }
-                        }
-                    }
+                        }}
                     if (count($equipment) > 0) {
                         if (($this->service_sections != '' && in_array('3', $this->service_sections)) || $this->service_sections == '') {
                             //设备巡查
@@ -1017,15 +1036,15 @@ EOD;
 EOD;
                 }
             }}
-        if(count($risk)){
-        if(($this->service_sections!='' && in_array('4',$this->service_sections)) || $this->service_sections==''){
-            $html .= <<<EOD
+        if(count($risk)>0){
+            if(($this->service_sections!='' && in_array('4',$this->service_sections)) || $this->service_sections==''){
+                $html .= <<<EOD
                             <tr class="myTitle">
                                 <th width="100%"align="left">现场风险评估与建议</th>
                             </tr>  
                             <tr>
-                            <td width="17%">风险类别</td>
-                            <td width="18%">风险描述</td>
+                            <td width="16%">风险类别</td>
+                            <td width="19%">风险描述</td>
                             <td width="13%">靶标</td>
                             <td width="7%">级别</td>
                             <td width="15%">整改建议</td>
@@ -1039,14 +1058,34 @@ EOD;
 
                     $html .= <<<EOD
                         <tr>
-                        <td width="17%">$riskx->risk_types</td>
-                        <td width="18%" align="left">$riskx->risk_description</td>
+                        <td width="16%">$riskx->risk_types</td>
+                        <td width="19%" align="left">$riskx->risk_description</td>
                         <td width="13%" align="left">$riskx->risk_targets</td>
                         <td width="7%">$riskx->risk_rank</td>
                         <td width="15%" align="left">$riskx->risk_proposal</td>
                         <td width="15%" align="left">$riskx->take_steps</td>
                         <td width="15%">$c_t</td>
                         </tr>
+                        <tr>
+                        <td width="16%">风险图片</td>
+EOD;
+                    $site_photos = explode(',',$riskx->site_photos);
+                    for ($sp=0; $sp < count($site_photos); $sp++) {
+                        $spa = $baseUrl_imgs.str_replace("\/",'/',trim($site_photos[$sp],'"'));
+                        $html .= <<<EOD
+                        <td width="21%" align="center">
+                            <img src="${spa}" width="80" height="100" style="padding:20px 50px;">
+                        </td>
+EOD;
+                    }
+                    $sy_unm = 4-count($site_photos);
+                        for($j=0;$j<$sy_unm;$j++){
+                            $html .= <<<EOD
+                            <td width="21%" align="center"></td>
+EOD;
+                    }
+                    $html .= <<<EOD
+                        </tr>  
 EOD;
                 }
             }}
