@@ -41,6 +41,13 @@ $this->pageTitle=Yii::app()->name . ' - Report';
         <div class="box-body">
 
             <div class="form-group">
+                <?php echo $form->labelEx($model,'customer_name',array('class'=>"col-sm-2 control-label")); ?>
+                <div class="col-sm-3">
+                    <?php echo $form->textField($model, 'customer_name', array('class'=>'form-control',)); ?>
+                </div>
+            </div>
+
+            <div class="form-group">
                 <?php echo $form->labelEx($model,'start_dt',array('class'=>"col-sm-2 control-label")); ?>
                 <div class="col-sm-3">
                     <div class="input-group date">

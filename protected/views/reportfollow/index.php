@@ -30,6 +30,7 @@ $this->pageTitle=Yii::app()->name . ' - Reportfollow';
             </div>
 	</div></div>
 	<?php 
+/*
 		$search = array(
             'JobDate',
             'CustomerID',
@@ -38,17 +39,16 @@ $this->pageTitle=Yii::app()->name . ' - Reportfollow';
             'Staff01',
 
 					);
-		if (!Yii::app()->user->isSingleCity()) $search[] = 'city_name';
+*/
+//		if (!Yii::app()->user->isSingleCity()) $search[] = 'city_name';
 		$this->widget('ext.layout.ListPageWidget', array(
 			'title'=>Yii::t('app','Reportjoblist'),
 			'model'=>$model,
 				'viewhdr'=>'//reportfollow/_listhdr',
 				'viewdtl'=>'//reportfollow/_listdtl',
-				'gridsize'=>'24',
-				'height'=>'600',
-				'search'=>$search,
-//                'advancedSearch'=>true,
-//                'hasDateButton'=>true,
+//				'search'=>$search,
+                'advancedSearch'=>true,
+                'hasDateButton'=>false,
 		));
 	?>
 </section>
@@ -58,6 +58,7 @@ $this->pageTitle=Yii::app()->name . ' - Reportfollow';
 	echo $form->hiddenField($model,'totalRow');
 	echo $form->hiddenField($model,'orderField');
 	echo $form->hiddenField($model,'orderType');
+	echo $form->hiddenField($model,'filter');
 ?>
 <?php $this->endWidget(); ?>
 <?php $this->renderPartial('//reportfollow/_type'); ?>

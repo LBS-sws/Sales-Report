@@ -21,6 +21,7 @@ class ReportfollowForm extends CFormModel
     public $start_dt;
     public $end_dt;
     public $fields;
+	public $customer_name;
 	/**
 	 * Declares customized attribute labels.
 	 * If not declared here, an attribute would have a label that is
@@ -29,6 +30,7 @@ class ReportfollowForm extends CFormModel
     public function attributeLabels()
     {
         return array(
+			'customer_name'=>Yii::t('reportjob','CustomerName'),
             'start_dt'=>Yii::t('reportjob','Start_dt'),
             'end_dt'=>Yii::t('reportjob','End_dt'),
         );
@@ -42,7 +44,7 @@ class ReportfollowForm extends CFormModel
 		return array(
 			array('id,number,type,dates,payment_term,customer_po_no,customer_account,salesperson,sales_order_no,sales_order_date,
 			ship_via,invoice_company,invoice_address,invoice_tel,delivery_company,delivery_address,delivery_tel,
-			disc,sub_total,gst,total_amount,city,generated_by,start_dt,end_dt','safe'),
+			disc,sub_total,gst,total_amount,city,generated_by,start_dt,end_dt,customer_name','safe'),
 			array('','required'),
 			//array('code','validateCode'),
 //			array('code','safe','on'=>'edit'),
@@ -89,6 +91,7 @@ class ReportfollowForm extends CFormModel
         $sql_city = "select GROUP_CONCAT(DISTINCT o.City) as citys from enums as e left join officecity as o on o.Office=e.EnumID where e.Text='" . $city . "' and e.EnumType=8";
         $city_off = Yii::app()->db->createCommand($sql_city)->queryRow();
         $jobids = "select FollowUpID from followuporder where Status=3 and JobDate>='" . $dates['start_dt'] . "' and JobDate<='" . $dates['end_dt'] . "' and City in(" . $city_off['citys'] . ")";
+		if (!empty($dates['customer_name'])) $jobids .= " and CustomerName like '%".$dates['customer_name']."%'";
         $jobids_data = Yii::app()->db->createCommand($jobids)->queryAll();
         if ($jobids_data) {
             $zipname = sys_get_temp_dir() . '/' . 'zipped_file.zip';
@@ -132,6 +135,7 @@ class ReportfollowForm extends CFormModel
         $sql_city = "select GROUP_CONCAT(DISTINCT o.City) as citys from enums as e left join officecity as o on o.Office=e.EnumID where e.Text='" . $city . "' and e.EnumType=8";
         $city_off = Yii::app()->db->createCommand($sql_city)->queryRow();
         $jobids = "select FollowUpID from followuporder where Status=3 and JobDate>='" . $dates['start_dt'] . "' and JobDate<='" . $dates['end_dt'] . "' and City in(" . $city_off['citys'] . ")";
+		if (!empty($dates['customer_name'])) $jobids .= " and CustomerName like '%".$dates['customer_name']."%'";
         $jobids_data = Yii::app()->db->createCommand($jobids)->queryAll();
         if ($jobids_data) {
             for ($fj = 0; $fj < count($jobids_data); $fj++) {
@@ -639,7 +643,7 @@ EOD;
             }
             return true;
         }else{
-            return flase;
+            return false;
         }
     }
 	public function retrieveData($index,$status)

@@ -50,8 +50,8 @@ class ReportfollowController extends Controller
 			$model->attributes = $_POST['ReportfollowList'];
 		} else {
 			$session = Yii::app()->session;
-			if (isset($session['report_rq02']) && !empty($session['report_rq02'])) {
-				$criteria = $session['report_rq02'];
+			if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+				$criteria = $session[$model->criteriaName()];
 				$model->setCriteria($criteria);
 			}
 		}

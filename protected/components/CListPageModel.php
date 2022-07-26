@@ -80,6 +80,14 @@ class CListPageModel extends CFormModel
 		return array();
 	}
 	
+	public function staticSearchColumns() {
+		return array();
+	}
+	
+	public function isStaticSearch() {
+		return in_array($this->searchField, $this->staticSearchColumns());
+	}
+	
 	public function isAdvancedSearch() {
 		return ($this->searchField=='ex_advanced');
 	}
@@ -89,6 +97,7 @@ class CListPageModel extends CFormModel
 
 		$session_name = 'criteria_'.get_class($this);
 		$columns = $this->searchColumns();
+		$static = $this->staticSearchColumns();
 		
 		$elm = array();
 		$session = Yii::app()->session;
@@ -104,13 +113,17 @@ class CListPageModel extends CFormModel
 			foreach ($elm as $fid=>$items) {
 				$equal = '';
 				$range = '';
-				foreach ($items as $oper=>$values) {
-					$cond = $this->conditionclause($columns[$fid],$oper,$values);
-					if (strpos('=,<>,like',$oper)!==false) {
-						$equal .= ($equal!='' ? ' or ' : '').$cond;
-					} else {
-						$range .= ($range!='' ? ' and ' : '').$cond;
+				if (!in_array($fid,$static)) {
+					foreach ($items as $oper=>$values) {
+						$cond = $this->conditionclause($columns[$fid],$oper,$values);
+						if (strpos('=,<>,like',$oper)!==false) {
+							$equal .= ($equal!='' ? ' or ' : '').$cond;
+						} else {
+							$range .= ($range!='' ? ' and ' : '').$cond;
+						}
 					}
+				} else {
+					$equal .= ($equal!='' ? ' or ' : '').$columns[$fid];
 				}
 				$stmt = '';
 				if ($equal!='') $stmt .= "($equal)";

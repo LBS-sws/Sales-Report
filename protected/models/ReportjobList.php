@@ -26,6 +26,19 @@ class ReportjobList extends CListPageModel
             'FinishTime'=>Yii::t('reportjob','FinishTime'),
 		);
 	}
+
+	public function searchColumns() {
+		$suffix = Yii::app()->params['envSuffix'];
+		$search = array(
+			'JobDate'=>"date_format(j.JobDate,'%Y-%m-%d')",
+			'CustomerID'=>'j.CustomerID',
+			'CustomerName'=>'j.CustomerName',
+			'ServiceType'=>'s.ServiceName',
+			'Staff01'=>'t.StaffName',
+		);
+		if (!Yii::app()->user->isSingleCity()) $search['City'] = 'b.name';
+		return $search;
+	}
 	
 	public function retrieveDataByPage($pageNum=1)
 	{
@@ -45,6 +58,16 @@ class ReportjobList extends CListPageModel
 		$sql2 = "select count(JobID) from joborder as j left join officecity as o on j.City=o.City  left join enums as e on e.EnumID=o.Office left join service as s on s.ServiceType=j.ServiceType left join staff as t on t.StaffID=j.Staff01 left join security".$se_suffix.".sec_city as b on e.Text=b.code where e.EnumType=8 and j.Status=3 and e.Text in ($city) and j.JobDate>='".$lainch_date."'
 			";
 		$clause = "";
+        $columns = $this->searchColumns();
+        if (!empty($this->searchField) && (!empty($this->searchValue) || $this->isAdvancedSearch())) {
+            if ($this->isAdvancedSearch()) {
+                $clause = $this->buildSQLCriteria();
+            } else {
+                $svalue = str_replace("'","\'",$this->searchValue);
+                $clause .= General::getSqlConditionClause($columns[$this->searchField],$svalue);
+            }
+        }
+/*
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
 			$svalue = str_replace("'","\'",$this->searchValue);
 			switch ($this->searchField) {
@@ -68,10 +91,16 @@ class ReportjobList extends CListPageModel
                     break;
 			}
 		}
-
+*/
 		$order = "";
 		if (!empty($this->orderField)) {
-			$order .= " order by ".$this->orderField." ";
+			if ($this->orderField=='StartTime') {
+				$order .= " order by concat(if(j.StartTime>=j.FinishTime, date_format(date_add(j.FinishDate, interval -1 day),'%Y-%m-%d'), date_format(j.FinishDate,'%Y-%m-%d')),' ',j.StartTime) ";
+			} elseif ($this->orderField=='FinishTime') {
+				$order .= " order by concat(date_format(j.FinishDate,'%Y-%m-%d'),' ',j.FinishTime) ";
+			} else {
+				$order .= " order by ".$this->orderField." ";
+			}
 			if ($this->orderType=='D') $order .= "desc ";
 		}else{
 		    $order ="order by JobDate desc,FinishTime desc";
@@ -107,7 +136,7 @@ class ReportjobList extends CListPageModel
 			}
 		}
 		$session = Yii::app()->session;
-		$session['report_rq01'] = $this->getCriteria();
+		$session[$this->criteriaName()] = $this->getCriteria();
 		return true;
 	}
 

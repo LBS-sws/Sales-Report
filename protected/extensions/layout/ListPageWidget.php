@@ -64,7 +64,7 @@ class ListPageWidget extends CWidget
 		$layout .= '</div>';
 		
 		$layout .= '<div class="box-footer clearfix">';
-		if ($this->hasPageBar) {
+		if ($this->hasSearchBar) {
 			$layout .= '<div class="box-tools">'.$this->pageBar().'</div>';
 		}
 		$layout .= '<span class="pull-right">'.Yii::t('misc','Rec').': '.$this->model->totalRow.'&nbsp;&nbsp;<a href="#" id="goTableTop">'.Yii::t('misc','Go Top').'</a>'.'</span>';
@@ -99,12 +99,8 @@ $('#$fldid').on('change', function(){Loading.show();jQuery.yii.submitForm(this,'
 		if ($this->hasSearchBar) {
 			$droplistid = $modelName.'_searchField';
 			$textid = $modelName.'_searchValue';
-
-			if(empty($_GET['index'])){
-                $param = array('pageNum'=>1);
-            }else{
-                $param = array('index'=>$_GET['index'],'pageNum'=>1);
-            }
+			
+			$param = array('pageNum'=>1);
 			if (!empty($this->searchlinkparam)) $param = array_merge($param, $this->searchlinkparam);
 			$path = Yii::app()->createAbsoluteUrl($link, $param);
 			
@@ -120,9 +116,12 @@ EOF;
 			Yii::app()->clientScript->registerScript('ListPageSearchButton',$js,CClientScript::POS_READY);
 			
 			if ($this->advancedSearch) {
+				$static = json_encode($this->model->staticSearchColumns());
 				$js = <<<EOF
 $('#$droplistid').on('change', function(){
-	if ($(this).val()=='ex_advanced') {
+	var static = JSON.parse('$static');
+	var selection = $(this).val();
+	if (selection=='ex_advanced' || static.indexOf(selection)!=-1) {
 		$('#$textid').val('');
 		$('#$textid').attr('readonly',true);
 	} else {
@@ -271,7 +270,7 @@ EOF;
 		}
 		$layout = TbHtml::dropDownList($modelName.'[searchField]',$this->model->searchField,$list,array('id'=>$modelName.'_searchField'));
 		$layout .= TbHtml::textField($modelName.'[searchValue]',$this->model->searchValue,
-					array('size'=>15,'id'=>$modelName.'_searchValue','readonly'=>($this->model->isAdvancedSearch()),
+					array('size'=>15,'id'=>$modelName.'_searchValue','readonly'=>($this->model->isAdvancedSearch()||$this->model->isStaticSearch()),
 						'placeholder'=>Yii::t('misc','Search'),
 //						'append'=>TbHtml::button('<span class="fa fa-search"></span> '.Yii::t('misc','Search'), array('submit'=>Yii::app()->createUrl($link,$param),)),
 						'append'=>TbHtml::button('<span class="fa fa-search"></span> '.Yii::t('misc','Search').$labelplus, array('id'=>'btnSearch',)),
@@ -381,4 +380,16 @@ EOF;
 			throw new CException(Yii::t('yii','{widget} cannot find the view "{view}".',
 				array('{widget}'=>get_class($this), '{view}'=>$view)));
 	}
+    public function needHrefButton($access, $url, $hrefType, $param) {
+        $rw = Yii::app()->user->validRWFunction($access);
+        if($rw){
+            $icon = $hrefType == 'edit' ? "glyphicon glyphicon-pencil" : "glyphicon glyphicon-eye-open";
+            $alt = $hrefType == 'edit' ? Yii::t('misc','Edit') : Yii::t('misc','View');
+            $lnk=Yii::app()->createUrl($url,$param);
+
+            return "<a href=\"$lnk\"><span class=\"$icon\"></span></a>";
+        }else{
+            return "&nbsp;";
+        }
+    }
 }

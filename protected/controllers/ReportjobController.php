@@ -50,8 +50,8 @@ class ReportjobController extends Controller
 			$model->attributes = $_POST['ReportjobList'];
 		} else {
 			$session = Yii::app()->session;
-			if (isset($session['report_rq01']) && !empty($session['report_rq01'])) {
-				$criteria = $session['report_rq01'];
+			if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+				$criteria = $session[$model->criteriaName()];
 				$model->setCriteria($criteria);
 			}
 		}
