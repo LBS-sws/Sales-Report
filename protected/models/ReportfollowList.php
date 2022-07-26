@@ -97,6 +97,8 @@ class ReportfollowList extends CListPageModel
 				$order .= " order by concat(date_format(j.JobDate,'%Y-%m-%d'),' ',j.StartTime) ";
 			} elseif ($this->orderField=='FinishTime') {
 				$order .= " order by concat(date_format(j.JobDate,'%Y-%m-%d'),' ',j.FinishTime) ";
+			} elseif ($this->orderField=='ServiceType') {
+				$order .= " order by s.ServiceName ";
 			} else {
 				$order .= " order by ".$this->orderField." ";
 			}

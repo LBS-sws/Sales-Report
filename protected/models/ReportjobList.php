@@ -98,6 +98,8 @@ class ReportjobList extends CListPageModel
 				$order .= " order by concat(if(j.StartTime>=j.FinishTime, date_format(date_add(j.FinishDate, interval -1 day),'%Y-%m-%d'), date_format(j.FinishDate,'%Y-%m-%d')),' ',j.StartTime) ";
 			} elseif ($this->orderField=='FinishTime') {
 				$order .= " order by concat(date_format(j.FinishDate,'%Y-%m-%d'),' ',j.FinishTime) ";
+			} elseif ($this->orderField=='ServiceType') {
+				$order .= " order by s.ServiceName ";
 			} else {
 				$order .= " order by ".$this->orderField." ";
 			}
