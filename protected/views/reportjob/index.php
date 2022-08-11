@@ -53,6 +53,7 @@ $this->pageTitle=Yii::app()->name . ' - Reportjob';
 	?>
 </section>
 <?php $this->renderPartial('//site/removedialog'); ?>
+<?php $this->renderPartial('//reportjob/_email'); ?>
 <?php
 	echo $form->hiddenField($model,'pageNum');
 	echo $form->hiddenField($model,'totalRow');

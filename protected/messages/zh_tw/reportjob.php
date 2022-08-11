@@ -21,8 +21,8 @@ return array(
     'Batch Form'=>'批量处理',
     'Start_dt'=>'开始时间',
     'End_dt'=>'结束时间',
-	'Email'=>'电邮',
-	'Resent'=>'再发送',
-	'Report Email'=>'服务报告电邮',	
+	'Email'=>'電郵',
+	'Resent'=>'再發送',
+	'Report Email'=>'服務報告電郵',
 );
 ?>

@@ -19,5 +19,9 @@
         $dlnk = Yii::app()->createUrl('reportjob/delcache',array('index'=>$this->record['JobID'],'jobdate'=>$this->record['JobDate'],'city'=>$this->record['Citycode']));
         echo TbHtml::Button('<span class="fa fa-remove"></span> '."删除缓存", array('submit'=>$dlnk,'size' => TbHtml::BUTTON_SIZE_SMALL));
         ?>
+        <?php
+        $cmd = 'showEmail(event,'.$this->record['JobID'].');';
+        echo TbHtml::Button('<span class="fa fa-envelope"></span> '.Yii::t('reportjob','Email'), array('onclick'=>$cmd,'size' => TbHtml::BUTTON_SIZE_SMALL));
+        ?>
     </td>
 </tr>

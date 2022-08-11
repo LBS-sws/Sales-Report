@@ -30,7 +30,7 @@ class ReportjobController extends Controller
 			),
 */
 			array('allow', 
-				'actions'=>array('new','edit','delete','save','add','down','AllDelete','delcache','batch','batchcreate','batchdown'),
+				'actions'=>array('new','edit','delete','save','add','down','AllDelete','delcache','batch','batchcreate','batchdown','emaildetail','resentemail'),
 				'expression'=>array('ReportjobController','allowReadWrite'),
 			),
 			array('allow', 
@@ -192,6 +192,48 @@ class ReportjobController extends Controller
             $this->redirect(Yii::app()->createUrl('reportjob/batch'));
         }
     }
+	
+	public function actionEmaildetail($jobid) {
+		$rtn = '';
+		$data = ReportEmail::getData($jobid, 1);
+        if (key_exists("message",$data) && $data["message"]=="Success" && isset($data['data'])) {
+			foreach ($data['data'] as $row) {
+				$status = $row['status'];
+				$status_desc = $status=='C' ? '成功' : ($status=='F' ? '失败' : ($status='P' ? '待发送' : '进行中'));
+				$send_dt = $row['send_dt'];
+				$message = $row['message'];
+				$mesgrow = $status=='F' ? "<tr><td width=15%><b>错误信息</b></td><td colspan=3>$message</td></tr>" : '';
+				$to_addr = json_decode($row['to_addr'], true);
+				$to_addr_text = is_array($to_addr) ? implode(';', $to_addr) : (empty($row['to_addr']) ? '待定' : $row['to_addr']);
+				$rtn .= <<<EOF
+<table class="table table-bordered">
+	<tr><td width=15%><b>收件者:</b></td><td colspan=3>$to_addr_text</td></tr>
+	<tr><td width=15%><b>发送时间:</b></td><td>$send_dt</td><td width=10%><b>状态:</b></td><td>$status_desc</td></tr>
+	$mesgrow
+</table>
+<br>
+EOF;
+			}
+		}
+		if ($rtn=='') $rtn = <<<EOF
+<table class="table table-bordered">
+	<tr><td>没有发送记录</td></tr>
+</table>
+<br>
+EOF;
+		echo $rtn;
+	}
+	
+	public function actionResentemail($job_id) {
+		$data = ReportEmail::addData($job_id, 1);
+		if ($data['code']==0) {
+            Dialog::message(Yii::t('dialog','Information'), '成功. 电邮待重发.');
+		} else {
+            Dialog::message(Yii::t('dialog','Warning'), '电邮未能重发.');
+		}	
+		$this->redirect(Yii::app()->createUrl('reportjob/index'));
+	}
+	
 	public static function allowReadWrite() {
 		return Yii::app()->user->validRWFunction('RQ01');
 	}
