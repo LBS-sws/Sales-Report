@@ -47,7 +47,7 @@ $this->pageTitle=Yii::app()->name . ' - Reportjob';
 				'viewhdr'=>'//reportjob/_listhdr',
 				'viewdtl'=>'//reportjob/_listdtl',
 				'advancedSearch'=>true,
-				'hasDateButton'=>false,
+				'hasDateButton'=>true,
 //				'search'=>$search,
 		));
 	?>

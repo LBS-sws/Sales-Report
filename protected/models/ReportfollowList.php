@@ -66,6 +66,7 @@ class ReportfollowList extends CListPageModel
                 $clause .= General::getSqlConditionClause($columns[$this->searchField],$svalue);
             }
         }
+		$clause .= $this->getDateRangeCondition('j.JobDate');
 /*
 		if (!empty($this->searchField) && !empty($this->searchValue)) {
 			$svalue = str_replace("'","\'",$this->searchValue);

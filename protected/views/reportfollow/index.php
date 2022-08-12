@@ -48,7 +48,7 @@ $this->pageTitle=Yii::app()->name . ' - Reportfollow';
 				'viewdtl'=>'//reportfollow/_listdtl',
 //				'search'=>$search,
                 'advancedSearch'=>true,
-                'hasDateButton'=>false,
+                'hasDateButton'=>true,
 		));
 	?>
 </section>
