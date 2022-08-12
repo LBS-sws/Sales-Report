@@ -69,8 +69,14 @@ $this->pageTitle=Yii::app()->name . ' - Credits for';
                 <?php echo $form->labelEx($model,'check_targt',array('class'=>"col-sm-2 control-label")); ?>
                 <div class="col-sm-2">
                     <?php
-                    if ($model->equipment_type_id>0){ echo $form->dropDownList($model, 'check_targt', $equipment_type_list_selects[$model->equipment_type_id]);}else{
-                        echo $form->dropDownList($model, 'check_targt', $equipment_type_list_selects);
+                    if ($model->equipment_type_id>0){ 
+						echo $form->dropDownList($model, 'check_targt', $equipment_type_list_selects[$model->equipment_type_id]);
+					}else{
+						$modified_list = array();
+						foreach ($equipment_type_list_selects as $key=>$value) {
+							$modified_list[isset($equipment_type_lists[$key]) ? $equipment_type_lists[$key] : $key] = $value;
+						}	
+                        echo $form->dropDownList($model, 'check_targt', $modified_list);
                     }
                     ?>
                 </div>
