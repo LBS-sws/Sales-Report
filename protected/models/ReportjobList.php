@@ -40,6 +40,64 @@ class ReportjobList extends CListPageModel
 		return $search;
 	}
 	
+	protected function getSQL($type) {
+        $se_suffix = Yii::app()->params['envSuffix'];
+        $tab_suffix = Yii::app()->params['table_envSuffix'];
+		$city = Yii::app()->user->city_allow();
+        $lainch_date_r = Yii::app()->db->createCommand()->select("*")
+            ->from($tab_suffix."city_launch_date")->where("city=:city",array(":city"=>Yii::app()->user->city()))->queryRow();
+        if ($lainch_date_r){
+            $lainch_date = $lainch_date_r['launch_date'];
+        }else{
+            $lainch_date = '2022-02-10';
+        }
+
+		$sql = $type==1
+			? "select j.*,b.name city_name,b.code,s.ServiceName, t1.StaffName as Staff01Name, t2.StaffName as Staff02Name, t3.StaffName as Staff03Name
+				from joborder as j 
+				left join officecity as o on j.City=o.City  
+				left join enums as e on e.EnumID=o.Office 
+				left join service as s on s.ServiceType=j.ServiceType 
+				left join staff as t1 on t1.StaffID=j.Staff01 
+				left join staff as t2 on t2.StaffID=j.Staff02 
+				left join staff as t3 on t3.StaffID=j.Staff03 
+				left join security$se_suffix.sec_city as b on e.Text=b.code 
+				where e.EnumType=8 and j.Status=3 and e.Text in ($city) and j.JobDate>='$lainch_date'
+				"
+			: "select count(JobID) 
+				from joborder as j 
+				left join officecity as o on j.City=o.City  
+				left join enums as e on e.EnumID=o.Office 
+				left join service as s on s.ServiceType=j.ServiceType 
+				left join staff as t1 on t1.StaffID=j.Staff01 
+				left join staff as t2 on t2.StaffID=j.Staff02 
+				left join staff as t3 on t3.StaffID=j.Staff03 
+				left join security$se_suffix.sec_city as b on e.Text=b.code 
+				where e.EnumType=8 and j.Status=3 and e.Text in ($city) and j.JobDate>='$lainch_date'
+				";
+
+		$clause = "";
+        $columns = $this->searchColumns();
+        if (!empty($this->searchField) && (!empty($this->searchValue) || $this->isAdvancedSearch())) {
+            if ($this->isAdvancedSearch()) {
+                $clause = $this->buildSQLCriteria();
+            } else {
+                $svalue = str_replace("'","\'",$this->searchValue);
+                $clause .= General::getSqlConditionClause($columns[$this->searchField],$svalue);
+            }
+        }
+		$clause .= $this->getDateRangeCondition('j.JobDate');
+		return $sql.$clause;
+	}
+
+	public function getDataSQL() {
+		return $this->getSQL(1);
+	}
+	
+	public function getCountSQL() {
+		return $this->getSQL(2);
+	}
+	
 	public function retrieveDataByPage($pageNum=1)
 	{
         $se_suffix = Yii::app()->params['envSuffix'];

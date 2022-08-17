@@ -30,7 +30,7 @@ class ReportjobController extends Controller
 			),
 */
 			array('allow', 
-				'actions'=>array('new','edit','delete','save','add','down','AllDelete','delcache','batch','batchcreate','batchdown','emaildetail','resentemail'),
+				'actions'=>array('new','edit','delete','save','add','down','AllDelete','delcache','batch','batchcreate','batchdown','emaildetail','resentemail','downloadinbatch','downloadzip'),
 				'expression'=>array('ReportjobController','allowReadWrite'),
 			),
 			array('allow', 
@@ -43,7 +43,7 @@ class ReportjobController extends Controller
 		);
 	}
 
-	public function actionIndex($pageNum=0) 
+	public function actionIndex($pageNum=0,$fid='') 
 	{
 		$model = new ReportjobList;
 		if (isset($_POST['ReportjobList'])) {
@@ -58,7 +58,7 @@ class ReportjobController extends Controller
 		$model->determinePageNum($pageNum);
 		$model->retrieveDataByPage($model->pageNum);
 
-		$this->render('index',array('model'=>$model));
+		$this->render('index',array('model'=>$model,'fid'=>$fid));
 	}
 
     public function actionAdd(){
@@ -199,12 +199,13 @@ class ReportjobController extends Controller
         if (key_exists("message",$data) && $data["message"]=="Success" && isset($data['data'])) {
 			foreach ($data['data'] as $row) {
 				$status = $row['status'];
-				$status_desc = $status=='C' ? '成功' : ($status=='F' ? '失败' : ($status='P' ? '待发送' : '进行中'));
+				$status_desc = $status=='C' ? '成功' : ($status=='F' ? '失败' : ($status=='P' ? '待发送' : '进行中'));
 				$send_dt = $row['send_dt'];
 				$message = $row['message'];
 				$mesgrow = $status=='F' ? "<tr><td width=15%><b>错误信息</b></td><td colspan=3>$message</td></tr>" : '';
-				$to_addr = json_decode($row['to_addr'], true);
-				$to_addr_text = is_array($to_addr) ? implode(';', $to_addr) : (empty($row['to_addr']) ? '待定' : $row['to_addr']);
+//				$to_addr = json_decode($row['to_addr'], true);
+//				$to_addr_text = is_array($to_addr) ? implode(';', $to_addr) : (empty($row['to_addr']) && $status=='P' ? '数据读取中' : $row['to_addr']);
+				$to_addr_text = empty($row['to_addr']) && $status=='P' ? '数据读取中' : $row['to_addr'];
 				$rtn .= <<<EOF
 <table class="table table-bordered">
 	<tr><td width=15%><b>收件者:</b></td><td colspan=3>$to_addr_text</td></tr>
@@ -232,6 +233,32 @@ EOF;
             Dialog::message(Yii::t('dialog','Warning'), '电邮未能重发.');
 		}	
 		$this->redirect(Yii::app()->createUrl('reportjob/index'));
+	}
+
+	public function actionDownloadinbatch() 
+	{
+		$count = ReportJobBatch::countJobReport();
+		if ($count == 0) {
+            Dialog::message(Yii::t('dialog','Warning'), '未能下载. 原因: 沒有相關下载项目.');
+			$this->redirect(Yii::app()->createUrl('reportjob/index'));
+		} elseif ($count > 50) {
+            Dialog::message(Yii::t('dialog','Warning'), '未能下载. 原因: 下载项目超过50个.');
+			$this->redirect(Yii::app()->createUrl('reportjob/index'));
+		} else {
+			$fid = ReportJobBatch::downloadJobReport();
+            Dialog::message(Yii::t('dialog','Information'), '下载完成');
+			$this->redirect(Yii::app()->createUrl('reportjob/index',array('fid'=>$fid)));
+		}
+	}
+
+	public function actionDownloadzip($fid) {
+		$zipname = sys_get_temp_dir().'/'.$fid.'.zip';
+		header('Content-Type: application/zip');
+		header('Content-disposition: attachment; filename=服务报告.zip');
+		header('Content-Length: ' . filesize($zipname));
+		readfile($zipname);
+		unlink($zipname);
+		Yii::app()->end();
 	}
 	
 	public static function allowReadWrite() {

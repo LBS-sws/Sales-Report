@@ -27,6 +27,7 @@ $this->pageTitle=Yii::app()->name . ' - Reportjob';
 	<div class="btn-group" role="group">
         <?php echo TbHtml::button('<span class="fa fa-download"></span> '.Yii::t('misc','Batch'), array('submit'=>Yii::app()->createUrl('reportjob/batch')));
         ?>
+        <?php echo TbHtml::button('<span class="fa fa-download"></span> '.Yii::t('reportjob','Download in Batch'), array('id'=>'btnBatchDownload'));?>
 	</div>
 	</div></div>
 	<?php 
@@ -79,6 +80,18 @@ $('body').on('click','#all',function() {
 Yii::app()->clientScript->registerScript('selectAll',$js,CClientScript::POS_READY);
 $js = Script::genDeleteData(Yii::app()->createUrl('reportjob/alldelete'));
 Yii::app()->clientScript->registerScript('deleteRecordjob',$js,CClientScript::POS_READY);
+
+$url = Yii::app()->createUrl('reportjob/downloadinbatch');
+$js = "
+$('#btnBatchDownload').on('click', function(){Loading.show();jQuery.yii.submitForm(this,'$url',{});return false;});
+";
+Yii::app()->clientScript->registerScript('downloadInBatch',$js,CClientScript::POS_READY);
+
+if (isset($fid) && !empty($fid)) {
+	$file_url = Yii::app()->createAbsoluteUrl('reportjob/downloadzip',array('fid'=>$fid));
+	$js = "$(location).attr('href','$file_url');";
+	Yii::app()->clientScript->registerScript('redirection',$js,CClientScript::POS_READY);
+}
 ?>
 
 

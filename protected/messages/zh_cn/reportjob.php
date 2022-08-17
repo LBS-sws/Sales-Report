@@ -24,5 +24,6 @@ return array(
 	'Email'=>'电邮',
 	'Resent'=>'再发送',
 	'Report Email'=>'服务报告电邮',	
+	'Download in Batch'=>'批量下载',
 );
 ?>
