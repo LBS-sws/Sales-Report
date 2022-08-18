@@ -33,7 +33,8 @@ class ReportJobBatch {
 			if (!file_exists($reportfile)) {
 				self::generateJobReport($row, $city, $reportfile);
 			}
-			if (file_exists($reportfile)) $file_list[$reportfile] = "$custname-($servicename)$job_dt-$job_id.pdf";;
+			if (file_exists($reportfile))
+				$file_list[$reportfile] = mb_convert_encoding("$custname-($servicename)$job_dt-$job_id.pdf",($city=='MO'?'BIG5':'GB2312'),'UTF-8');
 		}
 
 		$fid = 'j'.md5(microtime());
