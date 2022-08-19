@@ -252,6 +252,7 @@ EOD;
 					$site_photos = explode(',', $photox['site_photos']);
 					for ($sp = 0; $sp < count($site_photos); $sp++) {
 						$spa = $baseUrl_imgs . str_replace("\/", '/', trim($site_photos[$sp], '"'));
+						if (!General::isWebImageValid($spa)) $spa = '/images/spacer.gif';
 						$html .= <<<EOD
                             <td width="20%" align="center">
 								<img src="$spa" width="80" height="100" style="padding:20px 50px;">
@@ -341,6 +342,7 @@ EOD;
 					$site_photos = explode(',',$riskx['site_photos']);
 					for ($sp=0; $sp < count($site_photos); $sp++) {
 						$spa = $baseUrl_imgs.str_replace("\/",'/',trim($site_photos[$sp],'"'));
+						if (!General::isWebImageValid($spa)) $spa = '/images/spacer.gif';
 						$html .= <<<EOD
 							<td width="21%" align="center">
 								<img src="${spa}" width="80" height="100" style="padding:20px 50px;">
