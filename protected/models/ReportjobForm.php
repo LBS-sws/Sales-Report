@@ -339,8 +339,7 @@ class ReportjobForm extends CFormModel
                         <img src="$logo_img" width="60" height="70">
                     </td>
                     <td  align="center" width="50%" style="float:left;border: none;border-top: none;">
-                        <p>史伟莎环保科技有限公司</p>
-                        <p style="font-size: 14px;line-height:1px;">服务现场管理报告</p>
+                        <p style="font-size: 20px;line-height:15px;">史伟莎服务现场管理报告</p>
                     </td>
                 </tr>
                 <tr class="myTitle">
@@ -919,8 +918,7 @@ EOD;
                         <img src="$logo_img" width="60" height="70">
                     </td>
                     <td  align="center" width="50%" style="float:left;border: none;border-top: none;">
-                        <p>史伟莎环保科技有限公司</p>
-                        <p style="font-size: 14px;line-height:1px;">服务现场管理报告</p>
+                        <p style="font-size: 20px;line-height:15px;">史伟莎服务现场管理报告</p>
                     </td>
                 </tr>
                 <tr class="myTitle">
