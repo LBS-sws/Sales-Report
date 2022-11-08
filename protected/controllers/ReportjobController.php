@@ -247,7 +247,7 @@ EOF;
 		} else {
 			$zip = ReportJobBatch::downloadJobReport();
             Dialog::message(Yii::t('dialog','Information'), '下载完成');
-			$this->redirect(Yii::app()->createUrl('reportjob/index',array('fid'=>$zip[0],'fileNmme'=>$zip[1])));
+			$this->redirect(Yii::app()->createUrl('reportjob/index',array('fid'=>$zip[0],'fileName'=>$zip[1])));
 		}
 	}
 
