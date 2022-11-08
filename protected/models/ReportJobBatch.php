@@ -56,8 +56,8 @@ class ReportJobBatch {
                 $zipFileName = $zipFileName."等".count($data)."个服务报告";
             }
         }
-        $zipNewName = date('Y-m').'_'.$zipFileName;
-        $zipNewName = "test";
+        $zipNewName = date('Y-m-d').'_'.$zipFileName;
+//        $zipNewName = "test";
 //        $zipNewFile = sys_get_temp_dir() . '/' . date('Y-m').'_'.$zipFileName.'.zip';
 		$fid = 'j'.md5(microtime());
 		$zip = new ZipArchive;
@@ -68,7 +68,7 @@ class ReportJobBatch {
 		}
 //        $zip->renameName($zipname,$zipNewFile);
         $zip->close();
-		return $fid;
+		return [$fid,$zipNewName];
 /*
 		header('Content-Type: application/zip');
 		header('Content-disposition: attachment; filename=服务报告.zip');

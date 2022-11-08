@@ -43,7 +43,7 @@ class ReportjobController extends Controller
 		);
 	}
 
-	public function actionIndex($pageNum=0,$fid='')
+	public function actionIndex($pageNum=0,$zipInfo =array())
 	{
 		$model = new ReportjobList;
 		if (isset($_POST['ReportjobList'])) {
@@ -58,7 +58,7 @@ class ReportjobController extends Controller
 		$model->determinePageNum($pageNum);
 		$model->retrieveDataByPage($model->pageNum);
 
-		$this->render('index',array('model'=>$model,'fid'=>$fid));
+		$this->render('index',array('model'=>$model,'zipInfo'=>$zipInfo));
 	}
 
     public function actionAdd(){
@@ -245,16 +245,16 @@ EOF;
             Dialog::message(Yii::t('dialog','Warning'), '未能下载. 原因: 下载项目超过50个.');
 			$this->redirect(Yii::app()->createUrl('reportjob/index'));
 		} else {
-			$fid = ReportJobBatch::downloadJobReport();
+			$zipInfo = ReportJobBatch::downloadJobReport();
             Dialog::message(Yii::t('dialog','Information'), '下载完成');
-			$this->redirect(Yii::app()->createUrl('reportjob/index',array('fid'=>$fid)));
+			$this->redirect(Yii::app()->createUrl('reportjob/index',array('zipInfo'=>$zipInfo)));
 		}
 	}
 
-	public function actionDownloadzip($fid) {
+	public function actionDownloadzip($fid,$fileName) {
 		$zipname = sys_get_temp_dir().'/'.$fid.'.zip';
 		header('Content-Type: application/zip');
-		header('Content-disposition: attachment; filename=服务报告.zip');
+		header("Content-disposition: attachment; filename=$fileName.zip");
 		header('Content-Length: ' . filesize($zipname));
 		readfile($zipname);
 		unlink($zipname);
