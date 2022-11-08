@@ -36,6 +36,27 @@ class ReportFollowBatch {
 			if (file_exists($reportfile)) $file_list[$reportfile] = mb_convert_encoding("$custname-($servicename)$job_dt-$job_id.pdf",($city=='MO'?'BIG5':'GB2312'),'UTF-8');
 		}
 
+        $zipFileNameArr = [];
+        if(count($data)){
+            if(count($data)>10){
+                $arr = array_slice($data, 0, 10);
+                foreach ($arr as $key => $val){
+                    $zipFileNameArr = $val['CustomerName'];
+                }
+                $zipFileNameArr = array_unique($zipFileNameArr);
+                $zipFileName = implode("、",$zipFileNameArr);
+                $zipFileName = $zipFileName."等".count($data)."个服务报告";
+            }else{
+                foreach ($data as $key => $val){
+//                    $zipFileName.=$val['CustomerName']."、";
+                    $zipFileNameArr = $val['CustomerName'];
+                }
+                $zipFileNameArr = array_unique($zipFileNameArr);
+                $zipFileName = implode("、",$zipFileNameArr);
+                $zipFileName = $zipFileName."等".count($data)."个服务报告";
+            }
+        }
+        $zipNewName = date('Y-m-d').'_'.$zipFileName;
 		$fid = 'f'.md5(microtime());
 		$zip = new ZipArchive;
 		$zipname = sys_get_temp_dir().'/'.$fid.'.zip';
@@ -44,8 +65,7 @@ class ReportFollowBatch {
 			$zip->addFile($pdf, $result);
 		}
 		$zip->close();
-		
-		return $fid;
+		return [$fid,$zipNewName];
 	}
 	
 	public static function generateJobReport($data, $city, $reportfile) {

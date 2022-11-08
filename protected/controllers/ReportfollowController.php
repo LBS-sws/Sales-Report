@@ -43,7 +43,7 @@ class ReportfollowController extends Controller
 		);
 	}
 
-	public function actionIndex($pageNum=0,$fid='') 
+	public function actionIndex($pageNum=0,$fid='',$fileName='')
 	{
 		$model = new ReportfollowList;
 		if (isset($_POST['ReportfollowList'])) {
@@ -58,7 +58,7 @@ class ReportfollowController extends Controller
 		$model->determinePageNum($pageNum);
 		$model->retrieveDataByPage($model->pageNum);
 
-		$this->render('index',array('model'=>$model,'fid'=>$fid));
+        $this->render('index',array('model'=>$model,'fid'=>$fid,'fileName'=>$fileName));
 	}
 
 	public function actionEdit($index)
@@ -174,21 +174,21 @@ EOF;
             Dialog::message(Yii::t('dialog','Warning'), '未能下载. 原因: 下载项目超过50个.');
 			$this->redirect(Yii::app()->createUrl('reportfollow/index'));
 		} else {
-			$fid = ReportFollowBatch::downloadJobReport();
+            $zipInfo = ReportJobBatch::downloadJobReport();
             Dialog::message(Yii::t('dialog','Information'), '下载完成');
-			$this->redirect(Yii::app()->createUrl('reportfollow/index',array('fid'=>$fid)));
+            $this->redirect(Yii::app()->createUrl('reportjob/index',array('fid'=>$zipInfo[0],'fileName'=>$zipInfo[1])));
 		}
 	}
 
-	public function actionDownloadzip($fid) {
-		$zipname = sys_get_temp_dir().'/'.$fid.'.zip';
-		header('Content-Type: application/zip');
-		header('Content-disposition: attachment; filename=服务报告.zip');
-		header('Content-Length: ' . filesize($zipname));
-		readfile($zipname);
-		unlink($zipname);
-		Yii::app()->end();
-	}
+    public function actionDownloadzip($fid,$fileName) {
+        $zipname = sys_get_temp_dir().'/'.$fid.'.zip';
+        header('Content-Type: application/zip');
+        header('Content-disposition: attachment; filename='.$fileName.'.zip');
+        header('Content-Length: ' . filesize($zipname));
+        readfile($zipname);
+        unlink($zipname);
+        Yii::app()->end();
+    }
 	
 	public static function allowReadWrite() {
 		return Yii::app()->user->validRWFunction('RQ02');

@@ -39,26 +39,27 @@ class ReportJobBatch {
 		}
 //        $sqlCust = "select CustomerName,CustomerID,JobID from joborder where Status=3 and City in({$jobids}) GROUP BY CustomerID";
 //        $custResult = Yii::app()->db->createCommand($sqlCust)->queryAll();
-        $zipFileName = '';
+        $zipFileNameArr = [];
         if(count($data)){
             if(count($data)>10){
                 $arr = array_slice($data, 0, 10);
                 foreach ($arr as $key => $val){
-                    $zipFileName.=$val['CustomerName']."、";
+                    $zipFileNameArr = $val['CustomerName'];
                 }
-                $zipFileName = rtrim($zipFileName,'、');
+                $zipFileNameArr = array_unique($zipFileNameArr);
+                $zipFileName = implode("、",$zipFileNameArr);
                 $zipFileName = $zipFileName."等".count($data)."个服务报告";
             }else{
                 foreach ($data as $key => $val){
-                    $zipFileName.=$val['CustomerName']."、";
+//                    $zipFileName.=$val['CustomerName']."、";
+                    $zipFileNameArr = $val['CustomerName'];
                 }
-                $zipFileName = rtrim($zipFileName,'、');
+                $zipFileNameArr = array_unique($zipFileNameArr);
+                $zipFileName = implode("、",$zipFileNameArr);
                 $zipFileName = $zipFileName."等".count($data)."个服务报告";
             }
         }
         $zipNewName = date('Y-m-d').'_'.$zipFileName;
-//        $zipNewName = "test";
-//        $zipNewFile = sys_get_temp_dir() . '/' . date('Y-m').'_'.$zipFileName.'.zip';
 		$fid = 'j'.md5(microtime());
 		$zip = new ZipArchive;
 		$zipname = sys_get_temp_dir().'/'.$fid.'.zip';
@@ -66,7 +67,6 @@ class ReportJobBatch {
 		foreach ($file_list as $pdf=>$result) {
 			$zip->addFile($pdf, $result);
 		}
-//        $zip->renameName($zipname,$zipNewFile);
         $zip->close();
 		return [$fid,$zipNewName];
 /*
