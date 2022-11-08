@@ -39,20 +39,21 @@ class ReportJobBatch {
 		}
 //        $sqlCust = "select CustomerName,CustomerID,JobID from joborder where Status=3 and City in({$jobids}) GROUP BY CustomerID";
 //        $custResult = Yii::app()->db->createCommand($sqlCust)->queryAll();
-        $zipFileNameArr = [];
         if(count($data)){
             if(count($data)>10){
                 $arr = array_slice($data, 0, 10);
+                $zipFileNameArr = [];
                 foreach ($arr as $key => $val){
                     $zipFileNameArr = $val['CustomerName'];
                 }
-                $zipFileNameArr = array_unique($zipFileNameArr);
+                $zipFileNameArr[] = array_unique($zipFileNameArr);
                 $zipFileName = implode("、",$zipFileNameArr);
                 $zipFileName = $zipFileName."等".count($data)."个服务报告";
             }else{
+                $zipFileNameArr = [];
                 foreach ($data as $key => $val){
 //                    $zipFileName.=$val['CustomerName']."、";
-                    $zipFileNameArr = $val['CustomerName'];
+                    $zipFileNameArr[] = $val['CustomerName'];
                 }
                 $zipFileNameArr = array_unique($zipFileNameArr);
                 $zipFileName = implode("、",$zipFileNameArr);
