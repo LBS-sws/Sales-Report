@@ -61,12 +61,12 @@ class ReportJobBatch {
 		$fid = 'j'.md5(microtime());
 		$zip = new ZipArchive;
 		$zipname = sys_get_temp_dir().'/'.$fid.'.zip';
-        $zip->renameName($zipname,$zipNewFile);
 		$zip->open($zipname, ZipArchive::CREATE);
 		foreach ($file_list as $pdf=>$result) {
 			$zip->addFile($pdf, $result);
 		}
-		$zip->close();
+        $zip->renameName($zipname,$zipNewFile);
+        $zip->close();
 		return [$fid,$zipNewName];
 /*
 		header('Content-Type: application/zip');
