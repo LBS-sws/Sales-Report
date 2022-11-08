@@ -42,7 +42,7 @@ class ReportFollowBatch {
                 $arr = array_slice($data, 0, 10);
                 $zipFileNameArr = [];
                 foreach ($arr as $key => $val){
-                    $zipFileNameArr = $val['CustomerName'];
+                    $zipFileNameArr[] = $val['CustomerName'];
                 }
                 $zipFileNameArr[] = array_unique($zipFileNameArr);
                 $zipFileName = implode("、",$zipFileNameArr);
