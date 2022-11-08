@@ -256,7 +256,7 @@ EOF;
 		header('Content-Type: application/zip');
         $fileNewName = $fileName.'.zip';
         $filename=iconv("UTF-8","GB2312",$fileNewName);
-		header("Content-disposition: attachment; filename=$filename");
+		header("Content-disposition: attachment; filename=service.zip");
 		header('Content-Length: ' . filesize($zipname));
 		readfile($zipname);
 		unlink($zipname);
