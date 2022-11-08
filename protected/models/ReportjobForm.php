@@ -91,10 +91,29 @@ class ReportjobForm extends CFormModel
         $sql_city = "select GROUP_CONCAT(DISTINCT o.City) as citys from enums as e left join officecity as o on o.Office=e.EnumID where e.Text='" . $city . "' and e.EnumType=8";
         $city_off = Yii::app()->db->createCommand($sql_city)->queryRow();
         $jobids = "select JobID from joborder where Status=3 and FinishDate>='" . $dates['start_dt'] . "' and FinishDate<='" . $dates['end_dt'] . "' and City in(" . $city_off['citys'] . ")";
+
 		if (!empty($dates['customer_name'])) $jobids .= " and CustomerName like '%".$dates['customer_name']."%'";
         $jobids_data = Yii::app()->db->createCommand($jobids)->queryAll();
         if ($jobids_data) {
-            $zipname = sys_get_temp_dir() . '/' . 'zipped_file.zip';
+            $sqlCust = "select CustomerName,CustomerID,JobID from joborder where Status=3 and City in({$jobids}) GROUP BY CustomerID";
+            $custResult = Yii::app()->db->createCommand($sqlCust)->queryAll();
+            $zipFileName = '';
+            if(count($custResult)){
+                if(count($custResult)>10){
+                    $arr = array_slice($custResult, 0, 10);
+                    foreach ($arr as $key => $val){
+                        $zipFileName.=$val['CustomerName']."、";
+                    }
+                    $zipFileName = rtrim($zipFileName,'、');
+                    $zipFileName = $zipFileName."等".count($custResult)."个文件";
+                }else{
+                    foreach ($custResult as $key => $val){
+                        $zipFileName.=$val['CustomerName']."、";
+                    }
+                    $zipFileName = rtrim($zipFileName,'、');
+                }
+            }
+            $zipname = sys_get_temp_dir() . '/' . $$zipFileName.'.zip';
             $zip = new ZipArchive;
             $zip->open($zipname, ZipArchive::CREATE);
             for ($fj = 0; $fj < count($jobids_data); $fj++) {
@@ -282,7 +301,6 @@ class ReportjobForm extends CFormModel
                     } else {
                         $this->service_sections = '';
                     }
-
                     $basic = $this->array_to_object($this->basic);
                     $briefing = $this->briefing ? $this->array_to_object($this->briefing) : '';
                     $material = $this->material;
