@@ -43,7 +43,7 @@ class ReportjobController extends Controller
 		);
 	}
 
-	public function actionIndex($pageNum=0,$zipInfo =array())
+	public function actionIndex($pageNum=0,$fid='',$fileName='')
 	{
 		$model = new ReportjobList;
 		if (isset($_POST['ReportjobList'])) {
@@ -58,7 +58,7 @@ class ReportjobController extends Controller
 		$model->determinePageNum($pageNum);
 		$model->retrieveDataByPage($model->pageNum);
 
-		$this->render('index',array('model'=>$model,'zipInfo'=>$zipInfo));
+		$this->render('index',array('model'=>$model,'fid'=>$fid,'fileName'=>$fileName));
 	}
 
     public function actionAdd(){
@@ -247,7 +247,7 @@ EOF;
 		} else {
 			$zipInfo = ReportJobBatch::downloadJobReport();
             Dialog::message(Yii::t('dialog','Information'), '下载完成');
-			$this->redirect(Yii::app()->createUrl('reportjob/index',array('zipInfo'=>$zipInfo)));
+			$this->redirect(Yii::app()->createUrl('reportjob/index',array('fid'=>$zipInfo[0],'fileName'=>$zipInfo[1])));
 		}
 	}
 
