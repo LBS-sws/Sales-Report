@@ -254,7 +254,8 @@ EOF;
 	public function actionDownloadzip($fid,$fileName) {
 		$zipname = sys_get_temp_dir().'/'.$fid.'.zip';
 		header('Content-Type: application/zip');
-		header("Content-disposition: attachment; filename=$fileName.zip");
+        $filename=iconv("UTF-8","GB2312",$fileName);
+		header("Content-disposition: attachment; filename=$filename.zip");
 		header('Content-Length: ' . filesize($zipname));
 		readfile($zipname);
 		unlink($zipname);
