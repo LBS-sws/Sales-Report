@@ -56,16 +56,17 @@ class ReportJobBatch {
                 $zipFileName = $zipFileName."等".count($data)."个服务报告";
             }
         }
-//        $zipname = sys_get_temp_dir() . '/' . $zipFileName.'.zip';
-		$fid = 'j'.md5(microtime());
+        $fid = date('Y-m').'_'.$zipFileName;
+//        $zipname = sys_get_temp_dir() . '/' . date('Y-m').'_'.$zipFileName.'.zip';
+//		$fid = 'j'.md5(microtime());
 		$zip = new ZipArchive;
-		$zipname = sys_get_temp_dir().'/'.$fid.'-'.$zipFileName.'.zip';
+		$zipname = sys_get_temp_dir().'/'.$fid.'.zip';
 		$zip->open($zipname, ZipArchive::CREATE);
 		foreach ($file_list as $pdf=>$result) {
 			$zip->addFile($pdf, $result);
 		}
 		$zip->close();
-		return $fid.'-'.$zipFileName;
+		return $fid;
 /*
 		header('Content-Type: application/zip');
 		header('Content-disposition: attachment; filename=服务报告.zip');
