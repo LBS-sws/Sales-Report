@@ -43,7 +43,7 @@ class ReportjobController extends Controller
 		);
 	}
 
-	public function actionIndex($pageNum=0,$fid='') 
+	public function actionIndex($pageNum=0,$fid='',$fileName = '')
 	{
 		$model = new ReportjobList;
 		if (isset($_POST['ReportjobList'])) {
@@ -58,7 +58,7 @@ class ReportjobController extends Controller
 		$model->determinePageNum($pageNum);
 		$model->retrieveDataByPage($model->pageNum);
 
-		$this->render('index',array('model'=>$model,'fid'=>$fid));
+		$this->render('index',array('model'=>$model,'fid'=>$fid,'fileName'=>$fileName));
 	}
 
     public function actionAdd(){

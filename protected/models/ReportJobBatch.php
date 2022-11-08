@@ -39,7 +39,7 @@ class ReportJobBatch {
 		}
 //        $sqlCust = "select CustomerName,CustomerID,JobID from joborder where Status=3 and City in({$jobids}) GROUP BY CustomerID";
 //        $custResult = Yii::app()->db->createCommand($sqlCust)->queryAll();
-        $zipFileName = '';
+        /*$zipFileName = '';
         if(count($data)){
             if(count($data)>10){
                 $arr = array_slice($data, 0, 10);
@@ -56,7 +56,8 @@ class ReportJobBatch {
                 $zipFileName = $zipFileName."等".count($data)."个服务报告";
             }
         }
-        $zipNewName = date('Y-m').'_'.$zipFileName;
+        $zipNewName = date('Y-m').'_'.$zipFileName;*/
+        $zipNewName = "test";
 //        $zipNewFile = sys_get_temp_dir() . '/' . date('Y-m').'_'.$zipFileName.'.zip';
 		$fid = 'j'.md5(microtime());
 		$zip = new ZipArchive;
@@ -67,7 +68,7 @@ class ReportJobBatch {
 		}
 //        $zip->renameName($zipname,$zipNewFile);
         $zip->close();
-		return $fid;
+		return [$fid,$zipNewName];
 /*
 		header('Content-Type: application/zip');
 		header('Content-disposition: attachment; filename=服务报告.zip');
