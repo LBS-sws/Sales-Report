@@ -68,7 +68,7 @@ class ReportJobBatch {
 		}
 //        $zip->renameName($zipname,$zipNewFile);
         $zip->close();
-		return [$fid,$zipNewName];
+		return $fid;
 /*
 		header('Content-Type: application/zip');
 		header('Content-disposition: attachment; filename=服务报告.zip');
