@@ -57,7 +57,7 @@ class ReportJobBatch {
             }
         }
         $zipNewName = date('Y-m').'_'.$zipFileName;
-        $zipNewFile = sys_get_temp_dir() . '/' . date('Y-m').'_'.$zipFileName.'.zip';
+//        $zipNewFile = sys_get_temp_dir() . '/' . date('Y-m').'_'.$zipFileName.'.zip';
 		$fid = 'j'.md5(microtime());
 		$zip = new ZipArchive;
 		$zipname = sys_get_temp_dir().'/'.$fid.'.zip';
@@ -65,7 +65,7 @@ class ReportJobBatch {
 		foreach ($file_list as $pdf=>$result) {
 			$zip->addFile($pdf, $result);
 		}
-        $zip->renameName($zipname,$zipNewFile);
+//        $zip->renameName($zipname,$zipNewFile);
         $zip->close();
 		return [$fid,$zipNewName];
 /*
