@@ -87,8 +87,8 @@ $('#btnBatchDownload').on('click', function(){Loading.show();jQuery.yii.submitFo
 ";
 Yii::app()->clientScript->registerScript('downloadInBatch',$js,CClientScript::POS_READY);
 
-if (isset($zip) && !empty($zip)) {
-	$file_url = Yii::app()->createAbsoluteUrl('reportjob/downloadzip',array('fid'=>$zip[0],'fileName'=>$zip[1]));
+if (isset($fid) && !empty($fid)) {
+	$file_url = Yii::app()->createAbsoluteUrl('reportjob/downloadzip',array('fid'=>$fid));
 	$js = "$(location).attr('href','$file_url');";
 	Yii::app()->clientScript->registerScript('redirection',$js,CClientScript::POS_READY);
 }
