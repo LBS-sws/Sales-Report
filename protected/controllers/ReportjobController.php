@@ -245,16 +245,16 @@ EOF;
             Dialog::message(Yii::t('dialog','Warning'), '未能下载. 原因: 下载项目超过50个.');
 			$this->redirect(Yii::app()->createUrl('reportjob/index'));
 		} else {
-			$fid = ReportJobBatch::downloadJobReport();
+			$zip = ReportJobBatch::downloadJobReport();
             Dialog::message(Yii::t('dialog','Information'), '下载完成');
-			$this->redirect(Yii::app()->createUrl('reportjob/index',array('fid'=>$fid)));
+			$this->redirect(Yii::app()->createUrl('reportjob/index',array('fid'=>$zip[0],'fileNmme'=>$zip[1])));
 		}
 	}
 
-	public function actionDownloadzip($fid) {
+	public function actionDownloadzip($fid,$fileName = '') {
 		$zipname = sys_get_temp_dir().'/'.$fid.'.zip';
 		header('Content-Type: application/zip');
-		header("Content-disposition: attachment; filename=$fid.zip");
+		header("Content-disposition: attachment; filename=$fileName.zip");
 		header('Content-Length: ' . filesize($zipname));
 		readfile($zipname);
 		unlink($zipname);
