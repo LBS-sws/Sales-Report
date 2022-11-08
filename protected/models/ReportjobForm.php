@@ -95,25 +95,7 @@ class ReportjobForm extends CFormModel
 		if (!empty($dates['customer_name'])) $jobids .= " and CustomerName like '%".$dates['customer_name']."%'";
         $jobids_data = Yii::app()->db->createCommand($jobids)->queryAll();
         if ($jobids_data) {
-            $sqlCust = "select CustomerName,CustomerID,JobID from joborder where Status=3 and City in({$jobids}) GROUP BY CustomerID";
-            $custResult = Yii::app()->db->createCommand($sqlCust)->queryAll();
-            $zipFileName = '';
-            if(count($custResult)){
-                if(count($custResult)>10){
-                    $arr = array_slice($custResult, 0, 10);
-                    foreach ($arr as $key => $val){
-                        $zipFileName.=$val['CustomerName']."、";
-                    }
-                    $zipFileName = rtrim($zipFileName,'、');
-                    $zipFileName = $zipFileName."等".count($custResult)."个文件";
-                }else{
-                    foreach ($custResult as $key => $val){
-                        $zipFileName.=$val['CustomerName']."、";
-                    }
-                    $zipFileName = rtrim($zipFileName,'、');
-                }
-            }
-            $zipname = sys_get_temp_dir() . '/' . $$zipFileName.'.zip';
+            $zipname = sys_get_temp_dir() . '/' . 'zipped_file.zip';
             $zip = new ZipArchive;
             $zip->open($zipname, ZipArchive::CREATE);
             for ($fj = 0; $fj < count($jobids_data); $fj++) {

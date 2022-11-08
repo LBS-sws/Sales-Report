@@ -23,6 +23,7 @@ class ReportJobBatch {
 		
 		$file_list = array();
 		$data = Yii::app()->db->createCommand($sql)->queryAll();
+//        $job_ids = [];
 		foreach ($data as $row) {
 			$city = $row['code'];
 			$job_dt = $row['JobDate'];
@@ -36,10 +37,29 @@ class ReportJobBatch {
 			if (file_exists($reportfile))
 				$file_list[$reportfile] = mb_convert_encoding("$custname-($servicename)$job_dt-$job_id.pdf",($city=='MO'?'BIG5':'GB2312'),'UTF-8');
 		}
-
+//        $sqlCust = "select CustomerName,CustomerID,JobID from joborder where Status=3 and City in({$jobids}) GROUP BY CustomerID";
+//        $custResult = Yii::app()->db->createCommand($sqlCust)->queryAll();
+        $zipFileName = '';
+        if(count($data)){
+            if(count($data)>10){
+                $arr = array_slice($data, 0, 10);
+                foreach ($arr as $key => $val){
+                    $zipFileName.=$val['CustomerName']."、";
+                }
+                $zipFileName = rtrim($zipFileName,'、');
+                $zipFileName = $zipFileName."等".count($data)."个服务报告";
+            }else{
+                foreach ($data as $key => $val){
+                    $zipFileName.=$val['CustomerName']."、";
+                }
+                $zipFileName = rtrim($zipFileName,'、');
+                $zipFileName = $zipFileName."等".count($data)."个服务报告";
+            }
+        }
+//        $zipname = sys_get_temp_dir() . '/' . $zipFileName.'.zip';
 		$fid = 'j'.md5(microtime());
 		$zip = new ZipArchive;
-		$zipname = sys_get_temp_dir().'/'.$fid.'.zip';
+		$zipname = sys_get_temp_dir().'/'.$fid.'-'.$zipFileName.'.zip';
 		$zip->open($zipname, ZipArchive::CREATE);
 		foreach ($file_list as $pdf=>$result) {
 			$zip->addFile($pdf, $result);
