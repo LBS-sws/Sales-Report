@@ -65,8 +65,7 @@ class ReportJobBatch {
 			$zip->addFile($pdf, $result);
 		}
 		$zip->close();
-		
-		return $fid;
+		return $fid.'-'.$zipFileName;
 /*
 		header('Content-Type: application/zip');
 		header('Content-disposition: attachment; filename=服务报告.zip');
