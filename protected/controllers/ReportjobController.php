@@ -253,6 +253,7 @@ EOF;
 
 	public function actionDownloadzip($fid,$fileName) {
 		$zipname = sys_get_temp_dir().'/'.$fid.'.zip';
+        var_dump($zipname);exit;
 		header('Content-Type: application/zip');
         $filename=iconv("UTF-8","GB2312",$fileName);
 		header("Content-disposition: attachment; filename=$fid.zip");
