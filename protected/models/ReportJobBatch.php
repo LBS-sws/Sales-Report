@@ -46,8 +46,8 @@ class ReportJobBatch {
                 foreach ($arr as $key => $val){
                     $zipFileNameArr[] = $val['CustomerName'];
                 }
-                $zipFileNameArr[] = array_unique($zipFileNameArr);
-                $zipFileName = implode("、",$zipFileNameArr);
+                $zipNew = array_unique($zipFileNameArr);
+                $zipFileName = implode("、",$zipNew);
                 $zipFileName = $zipFileName."等".count($data)."个服务报告";
             }else{
                 $zipFileNameArr = [];
@@ -55,8 +55,8 @@ class ReportJobBatch {
 //                    $zipFileName.=$val['CustomerName']."、";
                     $zipFileNameArr[] = $val['CustomerName'];
                 }
-                $zipFileNameArr = array_unique($zipFileNameArr);
-                $zipFileName = implode("、",$zipFileNameArr);
+                $zipNew = array_unique($zipFileNameArr);
+                $zipFileName = implode("、",$zipNew);
                 $zipFileName = $zipFileName."等".count($data)."个服务报告";
             }
         }

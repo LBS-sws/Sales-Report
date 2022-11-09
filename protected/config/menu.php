@@ -111,4 +111,14 @@ return array(
             ),
         ),
     ),
+    'Statement report'=>array(
+        'access'=>'SR',
+        'icon'=>'fa-edit',
+        'items'=>array(
+            'Statement'=>array(
+                'access'=>'SR01',
+                'url'=>'/statement/index',
+            )
+        ),
+    ),
 );

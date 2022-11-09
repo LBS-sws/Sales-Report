@@ -74,5 +74,7 @@ return array(
 	'Reportjoblist'=>'工作单报告列表',
     'Reportfollowlist'=>'跟进单报告列表',
 	'City Launch Date'=>'城市上线日期',
+	'Statement report'=>'工作单',
+	'Statement'=>'工作单报表',
 );
 ?>
