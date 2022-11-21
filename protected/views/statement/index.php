@@ -166,13 +166,13 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
     //    ));
     //    ?>
 </form>
-<script src="/Sales-Report/js/vue.js"></script>
-<script src="/Sales-Report/js/element.js"></script>
-<script src="/Sales-Report/js/echarts.js"></script>
-<script src="/Sales-Report/js/xlsx.core.min.js"></script>
+<script src="./../../js/vue.js"></script>
+<script src="./../../js/element.js"></script>
+<script src="./../../js/echarts.js"></script>
+<script src="./../../js/xlsx.core.min.js"></script>
 
 <!-- 引入样式 -->
-<link rel="stylesheet" href="/Sales-Report/css/element-ui.css">
+<link rel="stylesheet" href="./../../css/element-ui.css">
 
 <!-- 引入组件库 -->
 <!---->
