@@ -134,6 +134,7 @@ GROUP BY a.City, FinishDate)";*/
 
         }
 //        var_dump($table);
+            Yii::app()->db->createCommand("set session sql_mode = 'NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES'")->execute();
 
 
 
