@@ -522,7 +522,10 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
             getStaffInfo(val){
                 this.loading = true
                 this.city = val
-                fetch("./../statement/StaffInfo?staff_id="+val,{
+                let orgin_time = this.date1;
+                let start_time = this.formatDate(orgin_time[0]);
+                let end_time = this.formatDate(orgin_time[1]);
+                fetch('./../statement/StaffInfo?staff_id='+val+'&start_time='+start_time+'&end_time='+end_time+'&time_point='+this.timeInterval+'&service_type='+this.value,{
                     method:"get",
                     // body: JSON.stringify({City:val}),
                     headers: {

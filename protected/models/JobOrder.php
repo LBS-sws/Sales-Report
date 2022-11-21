@@ -173,10 +173,26 @@ GROUP BY scene";
         return $ret;
     }
 
-    public function getStaffInfo($staff_id = '')
+    public function getStaffInfo($staff_id = '',$start_time, $end_time,$time_point,$service_type = 1)
     {
         if (empty($staff_id)) {
             return false;
+        }
+        switch ($service_type){
+            case '1':
+                $table = "joborder";
+                $rangDate = 'FinishDate';
+
+                break;
+            case '2':
+                $table = "followuporder";
+                $rangDate = 'jobDate';
+
+                break;
+            default:
+                $table = "joborder";
+                $rangDate = 'FinishDate';
+
         }
         $sql = "SELECT 
 	a.CustomerName AS customer_name,
@@ -189,12 +205,12 @@ GROUP BY scene";
 	TIMEDIFF(a.FinishTime,a.StartTime) AS job_time,	TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)) as second,IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))>1800,'正常','异常') as 'status'
 
 FROM
-	joborder a
+	{$table} a
 	LEFT JOIN enums b ON b.EnumType = a.ServiceType
 	LEFT JOIN enums c ON c.EnumID = a.City 
 	LEFT JOIN staff d ON d.StaffID = a.Staff01
 WHERE
-	a.Staff01 = '$staff_id'
+	a.Staff01 = '$staff_id' AND JobDate BETWEEN '{$start_time}' AND '{$end_time}'
 	AND a.`Status` = 3";
         $ret = Yii::app()->db->createCommand($sql)->queryAll();
         return $ret;
