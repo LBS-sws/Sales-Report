@@ -144,7 +144,7 @@ GROUP BY a.City, FinishDate)";*/
     COUNT(IF((FinishTime-StartTime)<{$time_point}, (FinishTime-StartTime)<{$time_point}, NULL
     )) unusual,
 	b.Text AS city_name,
-	IFNULL(c.StaffName ,'')  AS staff_name, 
+	ANY_VALUE(IFNULL(c.StaffName ,''))  AS staff_name, 
 	IFNULL(c.StaffId ,'')  AS staff_id, 
 	{$rangDate} 
 FROM
@@ -158,7 +158,7 @@ GROUP BY staff_id ORDER BY {$rangDate} DESC";
         $ret['data'] = Yii::app()->db->createCommand($sql)->queryAll();
 
         $sql_count = "SELECT COUNT(1) AS value , FinishTime - StartTime AS service_time
-	, if(FinishTime - StartTime >= {$time_point}, '1', '0') AS 'scene',	if((FinishTime-StartTime)>={$time_point},'正常单','异常单') AS 'name'
+	, ANY_VALUE(if(FinishTime - StartTime >= {$time_point}, '1', '0')) AS 'scene',	if((FinishTime-StartTime)>={$time_point},'正常单','异常单') AS 'name'
 
 	, b.Text AS city_name, c.StaffName AS staff_name, {$rangDate},CustomerName
 FROM {$table} a
