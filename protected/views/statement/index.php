@@ -340,7 +340,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
             defaultDate() {
                 let date = new Date()
                 // 通过时间戳计算
-                let defalutStartTime = date.getTime() - 1000 * 24 * 3600 * 1000 // 转化为时间戳
+                let defalutStartTime = date.getTime() - 1000 * 24 * 3600 * 7 // 转化为时间戳
                 let defalutEndTime = date.getTime()
                 let startDateNs = new Date(defalutStartTime)
                 let endDateNs = new Date(defalutEndTime)
