@@ -98,6 +98,10 @@ class JobOrder extends CListPageModel
 
     public function getJob($staff_id = '', $city = '', $start_time, $end_time,$time_point,$service_type = 1)
     {
+
+        $sql_mode = "set sql_mode = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'; ";
+        Yii::app()->db->createCommand($sql_mode)->queryAll();
+
         $start_time = date('Y-m-d',strtotime($start_time));
         $end_time = date('Y-m-d',strtotime($end_time));
 //                var_dump($start_time);
