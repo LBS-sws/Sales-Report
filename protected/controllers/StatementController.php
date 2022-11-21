@@ -29,12 +29,12 @@ class StatementController extends Controller
                 'expression' => array('StatementController', 'allowReadWrite'),
             ),
             array('allow',
-                'actions' => array('index', 'view'),
+                'actions' => array('staff', 'index', 'new', 'edit', 'delete', 'save', 'area', 'jobList', 'StaffInfo', 'test'),
                 'expression' => array('StatementController', 'allowReadOnly'),
             ),
-            array('deny',  // deny all users
-                'users' => array('*'),
-            ),
+//            array('deny',  // deny all users
+//                'users' => array('*'),
+//            ),
         );
     }
 
@@ -139,7 +139,6 @@ class StatementController extends Controller
         $model = new JobOrder();
         try {
             $res = $model->getJob($staff, $city, $start_time, $end_time,$time,$service_type);
-
         }catch (Exception $exception){
             $this->json([], $exception->getMessage(), 0);
         }
