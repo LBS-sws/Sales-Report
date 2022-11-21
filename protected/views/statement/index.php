@@ -426,7 +426,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                 let city = this.city;
                 this.loading = true
 
-                fetch("/Sales-Report/index.php/statement/jobList?start_time="+start_time+'&end_time='+end_time+'&staff='+checkUser+'&city='+city+'&time_point='+this.timeInterval+'&service_type='+this.value,{
+                fetch("./../statement/jobList?start_time="+start_time+'&end_time='+end_time+'&staff='+checkUser+'&city='+city+'&time_point='+this.timeInterval+'&service_type='+this.value,{
                     method:"get",
                     // body: JSON.stringify({City:val}),
                     headers: {
@@ -485,7 +485,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
             },
             GetCurId1(val){
                 this.city = val
-                fetch("/Sales-Report/index.php/statement/staff?city="+val,{
+                fetch("./../statement/staff?city="+val,{
                     method:"get",
                     // body: JSON.stringify({City:val}),
                     headers: {
@@ -522,7 +522,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
             getStaffInfo(val){
                 this.loading = true
                 this.city = val
-                fetch("/Sales-Report/index.php/statement/StaffInfo?staff_id="+val,{
+                fetch("./../statement/StaffInfo?staff_id="+val,{
                     method:"get",
                     // body: JSON.stringify({City:val}),
                     headers: {
@@ -555,7 +555,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
         mounted(){
             this.loading = true
             this.defaultDate(),
-            fetch("/Sales-Report/index.php/statement/area",{
+            fetch("./../statement/area",{
                 method:"post"
             }).then(result=>{
                 // console.log(result);
