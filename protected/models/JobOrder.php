@@ -31,6 +31,14 @@ class JobOrder extends CListPageModel
     public $type;
     public $form;
     public $staffs_desc;
+    public $se_suffix = '';
+
+    public function __construct()
+    {
+
+        $this->se_suffix = Yii::app()->params['envSuffix'];
+//        $this->tab_suffix = Yii::app()->params['table_envSuffix'];
+    }
 
     public function attributeLabels()
     {
@@ -55,6 +63,7 @@ class JobOrder extends CListPageModel
 //            array('emailcc','validateEmailList'),
         );
     }
+
 
 
     public function fields()
@@ -109,16 +118,17 @@ GROUP BY a.City, FinishDate)";*/
         }
         switch ($service_type){
             case '1':
-                $table = 'joborder';
+                $table = "joborder";
                 $rangDate = 'FinishDate';
+
                 break;
             case '2':
-                $table = 'followuporder';
+                $table = "followuporder";
                 $rangDate = 'jobDate';
 
                 break;
             default:
-                $table = 'joborder';
+                $table = "joborder";
                 $rangDate = 'FinishDate';
 
         }
@@ -126,7 +136,8 @@ GROUP BY a.City, FinishDate)";*/
 
 
 
-        $sql = "SELECT SQL_CALC_FOUND_ROWS
+
+        $sql = "SELECT 
     COUNT(1) AS total,
     COUNT(IF((FinishTime-StartTime)>={$time_point}, (FinishTime-StartTime)>={$time_point}, NULL
     )) normal,
@@ -165,7 +176,7 @@ GROUP BY scene";
         if (empty($staff_id)) {
             return false;
         }
-        $sql = "SELECT SQL_CALC_FOUND_ROWS
+        $sql = "SELECT 
 	a.CustomerName AS customer_name,
 	d.StaffName AS staff_name,
 	b.Text AS service_type,
