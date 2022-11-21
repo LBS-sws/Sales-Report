@@ -99,9 +99,6 @@ class JobOrder extends CListPageModel
     public function getJob($staff_id = '', $city = '', $start_time, $end_time,$time_point,$service_type = 1)
     {
 
-        $sql_mode = "set sql_mode = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'; ";
-        Yii::app()->db->createCommand($sql_mode)->queryAll();
-
         $start_time = date('Y-m-d',strtotime($start_time));
         $end_time = date('Y-m-d',strtotime($end_time));
 //                var_dump($start_time);
@@ -142,14 +139,14 @@ GROUP BY a.City, FinishDate)";*/
 
 
         $sql = "SELECT 
-    COUNT(1) AS total,
-    COUNT(IF((FinishTime-StartTime)>={$time_point}, (FinishTime-StartTime)>={$time_point}, NULL
-    )) normal,
-    COUNT(IF((FinishTime-StartTime)<{$time_point}, (FinishTime-StartTime)<{$time_point}, NULL
-    )) unusual,
-	b.Text AS city_name,
+    ANY_VALUE(COUNT(1)) AS total,
+    ANY_VALUE(COUNT(IF((FinishTime-StartTime)>={$time_point}, (FinishTime-StartTime)>={$time_point}, NULL
+    ))) AS normal,
+    ANY_VALUE(COUNT(IF((FinishTime-StartTime)<{$time_point}, (FinishTime-StartTime)<{$time_point}, NULL
+    ))) AS unusual,
+	ANY_VALUE(b.Text) AS city_name,
 	ANY_VALUE(IFNULL(c.StaffName ,''))  AS staff_name, 
-	IFNULL(c.StaffId ,'')  AS staff_id, 
+	ANY_VALUE(IFNULL(c.StaffId ,''))  AS staff_id, 
 	{$rangDate} 
 FROM
 	{$table} a
@@ -161,10 +158,10 @@ WHERE
 GROUP BY staff_id ORDER BY {$rangDate} DESC";
         $ret['data'] = Yii::app()->db->createCommand($sql)->queryAll();
 
-        $sql_count = "SELECT COUNT(1) AS value , FinishTime - StartTime AS service_time
-	, ANY_VALUE(if(FinishTime - StartTime >= {$time_point}, '1', '0')) AS 'scene',	if((FinishTime-StartTime)>={$time_point},'正常单','异常单') AS 'name'
+        $sql_count = "SELECT ANY_VALUE(COUNT(1)) AS value , ANY_VALUE(FinishTime - StartTime) AS service_time
+	, ANY_VALUE(if(FinishTime - StartTime >= {$time_point}, '1', '0')) AS 'scene',	ANY_VALUE(if((FinishTime-StartTime)>={$time_point},'正常单','异常单')) AS 'name'
 
-	, b.Text AS city_name, c.StaffName AS staff_name, {$rangDate},CustomerName
+	, ANY_VALUE(b.Text) AS city_name, ANY_VALUE(c.StaffName) AS staff_name, ANY_VALUE({$rangDate}) AS {$rangDate},ANY_VALUE(CustomerName) AS CustomerName
 FROM {$table} a
 	LEFT JOIN enums b ON b.EnumID = a.City
 	 JOIN staff c ON c.StaffID = a.Staff01
