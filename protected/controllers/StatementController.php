@@ -137,28 +137,35 @@ class StatementController extends Controller
 //            $this->json([],'error',0);
 //        }
         $model = new JobOrder();
+//        var_dump($model);exit;
         try {
             $res = $model->getJob($staff, $city, $start_time, $end_time,$time,$service_type);
+            if ($res['data'] && $res['count']) {
+                $this->json($res);
+            }
         }catch (Exception $exception){
             $this->json([], $exception->getMessage(), 0);
         }
 //        var_dump($res);exit();
-        if ($res['data'] && $res['count']) {
-            $this->json($res);
-        }
-        $this->json([], 'error', 0);
+
+        $this->json([], '无数据', 0);
 
     }
 
 
     public function actionStaffInfo()
     {
+        $start_time = isset($_GET['start_time']) ? $_GET['start_time'] : date('Y-m-d H:h:s', '-1 day');
+        $end_time = isset($_GET['end_time']) ? $_GET['end_time'] : date('Y-m-d H:h:s');
         $staff_id = isset($_GET['staff_id']) ? $_GET['staff_id'] : '';
+        $time_point = isset($_GET['time_point']) ? $_GET['time_point'] : '';
+        $service_type = isset($_GET['service_type']) ? $_GET['service_type'] : '';
+        $time = $this->HourMinuteToDecimal($time_point);
         if (empty($staff_id)) {
             $this->json([], 'error', 0);
         }
         $model = new JobOrder();
-        $res = $model->getStaffInfo($staff_id);
+        $res = $model->getStaffInfo($staff_id,$start_time,$end_time,$time,$service_type);
         if ($res) {
             $this->json($res);
         }
