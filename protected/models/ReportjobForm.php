@@ -847,7 +847,7 @@ EOD;
         }
         $this->equipment = $equipmenthz_datas;
 
-        $sql_photo = "select * from lbs_service_photos where job_type=1 and job_id=".$index." limit 4";
+        $sql_photo = "select * from lbs_service_photos where job_type=1 and job_id=".$index." limit 8";
         $this->photo = Yii::app()->db->createCommand($sql_photo)->queryAll();
 
         $sql_autograph = "select * from lbs_report_autograph where job_type='1' and job_id='".$index."'";
