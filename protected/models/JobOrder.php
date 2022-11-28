@@ -157,8 +157,8 @@ WHERE
 	JobDate BETWEEN '{$start_time}' AND '{$end_time}'" . $staff_sql . "
 	AND b.EnumID = '{$city}' AND a.Staff01 !=''
 GROUP BY staff_id ORDER BY {$rangDate} DESC";
+//        var_dump($sql);exit();
         $ret['data'] = Yii::app()->db->createCommand($sql)->queryAll();
-
         $sql_count = "SELECT ANY_VALUE(COUNT(1)) AS value , ANY_VALUE(FinishTime - StartTime) AS service_time
 	, ANY_VALUE(if(FinishTime - StartTime >= {$time_point}, '1', '0')) AS 'scene',	ANY_VALUE(if((FinishTime-StartTime)>={$time_point},'正常单','异常单')) AS 'name'
 
@@ -167,7 +167,7 @@ FROM {$table} a
 	LEFT JOIN enums b ON b.EnumID = a.City
 	 JOIN staff c ON c.StaffID = a.Staff01
 WHERE JobDate BETWEEN '{$start_time}' AND '{$end_time}'" . $staff_sql . "
-	AND b.EnumID = '{$city}' AND a.Staff01 !=''
+	AND b.EnumID = '{$city}' AND a.Staff01 !='' AND a.`Status` = 3
 GROUP BY scene";
         $ret['count'] = Yii::app()->db->createCommand($sql_count)->queryAll();
         return $ret;
@@ -202,16 +202,17 @@ GROUP BY scene";
 	a.StartTime AS start_time,
 	a.FinishTime AS end_time,
 	a.JobDate AS job_date,
-	TIMEDIFF(a.FinishTime,a.StartTime) AS job_time,	TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)) as second,IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))>1800,'正常','异常') as 'status'
-
+	TIMEDIFF(a.FinishTime,a.StartTime) AS job_time,	TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)) as second,IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))>{$time_point},'正常','异常') as 'status'
 FROM
 	{$table} a
-	LEFT JOIN enums b ON b.EnumType = a.ServiceType
+	LEFT JOIN enums b ON b.EnumID = a.ServiceType
 	LEFT JOIN enums c ON c.EnumID = a.City 
 	LEFT JOIN staff d ON d.StaffID = a.Staff01
 WHERE
-	a.Staff01 = '$staff_id' AND JobDate BETWEEN '{$start_time}' AND '{$end_time}'
-	AND a.`Status` = 3";
+	(a.Staff01 = '$staff_id' or a.Staff02 = '$staff_id' or a.Staff03 = '$staff_id') AND JobDate BETWEEN '{$start_time}' AND '{$end_time}'
+	AND a.`Status` = 3 AND b.EnumType = 2 AND b.Text != ''";
+//        var_dump($sql);exit;
+
         $ret = Yii::app()->db->createCommand($sql)->queryAll();
         return $ret;
     }
