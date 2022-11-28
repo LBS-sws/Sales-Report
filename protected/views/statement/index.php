@@ -485,6 +485,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
             },
             GetCurId1(val){
                 this.city = val
+                console.log("当前城市为："+val)
                 fetch("./../statement/staff?city="+val,{
                     method:"get",
                     // body: JSON.stringify({City:val}),
@@ -515,13 +516,14 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                 })
             },
             GetCurId2(val){
-                // console.log('GetCurId2')
-                // console.log(val)
+                console.log('GetCurId2')
+                console.log(val)
                 this.checkUser = val
             },
             getStaffInfo(val){
+                // consol
                 this.loading = true
-                this.city = val
+                this.checkUser = val
                 let orgin_time = this.date1;
                 let start_time = this.formatDate(orgin_time[0]);
                 let end_time = this.formatDate(orgin_time[1]);
