@@ -96,7 +96,7 @@ class JobOrder extends CListPageModel
         return $ret;
     }
 
-    public function getJob($staff_id = '', $city = '', $start_time, $end_time,$time_point,$service_type = 1)
+    public function getJob($staff_id, $city, $start_time, $end_time,$time_point,$service_type = 1)
     {
 
         $start_time = date('Y-m-d',strtotime($start_time));
@@ -133,21 +133,17 @@ GROUP BY a.City, FinishDate)";*/
                 $rangDate = 'FinishDate';
 
         }
-//        var_dump($table);
-            Yii::app()->db->createCommand("set session sql_mode = 'NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES'")->execute();
-
-
-
-
+        Yii::app()->db->createCommand("set session sql_mode = 'NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES'")->execute();
+        
         $sql = "SELECT 
-    ANY_VALUE(COUNT(1)) AS total,
-    ANY_VALUE(COUNT(IF((FinishTime-StartTime)>={$time_point}, (FinishTime-StartTime)>={$time_point}, NULL
-    ))) AS normal,
-    ANY_VALUE(COUNT(IF((FinishTime-StartTime)<{$time_point}, (FinishTime-StartTime)<{$time_point}, NULL
-    ))) AS unusual,
-	ANY_VALUE(b.Text) AS city_name,
-	ANY_VALUE(IFNULL(c.StaffName ,''))  AS staff_name, 
-	ANY_VALUE(IFNULL(c.StaffId ,''))  AS staff_id, 
+    COUNT(1) AS total,
+    COUNT(IF((FinishTime-StartTime)>={$time_point}, (FinishTime-StartTime)>={$time_point}, NULL
+    )) AS normal,
+    COUNT(IF((FinishTime-StartTime)<{$time_point}, (FinishTime-StartTime)<{$time_point}, NULL
+    )) AS unusual,
+	b.Text AS city_name,
+	IFNULL(c.StaffName ,'')  AS staff_name, 
+	IFNULL(c.StaffId ,'')  AS staff_id, 
 	{$rangDate} 
 FROM
 	{$table} a
@@ -159,10 +155,10 @@ WHERE
 GROUP BY staff_id ORDER BY {$rangDate} DESC";
 //        var_dump($sql);exit();
         $ret['data'] = Yii::app()->db->createCommand($sql)->queryAll();
-        $sql_count = "SELECT ANY_VALUE(COUNT(1)) AS value , ANY_VALUE(FinishTime - StartTime) AS service_time
-	, ANY_VALUE(if(FinishTime - StartTime >= {$time_point}, '1', '0')) AS 'scene',	ANY_VALUE(if((FinishTime-StartTime)>={$time_point},'正常单','异常单')) AS 'name'
+        $sql_count = "SELECT COUNT(1) AS value , FinishTime - StartTime AS service_time
+	, if(FinishTime - StartTime >= {$time_point}, '1', '0') AS 'scene',	if((FinishTime-StartTime)>={$time_point},'正常单','异常单') AS 'name'
 
-	, ANY_VALUE(b.Text) AS city_name, ANY_VALUE(c.StaffName) AS staff_name, ANY_VALUE({$rangDate}) AS {$rangDate},ANY_VALUE(CustomerName) AS CustomerName
+	, b.Text AS city_name, c.StaffName AS staff_name, {$rangDate} AS {$rangDate},CustomerName AS CustomerName
 FROM {$table} a
 	LEFT JOIN enums b ON b.EnumID = a.City
 	 JOIN staff c ON c.StaffID = a.Staff01
