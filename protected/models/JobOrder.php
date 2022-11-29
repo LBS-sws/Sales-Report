@@ -101,18 +101,6 @@ class JobOrder extends CListPageModel
 
         $start_time = date('Y-m-d',strtotime($start_time));
         $end_time = date('Y-m-d',strtotime($end_time));
-//                var_dump($start_time);
-        /*$sql = "(SELECT COUNT(1) AS count, (FinishTime - StartTime)/3600 AS service_time, b.Text as city_name,c.StaffName as staff_name
-	, '1' AS 'type', FinishDate
-FROM joborder a LEFT JOIN enums b ON b.EnumID= a.City LEFT JOIN staff c ON c.StaffID = a.Staff01   WHERE (a.Staff01 = {$staff_id} OR a.Staff02 = {$staff_id} OR a.Staff03 = {$staff_id}) AND JobDate BETWEEN '{$start_time}' AND '{$end_time}'
-AND FinishTime - StartTime <= 1800 AND b.EnumID = '{$city}'
-GROUP BY a.City, FinishDate)
-UNION
-(SELECT COUNT(1) AS count, (FinishTime - StartTime)/3600 AS service_time, b.Text as city_name,c.StaffName as staff_name
-	, '2' AS 'type', FinishDate
-FROM joborder a LEFT JOIN enums b ON b.EnumID= a.City LEFT JOIN staff c ON c.StaffID = a.Staff01   WHERE (a.Staff01 = {$staff_id} OR a.Staff02 = {$staff_id} OR a.Staff03 = {$staff_id}) AND JobDate BETWEEN '{$start_time}' AND '{$end_time}'
-AND FinishTime - StartTime > 1800 AND b.EnumID = '{$city}'
-GROUP BY a.City, FinishDate)";*/
         $staff_sql = "";
         if (!empty($staff_id)) {
             $staff_sql = "and (a.Staff01 = {$staff_id} OR a.Staff02 = {$staff_id} OR a.Staff03 = {$staff_id})";
@@ -121,17 +109,14 @@ GROUP BY a.City, FinishDate)";*/
             case '1':
                 $table = "joborder";
                 $rangDate = 'FinishDate';
-
                 break;
             case '2':
                 $table = "followuporder";
                 $rangDate = 'jobDate';
-
                 break;
             default:
                 $table = "joborder";
                 $rangDate = 'FinishDate';
-
         }
         Yii::app()->db->createCommand("set session sql_mode = 'NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES'")->execute();
         $start_time = $start_time." 00:00:00";
@@ -179,17 +164,17 @@ GROUP BY scene";
             case '1':
                 $table = "joborder";
                 $rangDate = 'FinishDate';
-
+                $stype = 'ServiceType';
                 break;
             case '2':
                 $table = "followuporder";
                 $rangDate = 'jobDate';
-
+                $stype = 'SType';
                 break;
             default:
                 $table = "joborder";
                 $rangDate = 'FinishDate';
-
+                $stype = 'ServiceType';
         }
         $start_time = $start_time." 00:00:00";
         $end_time = $end_time." 23:59:59";
@@ -204,7 +189,7 @@ GROUP BY scene";
 	TIMEDIFF(a.FinishTime,a.StartTime) AS job_time,	TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)) as second,IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))>{$time_point},'正常','异常') as 'status'
 FROM
 	{$table} a
-	LEFT JOIN enums b ON b.EnumID = a.ServiceType
+	LEFT JOIN enums b ON b.EnumID = a.{$stype}
 	 JOIN enums c ON c.EnumID = a.City 
 	 JOIN staff d ON d.StaffID = a.Staff01
 WHERE
