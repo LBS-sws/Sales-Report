@@ -134,12 +134,13 @@ GROUP BY a.City, FinishDate)";*/
 
         }
         Yii::app()->db->createCommand("set session sql_mode = 'NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES'")->execute();
-        
+        $start_time = $start_time." 00:00:00";
+        $end_time = $end_time." 23:59:59";
         $sql = "SELECT 
     COUNT(1) AS total,
-    COUNT(IF((FinishTime-StartTime)>={$time_point}, (FinishTime-StartTime)>={$time_point}, NULL
+    COUNT(IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))>={$time_point}, TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))>={$time_point}, NULL
     )) AS normal,
-    COUNT(IF((FinishTime-StartTime)<{$time_point}, (FinishTime-StartTime)<{$time_point}, NULL
+    COUNT(IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))<{$time_point}, TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))<{$time_point}, NULL
     )) AS unusual,
 	b.Text AS city_name,
 	IFNULL(c.StaffName ,'')  AS staff_name, 
@@ -151,13 +152,13 @@ FROM
 	 JOIN staff c ON c.StaffID = a.Staff01
 WHERE
 	JobDate BETWEEN '{$start_time}' AND '{$end_time}'" . $staff_sql . "
-	AND b.EnumID = '{$city}' AND a.Staff01 !=''
+	AND b.EnumID = '{$city}' AND a.Staff01 !='' AND a.`Status` = 3
 GROUP BY staff_id ORDER BY {$rangDate} DESC";
 //        var_dump($sql);exit();
         $ret['data'] = Yii::app()->db->createCommand($sql)->queryAll();
-        $sql_count = "SELECT COUNT(1) AS value , FinishTime - StartTime AS service_time
-	, if(FinishTime - StartTime >= {$time_point}, '1', '0') AS 'scene',	if((FinishTime-StartTime)>={$time_point},'正常单','异常单') AS 'name'
-
+        $sql_count = "SELECT COUNT(1) AS value , FinishTime - StartTime AS service_time,
+  IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))>{$time_point},'1','0') as 'scene',
+  IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))>{$time_point},'正常单','异常单') as 'name'
 	, b.Text AS city_name, c.StaffName AS staff_name, {$rangDate} AS {$rangDate},CustomerName AS CustomerName
 FROM {$table} a
 	LEFT JOIN enums b ON b.EnumID = a.City
@@ -169,7 +170,7 @@ GROUP BY scene";
         return $ret;
     }
 
-    public function getStaffInfo($staff_id = '',$start_time, $end_time,$time_point,$service_type = 1)
+    public function getStaffInfo($staff_id = '',$start_time, $end_time,$time_point,$service_type = 1,$city)
     {
         if (empty($staff_id)) {
             return false;
@@ -190,6 +191,8 @@ GROUP BY scene";
                 $rangDate = 'FinishDate';
 
         }
+        $start_time = $start_time." 00:00:00";
+        $end_time = $end_time." 23:59:59";
         $sql = "SELECT 
 	a.CustomerName AS customer_name,
 	d.StaffName AS staff_name,
@@ -202,11 +205,11 @@ GROUP BY scene";
 FROM
 	{$table} a
 	LEFT JOIN enums b ON b.EnumID = a.ServiceType
-	LEFT JOIN enums c ON c.EnumID = a.City 
-	LEFT JOIN staff d ON d.StaffID = a.Staff01
+	 JOIN enums c ON c.EnumID = a.City 
+	 JOIN staff d ON d.StaffID = a.Staff01
 WHERE
 	(a.Staff01 = '$staff_id' or a.Staff02 = '$staff_id' or a.Staff03 = '$staff_id') AND JobDate BETWEEN '{$start_time}' AND '{$end_time}'
-	AND a.`Status` = 3 AND b.EnumType = 2 AND b.Text != ''";
+	AND a.`Status` = 3 AND b.EnumType = 2 AND b.Text != '' AND a.City = '{$city}'";
 //        var_dump($sql);exit;
 
         $ret = Yii::app()->db->createCommand($sql)->queryAll();

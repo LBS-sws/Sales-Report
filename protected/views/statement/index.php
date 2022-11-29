@@ -195,8 +195,8 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                 city:'',
                 echars_name:'',
                 echars_name_copy:'',
-                value1: '',
-                value2: '',
+                value1: [],
+                value2: [],
                 tableData: [],
                 options: [{
                     value: '1',
@@ -235,6 +235,12 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                     }]
                 },
             };
+        },
+        watch: {
+            options2: function (newValue) {
+                this.value2 = '';
+                this.options2 = newValue;
+            }
         },
         methods:{
             getXiaoji(name){
@@ -485,6 +491,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
             },
             GetCurId1(val){
                 this.city = val
+                // this.options2.value = null;
                 console.log("当前城市为："+val)
                 fetch("./../statement/staff?city="+val,{
                     method:"get",
@@ -506,6 +513,8 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                             message: '暂无数据',
                             type: 'warning'
                         });
+                        this.value2 = []
+                        this.options2 = [];
                         this.showEchars = false
                         this.tableData = []
                         setTimeout(() => {
@@ -527,7 +536,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                 let orgin_time = this.date1;
                 let start_time = this.formatDate(orgin_time[0]);
                 let end_time = this.formatDate(orgin_time[1]);
-                fetch('./../statement/StaffInfo?staff_id='+val+'&start_time='+start_time+'&end_time='+end_time+'&time_point='+this.timeInterval+'&service_type='+this.value,{
+                fetch('./../statement/StaffInfo?staff_id='+val+'&start_time='+start_time+'&end_time='+end_time+'&time_point='+this.timeInterval+'&service_type='+this.value+'&city='+this.city,{
                     method:"get",
                     // body: JSON.stringify({City:val}),
                     headers: {
@@ -544,6 +553,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                             this.loading = false
                         }, 1000);
                     }else {
+                        this.gridData = []
                         this.$message({
                             message: '暂无数据',
                             type: 'warning'

@@ -132,7 +132,7 @@ class StatementController extends Controller
         $time_point = isset($_GET['time_point']) ? $_GET['time_point'] : '';
         $service_type = isset($_GET['service_type']) ? $_GET['service_type'] : '';
         $time = $this->HourMinuteToDecimal($time_point);
-//        var_dump($_GET['service_type']);exit;
+//        var_dump($_GET);exit;
 //        if(empty($staff)){
 //            $this->json([],'error',0);
 //        }
@@ -140,6 +140,7 @@ class StatementController extends Controller
 //        var_dump($model);exit;
         try {
             $res = $model->getJob($staff, $city, $start_time, $end_time,$time,$service_type);
+//            var_dump($res);exit;
             if ($res['data'] && $res['count']) {
                 $this->json($res);
             }
@@ -160,12 +161,13 @@ class StatementController extends Controller
         $staff_id = isset($_GET['staff_id']) ? $_GET['staff_id'] : '';
         $time_point = isset($_GET['time_point']) ? $_GET['time_point'] : '';
         $service_type = isset($_GET['service_type']) ? $_GET['service_type'] : '';
+        $city = isset($_GET['city']) ? $_GET['city'] : '';
         $time = $this->HourMinuteToDecimal($time_point);
         if (empty($staff_id)) {
             $this->json([], 'error', 0);
         }
         $model = new JobOrder();
-        $res = $model->getStaffInfo($staff_id,$start_time,$end_time,$time,$service_type);
+        $res = $model->getStaffInfo($staff_id,$start_time,$end_time,$time,$service_type,$city);
         if ($res) {
             $this->json($res);
         }
