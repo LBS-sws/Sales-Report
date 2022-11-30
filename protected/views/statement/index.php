@@ -20,58 +20,99 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
     <div  class="box">
         <div class="box-body">
             <div >
-<!--                <div class="block">-->
-                    <span class="demonstration">日期：</span>
-                        <el-date-picker
-                                v-model="date1"
-                                type="daterange"
-                                align="left"
-                                unlink-panels
-                                range-separator="至"
-                                start-placeholder="开始日期"
-                                end-placeholder="结束日期"
-                                :picker-options="pickerOptions">
-                        </el-date-picker>
-<!--                    </div>-->
+                  <div>
+                      <span class="demonstration">日期：</span>
+                      <el-date-picker
+                              v-model="date1"
+                              type="daterange"
+                              align="left"
+                              unlink-panels
+                              range-separator="至"
+                              start-placeholder="开始日期"
+                              end-placeholder="结束日期"
+                              :picker-options="pickerOptions">
+                      </el-date-picker>
+                      <!--                    </div>-->
 
 
-                    城市选择：
-                    <el-select style="width:100px" v-model="value1" placeholder="请选择" @change="GetCurId1">
-                        <el-option
-                                v-for="(item, index) in options1"
-                                :key="index"
-                                :label="item.Text"
-                                :value="item.City">
-                        </el-option>
-                    </el-select>
+                      城市选择：
+                      <el-select style="width:120px" v-model="value1" placeholder="请选择" @change="GetCurId1">
+                          <el-option
+                                  v-for="(item, index) in options1"
+                                  :key="index"
+                                  :label="item.Text"
+                                  :value="item.City">
+                          </el-option>
+                      </el-select>
 
-                    人员选择：
-                    <el-select style="width:100px" clearable v-model="value2" placeholder="请选择"  @change="GetCurId2">
-                        <el-option
-                                v-for="(item, index)  in options2"
-                                :key="index"
-                                :label="item.StaffName"
-                                :value="item.StaffID">
-                        </el-option>
-                    </el-select>
-                    类型：
-                    <el-select style="width:100px" v-model="value"  placeholder="请选择">
-                        <el-option
-                                v-for="item in options"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
-                        </el-option>
-                    </el-select>
+                      人员选择：
+                      <el-select style="width:120px" clearable v-model="value2" placeholder="请选择"  @change="GetCurId2">
+                          <el-option
+                                  v-for="(item, index)  in options2"
+                                  :key="index"
+                                  :label="item.StaffName"
+                                  :value="item.StaffID">
+                          </el-option>
+                      </el-select>
+                      类型：
+                      <el-select style="width:100px" v-model="value"  placeholder="请选择">
+                          <el-option
+                                  v-for="item in options"
+                                  :key="item.value"
+                                  :label="item.label"
+                                  :value="item.value">
+                          </el-option>
+                      </el-select>
 
-                    间隔：
-                    <el-time-select style="width:100px"
-                            v-model="timeInterval"
-                            :picker-options="{start: '00:30',step: '00:30',end: '23:30'}"
-                            placeholder="选择时间间隔">
-                    </el-time-select>
 
-                     <el-button style="margin-left: 20px" type="primary" @click="doSearch">查询</el-button>
+                  </div>
+                <div   style="display: block;padding-top: 10px">
+                    <el-tooltip placement="bottom">
+                        <template #content> 【时间单位：h】选择大于时长，点查询，出来的就是大于这个时间段的异常单，<br/>然后大于这边不选，选择小于时长，出来的就是小于时长的异常单。 </template>
+                        <el-switch
+                                v-model="switch_value"
+                                active-color="#13ce66"
+                                inactive-color="#ff4949"
+                                active-text="大于"
+                                inactive-text="小于">
+                        </el-switch>
+                    </el-tooltip>
+                    <span v-if="switch_value">
+                        <span style="color: #5FCA71">大于时间</span>
+                        <el-time-select style="width:150px"
+                                        v-model="timeInterval"
+                                        :picker-options="{start: '00:00',step: '00:10',end: '23:59'}"
+                                        placeholder="时间间隔">
+                        </el-time-select>
+                    </span>
+                    <span v-else="switch_value">
+                         <span style="color: #EB5851">大于时间</span>
+                        <el-time-select style="width:150px"
+                                        v-model="timeInterval"
+                                        :picker-options="{start: '00:00',step: '00:10',end: '23:59'}"
+                                        placeholder="时间间隔">
+                        </el-time-select>
+<!--                        <span style="color: #EB5851">大于时长</span>-->
+<!--                        <el-time-select style="width:150px"-->
+<!--                                        v-model="timeIntervalStart"-->
+<!--                                        :picker-options="{start: '00:00',step: '00:10',end: '23:59'}"-->
+<!--                                        placeholder="大于时长">-->
+<!--                        </el-time-select>-->
+<!--                        <span style="color: #EB5851">小于时长</span>-->
+<!--                        <el-time-select style="width:150px"-->
+<!--                                        v-model="timeIntervalEnd"-->
+<!--                                        :picker-options="{start: '00:00',step: '00:10',end: '23:59'}"-->
+<!--                                        placeholder="小于时长">-->
+<!--                        </el-time-select>-->
+
+<!--                        <el-switch-->
+<!--                                v-model="mark_exception"-->
+<!--                                inactive-text="选择范围内标记异常">-->
+<!--                        </el-switch>-->
+                    </span>
+                    <el-button style="margin-left: 20px" type="primary" @click="doSearch">查询</el-button>
+                </div>
+
                 </div>
             </div>
         </div>
@@ -81,9 +122,9 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
 
 <!--        <el-button type="text" @click="dialogTableVisible = true">打开嵌套表格的 Dialog</el-button>-->
 
-        <el-dialog title="明细" :visible.sync="dialogTableVisible"><el-tag style="float: right" type="success" @click="exportData">导出</el-tag>
+        <el-dialog v-loading="loading" title="明细" :visible.sync="dialogTableVisible"><el-tag style="float: right" type="success" @click="exportData">导出</el-tag>
 
-            <el-table v-loading="loading" :data="gridData">
+            <el-table :data="gridData">
                 <el-table-column property="job_date" label="日期" width="auto"></el-table-column>
                 <el-table-column property="city_name" label="地区" width="auto"></el-table-column>
                 <el-table-column property="customer_name" label="客户" width="200px"></el-table-column>
@@ -101,7 +142,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                         filter-placement="bottom-end">
                     <template slot-scope="scope">
                         <el-tag
-                                :type="scope.row.second >= 1800 ? 'success' : 'Warning'"
+                                :type="scope.row.flag == 1 ? 'success' : 'Warning'"
                                 disable-transitions>{{scope.row.status}}</el-tag>
                     </template>
                 </el-table-column>
@@ -186,17 +227,22 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
             return {
                 dialogTableVisible: false,
                 showEchars:false,
-                timeInterval:'00:30',
+                timeInterval:'00:10',
+                timeIntervalStart:'00:00',
+                timeIntervalEnd:'00:00',
                 loading: true,
                 date1:[],
                 options1: [],
                 options2: [],
+                mark_exception:true,
+                is_mark:1,
                 checkUser:'',
                 city:'',
                 echars_name:'',
                 echars_name_copy:'',
                 value1: [],
                 value2: [],
+                switch_value:true,
                 tableData: [],
                 options: [{
                     value: '1',
@@ -239,8 +285,17 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
         watch: {
             options2: function (newValue) {
                 this.value2 = '';
+                this.checkUser = '';
                 this.options2 = newValue;
+            },
+            timeIntervalStart: function (newValue) {
+                this.timeIntervalEnd = newValue
+                // console.log(newValue)
             }
+        },
+        computed:{
+
+
         },
         methods:{
             getXiaoji(name){
@@ -426,13 +481,40 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                         type: 'warning'
                     });return;
                 }
-                let start_time = this.formatDate(orgin_time[0]);
-                let end_time = this.formatDate(orgin_time[1]);
-                let checkUser = this.checkUser??'';
-                let city = this.city;
-                this.loading = true
 
-                fetch("./../statement/jobList?start_time="+start_time+'&end_time='+end_time+'&staff='+checkUser+'&city='+city+'&time_point='+this.timeInterval+'&service_type='+this.value,{
+                let start_date = this.formatDate(orgin_time[0]);
+                let end_date = this.formatDate(orgin_time[1]);
+                // let checkUser = this.checkUser??'';
+                let city = this.city;
+
+                let url_params = '';
+
+                // if(this.mark_exception === true){
+                //     this.is_mark = 1
+                // }else{
+                //     this.is_mark = 0
+                // }
+                if(this.switch_value === true){
+                    this.is_mark = 1;
+                }else{
+                    this.is_mark = 0;
+                }
+                url_params = '?start_date='+start_date+'&end_date='+end_date+'&staff='+this.checkUser+'&city='+city+'&time_point='+this.timeInterval+'&service_type='+this.value+'&is_mark='+this.is_mark
+                //
+                // if(this.switch_value === true){
+                // //    如果是true 那么选择的就是一个时间节点
+                //     url_params = '?start_date='+start_date+'&end_date='+end_date+'&staff='+this.checkUser+'&city='+city+'&time_point='+this.timeInterval+'&service_type='+this.value+'&switch_type=0'
+                // }else{
+                //     // if(this.timeIntervalEnd <= this.timeIntervalStart){
+                //     //     this.$message({
+                //     //         message: '时间范围选择出错',
+                //     //         type: 'warning'
+                //     //     });return;
+                //     // }
+                //     url_params = '?start_date='+start_date+'&end_date='+end_date+'&staff='+this.checkUser+'&city='+city+'&service_type='+this.value+'&switch_type=1&start_time='+this.timeIntervalStart+'&end_time='+this.timeIntervalEnd+'&is_mark='+this.is_mark
+                // }
+                this.loading = true
+                fetch("./../statement/jobList"+url_params,{
                     method:"get",
                     // body: JSON.stringify({City:val}),
                     headers: {
@@ -449,7 +531,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                         this.tableData = res.data.data
                         this.showEchars = true
                         this.echars_name = this.echars_name_copy
-                        if(checkUser != '' && checkUser != 'undefined'){
+                        if(this.checkUser != '' && this.checkUser != 'undefined'){
                             this.echars_name = res.data.data[0].staff_name
                         }
                         this.$nextTick(() => {
@@ -531,12 +613,18 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
             },
             getStaffInfo(val){
                 // consol
-                this.loading = true
                 this.checkUser = val
                 let orgin_time = this.date1;
-                let start_time = this.formatDate(orgin_time[0]);
-                let end_time = this.formatDate(orgin_time[1]);
-                fetch('./../statement/StaffInfo?staff_id='+val+'&start_time='+start_time+'&end_time='+end_time+'&time_point='+this.timeInterval+'&service_type='+this.value+'&city='+this.city,{
+                let start_date = this.formatDate(orgin_time[0]);
+                let end_date = this.formatDate(orgin_time[1]);
+                if(this.switch_value === true){
+                    this.is_mark = 1;
+                }else{
+                    this.is_mark = 0;
+                }
+                this.loading = true
+
+                fetch('./../statement/StaffInfo?staff_id='+val+'&start_date='+start_date+'&end_date='+end_date+'&time_point='+this.timeInterval+'&service_type='+this.value+'&city='+this.city+'&is_mark='+this.is_mark,{
                     method:"get",
                     // body: JSON.stringify({City:val}),
                     headers: {

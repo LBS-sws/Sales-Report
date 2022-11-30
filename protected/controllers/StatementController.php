@@ -125,30 +125,33 @@ class StatementController extends Controller
      * */
     public function actionjobList()
     {
-        $start_time = isset($_GET['start_time']) ? $_GET['start_time'] : date('Y-m-d H:h:s', '-1 day');
-        $end_time = isset($_GET['end_time']) ? $_GET['end_time'] : date('Y-m-d H:h:s');
-        $staff = isset($_GET['staff']) ? $_GET['staff'] : '';
-        $city = isset($_GET['city']) ? $_GET['city'] : '';
-        $time_point = isset($_GET['time_point']) ? $_GET['time_point'] : '';
-        $service_type = isset($_GET['service_type']) ? $_GET['service_type'] : '';
-        $time = $this->HourMinuteToDecimal($time_point);
-//        var_dump($_GET);exit;
-//        if(empty($staff)){
-//            $this->json([],'error',0);
+        //接收参数
+        $data['start_date'] = isset($_GET['start_date']) ? $_GET['start_date'] : date('Y-m-d H:h:s', '-1 day');
+        $data['end_date'] = isset($_GET['end_date']) ? $_GET['end_date'] : date('Y-m-d H:h:s');
+        $data['staff'] = isset($_GET['staff']) ? $_GET['staff'] : '';
+        $data['city'] = isset($_GET['city']) ? $_GET['city'] : '';
+        $time_point = isset($_GET['time_point']) ? $_GET['time_point'] : '00:10';
+        $data['service_type'] = isset($_GET['service_type']) ? $_GET['service_type'] : 1;
+//        $data['switch_type'] = isset($_GET['switch_type']) ? $_GET['switch_type'] : 1;
+        $data['is_mark'] = isset($_GET['is_mark']) ? $_GET['is_mark'] : 1;
+//        if(isset($data['is_mark']) && $data['is_mark'] == 1){
+//            $start_time = isset($_GET['start_time']) ? $_GET['start_time'] : '';
+//            $end_time = isset($_GET['end_time']) ? $_GET['end_time'] : '';
+////            $data['start_time'] = $this->HourMinuteToDecimal($start_time);
+////            $data['end_time'] = $this->HourMinuteToDecimal($end_time);
 //        }
+        //特殊处理三个时间
+        $data['time_point'] = $this->HourMinuteToDecimal($time_point);
+
         $model = new JobOrder();
-//        var_dump($model);exit;
         try {
-            $res = $model->getJob($staff, $city, $start_time, $end_time,$time,$service_type);
-//            var_dump($res);exit;
+            $res = $model->getJob($data);
             if ($res['data'] && $res['count']) {
                 $this->json($res);
             }
         }catch (Exception $exception){
             $this->json([], $exception->getMessage(), 0);
         }
-//        var_dump($res);exit();
-
         $this->json([], '无数据', 0);
 
     }
@@ -156,18 +159,19 @@ class StatementController extends Controller
 
     public function actionStaffInfo()
     {
-        $start_time = isset($_GET['start_time']) ? $_GET['start_time'] : date('Y-m-d H:h:s', '-1 day');
-        $end_time = isset($_GET['end_time']) ? $_GET['end_time'] : date('Y-m-d H:h:s');
-        $staff_id = isset($_GET['staff_id']) ? $_GET['staff_id'] : '';
-        $time_point = isset($_GET['time_point']) ? $_GET['time_point'] : '';
-        $service_type = isset($_GET['service_type']) ? $_GET['service_type'] : '';
-        $city = isset($_GET['city']) ? $_GET['city'] : '';
-        $time = $this->HourMinuteToDecimal($time_point);
-        if (empty($staff_id)) {
+        $data['start_date'] = isset($_GET['start_date']) ? $_GET['start_date'] : date('Y-m-d H:h:s', '-1 day');
+        $data['end_date'] = isset($_GET['end_date']) ? $_GET['end_date'] : date('Y-m-d H:h:s');
+        $data['staff_id'] = isset($_GET['staff_id']) ? $_GET['staff_id'] : '';
+        $data['time_point'] = isset($_GET['time_point']) ? $_GET['time_point'] : '';
+        $data['service_type'] = isset($_GET['service_type']) ? $_GET['service_type'] : '';
+        $data['city'] = isset($_GET['city']) ? $_GET['city'] : '';
+        $data['is_mark'] = isset($_GET['is_mark']) ? $_GET['is_mark'] : '';
+        $data['time'] = $this->HourMinuteToDecimal($data['time_point']);
+        if (!isset($data['staff_id']) && empty($data['staff_id'])) {
             $this->json([], 'error', 0);
         }
         $model = new JobOrder();
-        $res = $model->getStaffInfo($staff_id,$start_time,$end_time,$time,$service_type,$city);
+        $res = $model->getStaffInfo($data);
         if ($res) {
             $this->json($res);
         }
