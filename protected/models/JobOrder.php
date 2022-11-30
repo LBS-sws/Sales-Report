@@ -65,7 +65,6 @@ class JobOrder extends CListPageModel
     }
 
 
-
     public function fields()
     {
         return $this->rpt_labels;
@@ -102,9 +101,9 @@ class JobOrder extends CListPageModel
 //        $end_date = date('Y-m-d',strtotime($data['end_date']));
         $staff_sql = "";
         if (isset($data['staff']) && !empty($data['staff'])) {
-            $staff_sql = "and (a.Staff01 = {$data['staff']} OR a.Staff02 = {$data['staff']} OR a.Staff03 = {$data['staff']})";
+            $staff_sql = "and a.Staff01 = {$data['staff']}";
         }
-        switch ($data['service_type']){
+        switch ($data['service_type']) {
             case '1':
                 $table = "joborder";
                 $rangDate = 'FinishDate';
@@ -118,16 +117,16 @@ class JobOrder extends CListPageModel
                 $rangDate = 'FinishDate';
         }
         Yii::app()->db->createCommand("set session sql_mode = 'NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES'")->execute();
-        $start_date = date('Y-m-d',strtotime($data['start_date']))." 00:00:00";
-        $end_date = date('Y-m-d',strtotime($data['end_date']))." 23:59:59";
+        $start_date = date('Y-m-d', strtotime($data['start_date'])) . " 00:00:00";
+        $end_date = date('Y-m-d', strtotime($data['end_date'])) . " 23:59:59";
 //        is_mark == 1 表示大于开启
-        if($data['is_mark'] == 1){
+        if ($data['is_mark'] == 1) {
             $is_mark = '>=';
             $condition = "COUNT(IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$is_mark}{$data['time_point']}, TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$is_mark}{$data['time_point']}, NULL
     )) AS normal,
     COUNT(IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))<{$data['time_point']}, TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))<{$data['time_point']}, NULL
     )) AS unusual,";
-        }else{
+        } else {
             $is_mark = '<=';
             $condition = "COUNT(IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$is_mark}{$data['time_point']}, TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$is_mark}{$data['time_point']}, NULL
     )) AS normal,
@@ -205,27 +204,27 @@ GROUP BY staff_id ORDER BY {$rangDate} DESC";
 
 //        var_dump($sql);exit();
 
-        if($data['is_mark'] == 1){
+        if ($data['is_mark'] == 1) {
             $is_mark = '>=';
             $condition_count = "IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$is_mark}{$data['time_point']},'1','0') as 'scene',
   IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))>{$data['time_point']},'正常单','异常单') as 'name'";
-        }else{
+        } else {
             $is_mark = '<=';
             $condition_count = "IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$is_mark}{$data['time_point']},'1','0') as 'scene',
   IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$is_mark}{$data['time_point']},'正常单','异常单') as 'name'";
         }
-       /* if($data['switch_type'] == 0){
-            $condition_count = "IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$is_mark}{$data['time_point']},'1','0') as 'scene',
-  IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$is_mark}{$data['time_point']},'正常单','异常单') as 'name'";
-        }else{
-            if($data['is_mark'] == 1){
-                $condition_count ="
-	IF(TIME_TO_SEC(TIMEDIFF( a.FinishTime, a.StartTime ))>={$data['start_time']} {$condition_x} TIME_TO_SEC(TIMEDIFF( a.FinishTime, a.StartTime ))<{$data['end_time']},1,0 ) AS 'scene',IF(TIME_TO_SEC(TIMEDIFF( a.FinishTime, a.StartTime ))>={$data['start_time']} {$condition_x} TIME_TO_SEC(TIMEDIFF( a.FinishTime, a.StartTime ))<{$data['end_time']},'正常单','异常单') AS 'name'";
-            }else{
-                $condition_count =
-	"IF(TIME_TO_SEC(TIMEDIFF( a.FinishTime, a.StartTime ))<={$data['start_time']} {$condition_x} TIME_TO_SEC(TIMEDIFF( a.FinishTime, a.StartTime ))>{$data['end_time']},1,0 ) AS 'scene',IF(TIME_TO_SEC(TIMEDIFF( a.FinishTime, a.StartTime ))<={$data['start_time']} {$condition_x} TIME_TO_SEC(TIMEDIFF( a.FinishTime, a.StartTime ))>{$data['end_time']},'正常单','异常单') AS 'name'";
-            }
-        }*/
+        /* if($data['switch_type'] == 0){
+             $condition_count = "IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$is_mark}{$data['time_point']},'1','0') as 'scene',
+   IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$is_mark}{$data['time_point']},'正常单','异常单') as 'name'";
+         }else{
+             if($data['is_mark'] == 1){
+                 $condition_count ="
+     IF(TIME_TO_SEC(TIMEDIFF( a.FinishTime, a.StartTime ))>={$data['start_time']} {$condition_x} TIME_TO_SEC(TIMEDIFF( a.FinishTime, a.StartTime ))<{$data['end_time']},1,0 ) AS 'scene',IF(TIME_TO_SEC(TIMEDIFF( a.FinishTime, a.StartTime ))>={$data['start_time']} {$condition_x} TIME_TO_SEC(TIMEDIFF( a.FinishTime, a.StartTime ))<{$data['end_time']},'正常单','异常单') AS 'name'";
+             }else{
+                 $condition_count =
+     "IF(TIME_TO_SEC(TIMEDIFF( a.FinishTime, a.StartTime ))<={$data['start_time']} {$condition_x} TIME_TO_SEC(TIMEDIFF( a.FinishTime, a.StartTime ))>{$data['end_time']},1,0 ) AS 'scene',IF(TIME_TO_SEC(TIMEDIFF( a.FinishTime, a.StartTime ))<={$data['start_time']} {$condition_x} TIME_TO_SEC(TIMEDIFF( a.FinishTime, a.StartTime ))>{$data['end_time']},'正常单','异常单') AS 'name'";
+             }
+         }*/
 
         $ret['data'] = Yii::app()->db->createCommand($sql)->queryAll();
         $sql_count = "SELECT COUNT(1) AS value , FinishTime - StartTime AS service_time,
@@ -249,7 +248,7 @@ GROUP BY scene";
 //        if (empty()) {
 //            return false;
 //        }
-        switch ($data['service_type']){
+        switch ($data['service_type']) {
             case '1':
                 $table = "joborder";
                 $rangDate = 'FinishDate';
@@ -265,13 +264,13 @@ GROUP BY scene";
                 $rangDate = 'FinishDate';
                 $stype = 'ServiceType';
         }
-        $start_date = $data['start_date']." 00:00:00";
-        $end_date = $data['end_date']." 23:59:59";
+        $start_date = $data['start_date'] . " 00:00:00";
+        $end_date = $data['end_date'] . " 23:59:59";
 
-        if($data['is_mark'] == 1){
+        if ($data['is_mark'] == 1) {
             $condition = '>=';
             $condition_x = "TIMEDIFF(a.FinishTime,a.StartTime) AS job_time,TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)) as second,IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$condition}{$data['time']},'1','0') as 'flag',IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$condition}{$data['time']},'正常','异常') as 'status'";
-        }else{
+        } else {
             $condition = '<=';
             $condition_x = "TIMEDIFF(a.FinishTime,a.StartTime) AS job_time,TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)) as second,IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$condition}{$data['time']},'1','0') as 'flag',IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$condition}{$data['time']},'异常','正常') as 'status'";
         }
@@ -291,7 +290,7 @@ FROM
 	 JOIN enums c ON c.EnumID = a.City 
 	 JOIN staff d ON d.StaffID = a.Staff01
 WHERE
-	(a.Staff01 = '{$data['staff_id']}' or a.Staff02 = '{$data['staff_id']}' or a.Staff03 = '{$data['staff_id']}') AND JobDate BETWEEN '{$data['start_date']}' AND '{$data['end_date']}'
+	a.Staff01 = '{$data['staff_id']}' AND JobDate BETWEEN '{$data['start_date']}' AND '{$data['end_date']}'
 	AND a.`Status` = 3 AND b.EnumType = 2 AND b.Text != '' AND a.City = '{$data['city']}'";
 //        var_dump($sql);exit;
 
