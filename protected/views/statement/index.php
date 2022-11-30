@@ -86,7 +86,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                         </el-time-select>
                     </span>
                     <span v-else="switch_value">
-                         <span style="color: #EB5851">大于时间</span>
+                         <span style="color: #EB5851">小于时间</span>
                         <el-time-select style="width:150px"
                                         v-model="timeInterval"
                                         :picker-options="{start: '00:00',step: '00:10',end: '23:59'}"

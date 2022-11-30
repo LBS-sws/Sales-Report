@@ -273,7 +273,7 @@ GROUP BY scene";
             $condition_x = "TIMEDIFF(a.FinishTime,a.StartTime) AS job_time,TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)) as second,IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$condition}{$data['time']},'1','0') as 'flag',IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$condition}{$data['time']},'正常','异常') as 'status'";
         }else{
             $condition = '<=';
-            $condition_x = "TIMEDIFF(a.FinishTime,a.StartTime) AS job_time,TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)) as second,IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$condition}{$data['time']},'1','0') as 'flag',IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$condition}{$data['time']},'正常','异常') as 'status'";
+            $condition_x = "TIMEDIFF(a.FinishTime,a.StartTime) AS job_time,TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)) as second,IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$condition}{$data['time']},'1','0') as 'flag',IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$condition}{$data['time']},'异常','正常') as 'status'";
         }
 
         $sql = "SELECT 
