@@ -101,7 +101,7 @@ class JobOrder extends CListPageModel
 //        $end_date = date('Y-m-d',strtotime($data['end_date']));
         $staff_sql = "";
         if (isset($data['staff']) && !empty($data['staff'])) {
-            $staff_sql = "and a.Staff01 = {$data['staff']}";
+            $staff_sql = "and a.Staff01 = '".$data['staff']."'";
         }
         switch ($data['service_type']) {
             case '1':
@@ -290,7 +290,7 @@ FROM
 	 JOIN enums c ON c.EnumID = a.City 
 	 JOIN staff d ON d.StaffID = a.Staff01
 WHERE
-	a.Staff01 = '{$data['staff_id']}' AND JobDate BETWEEN '{$data['start_date']}' AND '{$data['end_date']}'
+	a.Staff01 = '".$data['staff_id']."' AND JobDate BETWEEN '{$data['start_date']}' AND '{$data['end_date']}'
 	AND a.`Status` = 3 AND b.EnumType = 2 AND b.Text != '' AND a.City = '{$data['city']}'";
 //        var_dump($sql);exit;
 
