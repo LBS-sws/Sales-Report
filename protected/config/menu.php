@@ -111,13 +111,13 @@ return array(
             ),
         ),
     ),
-    'Statement report'=>array(
-        'access'=>'SR',
-        'icon'=>'fa-edit',
+    'WorkOrder'=>array(
+        'access'=>'WO',
+        'icon'=>'fa fa-industry',
         'items'=>array(
-            'Statement'=>array(
-                'access'=>'SR01',
-                'url'=>'/statement/index',
+            'LBS WorkOrder'=>array(
+                'access'=>'WO01',
+                'url'=>'/WorkList/index',
             )
         ),
     ),

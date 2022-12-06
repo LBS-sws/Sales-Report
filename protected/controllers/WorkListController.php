@@ -1,14 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2021/8/21
- * Time: 10:45
- */
 
-class StatementController extends Controller
+class WorkListController extends Controller
 {
-    public $function_id = 'SR01';
+    public $function_id = 'WO01';
 
     public function filters()
     {
@@ -26,11 +20,11 @@ class StatementController extends Controller
         return array(
             array('allow',
                 'actions' => array('staff', 'index', 'new', 'edit', 'delete', 'save', 'area', 'jobList', 'StaffInfo', 'export'),
-                'expression' => array('StatementController', 'allowReadWrite'),
+                'expression' => array('WorkListController', 'allowReadWrite'),
             ),
             array('allow',
                 'actions' => array('staff', 'index', 'new', 'edit', 'delete', 'save', 'area', 'jobList', 'StaffInfo', 'export'),
-                'expression' => array('StatementController', 'allowReadOnly'),
+                'expression' => array('WorkListController', 'allowReadOnly'),
             ),
 //            array('deny',  // deny all users
 //                'users' => array('*'),
@@ -78,7 +72,7 @@ class StatementController extends Controller
 
     public function actionIndex($pageNum = 0)
     {
-        $model = new JobOrder();
+        $model = new WorkOrder();
         $model->end_at = '';
         $model->start_at = '';// date("Y", strtotime($model->end_dt)).'/'.date("m", strtotime($model->end_dt)).'/01';
         $this->render('index', array('model' => $model));
@@ -90,7 +84,7 @@ class StatementController extends Controller
      * */
     public function actionArea()
     {
-        $model = new JobOrder();
+        $model = new WorkOrder();
         $res = $model->retrieveData();
         if ($res) {
             $this->json($res);
@@ -106,7 +100,7 @@ class StatementController extends Controller
     public function actionStaff()
     {
         $city = isset($_GET['city']) ? $_GET['city'] : '200';
-        $model = new JobOrder();
+        $model = new WorkOrder();
         $res = $model->getStaff($city);
         if ($res) {
             $this->json($res);
@@ -131,20 +125,29 @@ class StatementController extends Controller
         $data['end_date'] = isset($_GET['end_date']) ? $_GET['end_date'] : date('Y-m-d H:h:s');
         $data['staff'] = isset($_GET['staff']) ? $_GET['staff'] : '';
         $data['city'] = isset($_GET['city']) ? $_GET['city'] : '';
-        $time_point = isset($_GET['time_point']) ? $_GET['time_point'] : '00:10';
+        $time_point_start = isset($_GET['time_point_start']) ? $_GET['time_point_start'] : '';
+        $time_point_end = isset($_GET['time_point_end']) ? $_GET['time_point_end'] : '';
         $data['service_type'] = isset($_GET['service_type']) ? $_GET['service_type'] : 1;
-//        $data['switch_type'] = isset($_GET['switch_type']) ? $_GET['switch_type'] : 1;
         $data['is_mark'] = isset($_GET['is_mark']) ? $_GET['is_mark'] : 1;
-//        if(isset($data['is_mark']) && $data['is_mark'] == 1){
-//            $start_time = isset($_GET['start_time']) ? $_GET['start_time'] : '';
-//            $end_time = isset($_GET['end_time']) ? $_GET['end_time'] : '';
-////            $data['start_time'] = $this->HourMinuteToDecimal($start_time);
-////            $data['end_time'] = $this->HourMinuteToDecimal($end_time);
-//        }
-        //特殊处理三个时间
-        $data['time_point'] = $this->HourMinuteToDecimal($time_point);
+//        var_dump($time_point_start);exit();
 
-        $model = new JobOrder();
+        if($time_point_start == '' || $time_point_start == 'null'){
+            $data['time_point_start'] = 0;
+        }else{
+            $data['time_point_start'] = $this->HourMinuteToDecimal($time_point_start);
+        }
+
+
+        if($time_point_end == '' || $time_point_end == 'null'){
+            $data['time_point_end'] = 0;
+        }else{
+            $data['time_point_end'] = $this->HourMinuteToDecimal($time_point_end);
+        }
+        //特殊处理三个时间
+//        $data['time_point_start'] = $time_point_start!=''?$this->HourMinuteToDecimal($time_point_start):0;
+//        $data['time_point_end'] = $this->HourMinuteToDecimal($time_point_end);
+
+        $model = new WorkOrder();
         try {
             $res = $model->getJob($data);
             if ($res['data'] && $res['count']) {
@@ -163,15 +166,28 @@ class StatementController extends Controller
         $data['start_date'] = isset($_GET['start_date']) ? $_GET['start_date'] : date('Y-m-d H:h:s', '-1 day');
         $data['end_date'] = isset($_GET['end_date']) ? $_GET['end_date'] : date('Y-m-d H:h:s');
         $data['staff_id'] = isset($_GET['staff_id']) ? $_GET['staff_id'] : '';
-        $data['time_point'] = isset($_GET['time_point']) ? $_GET['time_point'] : '';
+
         $data['service_type'] = isset($_GET['service_type']) ? $_GET['service_type'] : '';
         $data['city'] = isset($_GET['city']) ? $_GET['city'] : '';
         $data['is_mark'] = isset($_GET['is_mark']) ? $_GET['is_mark'] : '';
-        $data['time'] = $this->HourMinuteToDecimal($data['time_point']);
+//        $data['time'] = $this->HourMinuteToDecimal($data['time_point']);
+        $time_point_start = isset($_GET['time_point_start']) ? $_GET['time_point_start'] : '';
+        $time_point_end = isset($_GET['time_point_end']) ? $_GET['time_point_end'] : '';
+
+        if($time_point_start == '' || $time_point_start == 'null'){
+            $data['time_point_start'] = 0;
+        }else{
+            $data['time_point_start'] = $this->HourMinuteToDecimal($time_point_start);
+        }
+        if($time_point_end == '' || $time_point_end == 'null'){
+            $data['time_point_end'] = 0;
+        }else{
+            $data['time_point_end'] = $this->HourMinuteToDecimal($time_point_end);
+        }
         if (!isset($data['staff_id']) && empty($data['staff_id'])) {
             $this->json([], 'error', 0);
         }
-        $model = new JobOrder();
+        $model = new WorkOrder();
         $res = $model->getStaffInfo($data);
         if ($res) {
             $this->json($res);
@@ -192,21 +208,35 @@ class StatementController extends Controller
             $data['start_date'] = isset($_GET['start_date']) ? $_GET['start_date'] : date('Y-m-d H:h:s', '-1 day');
             $data['end_date'] = isset($_GET['end_date']) ? $_GET['end_date'] : date('Y-m-d H:h:s');
 //        $data['staff_id'] = isset($_GET['staff_id']) ? $_GET['staff_id'] : '';
-            $data['time_point'] = isset($_GET['time_point']) ? $_GET['time_point'] : '';
+//            $data['time_point'] = isset($_GET['time_point']) ? $_GET['time_point'] : '';
             $data['service_type'] = isset($_GET['service_type']) ? $_GET['service_type'] : '';
             $data['city'] = isset($_GET['city']) ? $_GET['city'] : '';
             $data['is_mark'] = isset($_GET['is_mark']) ? $_GET['is_mark'] : '';
-            $data['time'] = $this->HourMinuteToDecimal($data['time_point']);
+//            $data['time'] = $this->HourMinuteToDecimal($data['time_point']);
+            $time_point_start = isset($_GET['time_point_start']) ? $_GET['time_point_start'] : '';
+            $time_point_end = isset($_GET['time_point_end']) ? $_GET['time_point_end'] : '';
+
+            if($time_point_start == '' || $time_point_start == 'null'){
+                $data['time_point_start'] = 0;
+            }else{
+                $data['time_point_start'] = $this->HourMinuteToDecimal($time_point_start);
+            }
+            if($time_point_end == '' || $time_point_end == 'null'){
+                $data['time_point_end'] = 0;
+            }else{
+                $data['time_point_end'] = $this->HourMinuteToDecimal($time_point_end);
+            }
+
             if (isset($data['staff_id']) && !empty($data['staff_id'])) {
                 $this->json([], 'error', 0);
             }
-            $model = new JobOrder();
+            $model = new WorkOrder();
             $page_size = 5000;
             $result = $model->getExport($data);
-            if (isset($result['count']['row_count']) && $result['count']['row_count'] >= $page_size) {
+            if (isset($result['data']['count']['row_count']) && $result['data']['count']['row_count'] >= $page_size) {
                 $this->json([], '筛选的时间段过大', 0);
             }
-            if ($result['count']['row_count'] <= 0) {
+            if ($result['data']['count']['row_count'] <= 0) {
                 $this->json([], '导出错误', 0);
             }
 
@@ -214,7 +244,8 @@ class StatementController extends Controller
             //总页数的算出 [暂不使用]
             $current_page = 0;
             $n = 0;
-            foreach ($result['data'] as $k => $product) {
+//            var_dump($result['data']['data'] );exit();
+            foreach ($result['data']['data'] as $k => $product) {
                 if ($n % $page_size === 0) {
                     $current_page = $current_page + 1;
                     //报表头的输出
@@ -228,7 +259,7 @@ class StatementController extends Controller
                         ->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
                     $objectPHPExcel->setActiveSheetIndex(0)->setCellValue('A2', '日期：' . date("Y年m月j日"));
-//                $objectPHPExcel->setActiveSheetIndex(0)->setCellValue('G2','第'.$current_page.'/'.$page_count.'页');
+                $objectPHPExcel->setActiveSheetIndex(0)->setCellValue('G2','范围：'.$result['range'][0].'--'.$result['range'][1]);
                     $objectPHPExcel->setActiveSheetIndex(0)->getStyle('I2')
                         ->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 
@@ -330,12 +361,17 @@ class StatementController extends Controller
 
             @ob_end_clean();
             @ob_start();
-            header('Content-Type:application/vnd.ms-excel');
-            header('Content-Disposition:attachment;filename="' . '区域明细-' . date("Y年m月j日") . '.xls"');
-            $objWriter = PHPExcel_IOFactory::createWriter($objectPHPExcel, 'Excel5');
+            header('Content-Type: application/vnd.ms-excel');
+//            判断PHP版本 以兼容下载
+            if(phpversion() >=7){
+                header('Content-Disposition: attachment;filename="' . '区域明细-' . date("Y年m月j日") . '.xlsx"');
+                $objWriter = PHPExcel_IOFactory::createWriter($objectPHPExcel, 'Excel2007');
+            }else{
+                header('Content-Disposition: attachment;filename="' . '区域明细-' . date("Y年m月j日") . '.xls"');
+                $objWriter = PHPExcel_IOFactory::createWriter($objectPHPExcel, 'Excel5');
+            }
         } catch (Exception $exception) {
             $this->json([], $exception->getMessage(), 0);
-//            var_dump($exception->getMessage());
         }
         $objWriter->save('php://output');
     }
