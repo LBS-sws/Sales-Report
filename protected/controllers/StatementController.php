@@ -184,10 +184,16 @@ class StatementController extends Controller
         if(empty($_GET)){
             $this->json([], '参数错误', 0);
         }
-        $phpExcelPath = Yii::getPathOfAlias('ext.phpexcel');
-        spl_autoload_unregister(array('YiiBase','autoload'));
-        include($phpExcelPath . DIRECTORY_SEPARATOR . 'PHPExcel.php');
-        $objectPHPExcel = new PHPExcel();
+        try {
+            $phpExcelPath = Yii::getPathOfAlias('ext.phpexcel');
+//            spl_autoload_unregister(array('YiiBase','autoload'));
+            include($phpExcelPath . DIRECTORY_SEPARATOR . 'PHPExcel.php');
+            $objectPHPExcel = new PHPExcel();
+        }catch (Exception $exception){
+            $this->json([], $exception->getMessage(), 0);
+//            var_dump($exception->getMessage());
+        }
+
         $objectPHPExcel->setActiveSheetIndex(0);
         $data['start_date'] = isset($_GET['start_date']) ? $_GET['start_date'] : date('Y-m-d H:h:s', '-1 day');
         $data['end_date'] = isset($_GET['end_date']) ? $_GET['end_date'] : date('Y-m-d H:h:s');
