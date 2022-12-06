@@ -330,7 +330,7 @@ class StatementController extends Controller
 
             @ob_end_clean();
             @ob_start();
-            header('Content-Type : application/vnd.ms-excel');
+            header('Content-Type:application/vnd.ms-excel');
             header('Content-Disposition:attachment;filename="' . '区域明细-' . date("Y年m月j日") . '.xls"');
             $objWriter = PHPExcel_IOFactory::createWriter($objectPHPExcel, 'Excel5');
         } catch (Exception $exception) {
