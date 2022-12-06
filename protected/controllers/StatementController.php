@@ -212,7 +212,6 @@ class StatementController extends Controller
 
 //        $count = 10000;
             //总页数的算出 [暂不使用]
-            $page_count = (int)($result['count']['row_count'] / $page_size) + 1;
             $current_page = 0;
             $n = 0;
             foreach ($result['data'] as $k => $product) {
@@ -325,8 +324,8 @@ class StatementController extends Controller
             //设置分页显示
             //$objectPHPExcel->getActiveSheet()->setBreak( 'I55' , PHPExcel_Worksheet::BREAK_ROW );
             //$objectPHPExcel->getActiveSheet()->setBreak( 'I10' , PHPExcel_Worksheet::BREAK_COLUMN );
-            $objectPHPExcel->getActiveSheet()->getPageSetup()->setHorizontalCentered(true);
-            $objectPHPExcel->getActiveSheet()->getPageSetup()->setVerticalCentered(false);
+//            $objectPHPExcel->getActiveSheet()->getPageSetup()->setHorizontalCentered(true);
+//            $objectPHPExcel->getActiveSheet()->getPageSetup()->setVerticalCentered(false);
 
 
             @ob_end_clean();
