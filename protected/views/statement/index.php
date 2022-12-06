@@ -485,7 +485,6 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
 
                 let start_date = this.formatDate(orgin_time[0]);
                 let end_date = this.formatDate(orgin_time[1]);
-                // let checkUser = this.checkUser??'';
                 let city = this.city;
 
                 let url_params = '';
@@ -501,19 +500,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                     this.is_mark = 0;
                 }
                 url_params = '?start_date='+start_date+'&end_date='+end_date+'&staff='+this.checkUser+'&city='+city+'&time_point='+this.timeInterval+'&service_type='+this.value+'&is_mark='+this.is_mark
-                //
-                // if(this.switch_value === true){
-                // //    如果是true 那么选择的就是一个时间节点
-                //     url_params = '?start_date='+start_date+'&end_date='+end_date+'&staff='+this.checkUser+'&city='+city+'&time_point='+this.timeInterval+'&service_type='+this.value+'&switch_type=0'
-                // }else{
-                //     // if(this.timeIntervalEnd <= this.timeIntervalStart){
-                //     //     this.$message({
-                //     //         message: '时间范围选择出错',
-                //     //         type: 'warning'
-                //     //     });return;
-                //     // }
-                //     url_params = '?start_date='+start_date+'&end_date='+end_date+'&staff='+this.checkUser+'&city='+city+'&service_type='+this.value+'&switch_type=1&start_time='+this.timeIntervalStart+'&end_time='+this.timeIntervalEnd+'&is_mark='+this.is_mark
-                // }
+
                 this.loading = true
                 fetch("./../statement/jobList"+url_params,{
                     method:"get",
@@ -610,11 +597,17 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
             GetCurId2(val){
                 console.log('GetCurId2')
                 console.log(val)
-                this.checkUser = val
+                if(this.options2.length >0){
+                    console.log(this.options2.length)
+                    this.checkUser = val
+                }else{
+                    this.checkUser = ''
+                }
+
             },
             getStaffInfo(val){
                 // consol
-                this.checkUser = val
+                // this.nowUser = val
                 let orgin_time = this.date1;
                 let start_date = this.formatDate(orgin_time[0]);
                 let end_date = this.formatDate(orgin_time[1]);
@@ -652,6 +645,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                         }, 1000);
                     }
                 })
+                // this.checkUser = ''
             },
 
 
