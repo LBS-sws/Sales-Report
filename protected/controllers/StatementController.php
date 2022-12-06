@@ -186,11 +186,12 @@ class StatementController extends Controller
         }
         try {
             $phpExcelPath = Yii::getPathOfAlias('ext.phpexcel');
-            var_dump($phpExcelPath);exit();
+//            var_dump($phpExcelPath);exit();
 //            spl_autoload_unregister(array('YiiBase','autoload'));
-            $aa = include($phpExcelPath . DIRECTORY_SEPARATOR . 'PHPExcel.php');
+            $aa = include_once($phpExcelPath . DIRECTORY_SEPARATOR . 'PHPExcel.php');
             var_dump($aa);
             $objectPHPExcel = new PHPExcel();
+            var_dump($objectPHPExcel);
         }catch (Exception $exception){
             $this->json([], $exception->getMessage(), 0);
 //            var_dump($exception->getMessage());
