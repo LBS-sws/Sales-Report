@@ -264,8 +264,10 @@ GROUP BY scene";
                 $rangDate = 'FinishDate';
                 $stype = 'ServiceType';
         }
-        $start_date = $data['start_date'] . " 00:00:00";
-        $end_date = $data['end_date'] . " 23:59:59";
+//        $start_date = $data['start_date'] . " 00:00:00";
+//        $end_date = $data['end_date'] . " 23:59:59";
+        $start_date = date('Y-m-d',strtotime($data['start_date']))." 00:00:00";
+        $end_date = date('Y-m-d',strtotime($data['end_date'])). " 23:59:59";
 
         if ($data['is_mark'] == 1) {
             $condition = '>=';
@@ -290,12 +292,73 @@ FROM
 	 JOIN enums c ON c.EnumID = a.City 
 	 JOIN staff d ON d.StaffID = a.Staff01
 WHERE
-	a.Staff01 = '".$data['staff_id']."' AND JobDate BETWEEN '{$data['start_date']}' AND '{$data['end_date']}'
+	a.Staff01 = '".$data['staff_id']."' AND JobDate BETWEEN '{$start_date}' AND '{$end_date}'
 	AND a.`Status` = 3 AND b.EnumType = 2 AND b.Text != '' AND a.City = '{$data['city']}'";
 //        var_dump($sql);exit;
 
         $ret = Yii::app()->db->createCommand($sql)->queryAll();
         return $ret;
+    }
+
+
+    public function getExport($data)
+    {
+//        var_dump($data);exit;
+//        $staff_id = '',$start_date, $end_date,$time_point,$service_type = 1,$city
+//        if (empty()) {
+//            return false;
+//        }
+        switch ($data['service_type']) {
+            case '1':
+                $table = "joborder";
+                $rangDate = 'FinishDate';
+                $stype = 'ServiceType';
+                break;
+            case '2':
+                $table = "followuporder";
+                $rangDate = 'jobDate';
+                $stype = 'SType';
+                break;
+            default:
+                $table = "joborder";
+                $rangDate = 'FinishDate';
+                $stype = 'ServiceType';
+        }
+
+        $start_date = date('Y-m-d',strtotime($data['start_date']))." 00:00:00";
+        $end_date = date('Y-m-d',strtotime($data['end_date'])). " 23:59:59";
+
+        if ($data['is_mark'] == 1) {
+            $condition = '>=';
+            $condition_x = "TIMEDIFF(a.FinishTime,a.StartTime) AS job_time,TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)) as second,IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$condition}{$data['time']},'1','0') as 'flag',IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$condition}{$data['time']},'异常','正常') as 'status'";
+        } else {
+            $condition = '<=';
+            $condition_x = "TIMEDIFF(a.FinishTime,a.StartTime) AS job_time,TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)) as second,IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$condition}{$data['time']},'1','0') as 'flag',IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$condition}{$data['time']},'异常','正常') as 'status'";
+        }
+
+        $sql = "SELECT SQL_CALC_FOUND_ROWS
+	a.CustomerName AS customer_name,
+	d.StaffName AS staff_name,
+	b.Text AS service_type,
+	c.Text AS city_name,
+	a.StartTime AS start_time,
+	a.FinishTime AS end_time,
+	a.JobDate AS job_date,
+	{$condition_x}
+FROM
+	{$table} a
+	LEFT JOIN enums b ON b.EnumID = a.{$stype}
+	 JOIN enums c ON c.EnumID = a.City 
+	 JOIN staff d ON d.StaffID = a.Staff01
+
+WHERE
+    JobDate BETWEEN '{$start_date}' AND '{$end_date}'
+	AND a.`Status` = 3 AND b.EnumType = 2 AND b.Text != '' AND a.City = '{$data['city']}'";
+        $ret['data'] = Yii::app()->db->createCommand($sql)->queryAll();
+//        $this->findBySql("SELECT FOUND_ROWS() as row_count;");
+        $ret['count'] = Yii::app()->db->createCommand("SELECT FOUND_ROWS() as row_count;")->queryRow();
+        return $ret;
+
     }
 
     public function showField($name)

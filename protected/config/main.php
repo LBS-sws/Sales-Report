@@ -31,6 +31,7 @@ return array(
         'bootstrap.components.*',
         'bootstrap.form.*',
         'bootstrap.behaviors.*',
+        'application.extensions.phpexcel.*',
     ),
 
     'modules'=>array(

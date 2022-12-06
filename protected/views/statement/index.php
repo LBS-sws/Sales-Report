@@ -111,13 +111,19 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
 <!--                        </el-switch>-->
                     </span>
                     <el-button style="margin-left: 20px" type="primary" @click="doSearch">查询</el-button>
+<!--                    <el-button style="margin-left: 20px" type="primary" @click="exportAreaDataexportAreaData">导出</el-button>-->
+
                 </div>
 
                 </div>
             </div>
         </div>
         <el-main v-loading="loading" v-if="showEchars">
+
             <div  id="main" style="width: 600px;height:400px;"></div>
+            <div style="float: right">
+                        <el-button v-if="show_export" type="primary" @click="exportAreaData">下载报表</el-button>
+            </div>
         </el-main>
 
 <!--        <el-button type="text" @click="dialogTableVisible = true">打开嵌套表格的 Dialog</el-button>-->
@@ -241,9 +247,11 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                 echars_name:'',
                 echars_name_copy:'',
                 value1: [],
+                show_export:false,
                 value2: [],
                 switch_value:true,
                 tableData: [],
+                link:'',
                 options: [{
                     value: '1',
                     // default:'1',
@@ -648,6 +656,34 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                 // this.checkUser = ''
             },
 
+            exportAreaData(){
+                let orgin_time = this.date1;
+                let start_date = this.formatDate(orgin_time[0]);
+                let end_date = this.formatDate(orgin_time[1]);
+                if(this.switch_value === true){
+                    this.is_mark = 1;
+                }else{
+                    this.is_mark = 0;
+                }
+                this.loading = true
+                if(orgin_time == '' || orgin_time == undefined || this.city ==''){
+                    this.$message({
+                        message: '筛选条件不足',
+                        type: 'warning'
+                    });
+                    this.loading = false
+                    return;
+                }
+
+                this.link = './../statement/export?start_date='+start_date+'&end_date='+end_date+'&time_point='+this.timeInterval+'&service_type='+this.value+'&city='+this.city+'&is_mark='+this.is_mark;
+                window.open( this.link, "_blank");
+                this.loading = false
+                // this.checkUser = ''
+            },
+            // openUrl(url) {
+            //     window.open(url, "_blank");
+            // },
+
 
         },
         mounted(){
@@ -661,6 +697,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
             }).then(res=>{
                 if(res.code == 1){
                     this.options1 = res.data;
+                    this.show_export = true;
                     setTimeout(() => {
                         this.loading = false
                     }, 1000);
