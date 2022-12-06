@@ -137,12 +137,12 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                         prop="tag"
                         label="标签"
                         width="100"
-                        :filters="[{ text: '异常', value: '异常' }, { text: '正常', value: '正常' }]"
+                        :filters="[{ text: '异常', value: '1' }, { text: '正常', value: '0' }]"
                         :filter-method="filterTag"
                         filter-placement="bottom-end">
                     <template slot-scope="scope">
                         <el-tag
-                                :type="scope.row.flag == 1 ? 'success' : 'Warning'"
+                                :type="scope.row.flag == 0 ? 'success' : 'warning'"
                                 disable-transitions>{{scope.row.status}}</el-tag>
                     </template>
                 </el-table-column>
@@ -284,7 +284,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
         },
         watch: {
             options2: function (newValue) {
-                this.value2 = '';
+                this.value2 = [];
                 this.checkUser = '';
                 this.options2 = newValue;
             },
@@ -400,6 +400,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
             },
             defaultDate() {
                 let date = new Date()
+                console.log(date);
                 // 通过时间戳计算
                 let defalutStartTime = date.getTime() - 1000 * 24 * 3600 * 7 // 转化为时间戳
                 let defalutEndTime = date.getTime()
