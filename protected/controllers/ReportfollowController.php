@@ -174,7 +174,7 @@ EOF;
             Dialog::message(Yii::t('dialog','Warning'), '未能下载. 原因: 下载项目超过50个.');
 			$this->redirect(Yii::app()->createUrl('reportfollow/index'));
 		} else {
-            $zipInfo = ReportJobBatch::downloadJobReport();
+            $zipInfo = ReportFollowBatch::downloadJobReport();
             Dialog::message(Yii::t('dialog','Information'), '下载完成');
             $this->redirect(Yii::app()->createUrl('reportjob/index',array('fid'=>$zipInfo[0],'fileName'=>$zipInfo[1])));
 		}
