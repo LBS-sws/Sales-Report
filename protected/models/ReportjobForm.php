@@ -1378,7 +1378,7 @@ EOD;
         if (@file_exists(dirname(__FILE__).'/lang/chi.php')) {
             require_once(dirname(__FILE__).'/lang/chi.php');
         }
-//        var_dump($html);exit();
+        var_dump($html);exit();
         $pdf->SetPrintHeader(false);
         $pdf->SetPrintFooter(false);
         $pdf->AddPage();
