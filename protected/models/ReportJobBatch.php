@@ -188,8 +188,42 @@ class ReportJobBatch {
 		$sql_photo = "select * from lbs_service_photos where job_type=1 and job_id=" . $data['JobID'] . " limit 4";
 		$photo = Yii::app()->db->createCommand($sql_photo)->queryAll();
 
-		$sql_autograph = "select * from lbs_report_autograph where job_type='1' and job_id='" . $data['JobID']."'";
-		$autograph = Yii::app()->db->createCommand($sql_autograph)->queryRow();
+//		$sql_autograph = "select * from lbs_report_autograph where job_type='1' and job_id='" . $data['JobID']."'";
+//		$autograph = Yii::app()->db->createCommand($sql_autograph)->queryRow();
+
+        //        在这里 首先去获取 新的数据表中是存在相关数据 使用curl_get去获取
+
+        /**
+         * ###########################################################
+         *                            签名更改开始
+         * ##########################################################
+         * */
+        $params = [
+            'job_type' => 1,
+            'job_id' => $data['JobID'],
+        ];
+        $utils = new Utils();
+        $params_str = http_build_query($params);
+        $res = $utils->httpCurl($utils->sign_url, $params_str);
+        $res_de = json_decode($res, true);
+        if (isset($res_de) && $res_de['code'] == 0) {
+            $autograph_new = $res_de;
+            //有图片进行处理
+        } else {
+            $autograph_new = $res_de;
+            //继续查询lbs的数据库
+            $sql_autograph = "select * from lbs_report_autograph where job_type='1' and job_id='" . $data['JobID'] . "'";
+            $autograph = Yii::app()->db->createCommand($sql_autograph)->queryRow();
+        }
+
+        /**
+         * ###########################################################
+         *                            签名更改结束
+         * ##########################################################
+         * */
+
+
+
          
 		 //查询服务板块
 		$sql_service_sections = "select * from lbs_service_reportsections where city='" . $city . "' and service_type=" . $service_type;
@@ -521,45 +555,63 @@ EOD;
 		}
 
 		//签名点评
-		if (count($autograph) > 0) {
-			$eimageName01 = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
-			$eimageName02 = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
-			$eimageName03 = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
-			//设置图片保存路径
-			$path = Yii::app()->basePath . "/images/pdf/" . date("Ymd", time());
-			//判断目录是否存在 不存在就创建
-			if (!is_dir($path)) {
-				mkdir($path, 0777, true);
-			}
-			$employee01_signature = str_replace("data:image/jpg;base64,", "", $autograph['employee01_signature']);
-			$employee02_signature = str_replace("data:image/jpg;base64,", "", $autograph['employee02_signature']);
-			$employee03_signature = str_replace("data:image/jpg;base64,", "", $autograph['employee03_signature']);
+        /**
+         * ###########################################################
+         *                            签名点评开始
+         * ##########################################################
+         * */
+        //签名点评
+        if ($res_de['code'] == 0) {
+//            这里是请求成功的情况
+            $img_data = $res_de['data'];
+            $eimageSrc01 = !empty($img_data['staff_id01_url']) ? $utils->sign_url . $img_data['staff_id01_url'] : '';
+            $eimageSrc02 = !empty($img_data['staff_id02_url']) ? $utils->sign_url . $img_data['staff_id02_url'] : '';
+            $eimageSrc03 = !empty($img_data['staff_id03_url']) ? $utils->sign_url . $img_data['staff_id03_url'] : '';
+            $cimageSrc = !empty($img_data['customer_signature_url']) ? $utils->sign_url . $img_data['customer_signature_url'] : '';
+            $customer_grade = isset($img_data['customer_grade']) ? $img_data['customer_grade'] : '';
+        } else {
+//            没有查询到图片
+            $eimageName01 = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
+            $eimageName02 = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
+            $eimageName03 = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
+            //设置图片保存路径
+            $path = Yii::app()->basePath . "/images/pdf/" . date("Ymd", time());
+            //判断目录是否存在 不存在就创建
+            if (!is_dir($path)) {
+                mkdir($path, 0777, true);
+            }
+            $employee01_signature = str_replace("data:image/jpg;base64,", "", $autograph['employee01_signature']);
+            $employee02_signature = str_replace("data:image/jpg;base64,", "", $autograph['employee02_signature']);
+            $employee03_signature = str_replace("data:image/jpg;base64,", "", $autograph['employee03_signature']);
+            //图片路径
+            $eimageSrc01 = $path . "/" . $eimageName01;
+            if ($employee01_signature != '') file_put_contents($eimageSrc01, base64_decode($employee01_signature));
+            $eimageSrc02 = $path . "/" . $eimageName02;
+            if ($employee02_signature != '') file_put_contents($eimageSrc02, base64_decode($employee02_signature));
+            $eimageSrc03 = $path . "/" . $eimageName03;
+            if ($employee03_signature != '') file_put_contents($eimageSrc03, base64_decode($employee03_signature));
 
-			//图片路径
-			$eimageSrc01 = $path . "/" . $eimageName01;
-			if ($employee01_signature != '') file_put_contents($eimageSrc01, base64_decode($employee01_signature));
-			$eimageSrc02 = $path . "/" . $eimageName02;
-			if ($employee02_signature != '') file_put_contents($eimageSrc02, base64_decode($employee02_signature));
-			$eimageSrc03 = $path . "/" . $eimageName03;
-			if ($employee03_signature != '') file_put_contents($eimageSrc03, base64_decode($employee03_signature));
-
-			if ($autograph['customer_signature'] != '' && $autograph['customer_signature'] != 'undefined') {
-				$cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
-				$cimageSrc = $path . "/" . $cimageName;
-				$customer_signature = str_replace("data:image/png;base64,", "", $autograph['customer_signature']);
-				file_put_contents($cimageSrc, base64_decode($customer_signature));
-				$degrees = 90;      //旋转角度
-				$url = $cimageSrc;  //图片存放位置
-				self::pic_rotating($degrees, $url);
-			} else {
-				$cimageSrc = '';
-			}
-			$html .= <<<EOD
+            if ($autograph['customer_signature'] != '' && $autograph['customer_signature'] != 'undefined') {
+                $cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
+                $cimageSrc = $path . "/" . $cimageName;
+                $customer_signature = str_replace("data:image/png;base64,", "", $autograph['customer_signature']);
+                file_put_contents($cimageSrc, base64_decode($customer_signature));
+                $degrees = 90;      //旋转角度
+                $url = $cimageSrc;  //图片存放位置
+                self::pic_rotating($degrees, $url);
+            } else {
+                $cimageSrc = '';
+            }
+            $customer_grade = $autograph['customer_grade'];
+        }
+        if (count($autograph) > 0 || $res_de['code'] == 0) {
+            $sign_datas = $res_de['data'];
+            $html .= <<<EOD
                         <tr class="myTitle">
                             <th width="100%" align="left">客户点评</th>
                         </tr>
                         <tr>
-							<td width="100%" align="left">{$autograph['customer_grade']}星(1~5)</td>
+							<td width="100%" align="left">{$customer_grade}星(1~5)</td>
                         </tr>
                         <tr class="myTitle">
                             <th  width="100%" align="left">报告签名</th>
@@ -572,23 +624,29 @@ EOD;
 							<td width="50%" align="left">
 								<img src="{$eimageSrc01}" width="130" height="80" style="magin:20px 50px;">
 EOD;
-			if ($employee02_signature != ''){
-				$html .= <<<EOD
+            if ($employee02_signature != '' || isset($sign_datas['staff_id02_url']) && $sign_datas['staff_id02_url'] != '') {
+                $html .= <<<EOD
 								<img src="{$eimageSrc02}" width="130" height="80" style="magin:20px 50px;">
 EOD;
-			}
-			if ($employee03_signature != ''){
-				$html .= <<<EOD
+            }
+            if ($employee03_signature != '' || isset($sign_datas['staff_id03_url']) && $sign_datas['staff_id03_url'] != '') {
+                $html .= <<<EOD
 								<img src="{$eimageSrc03}" width="130" height="80" style="magin:20px 50px;">
 EOD;
-			}
-			$html .= <<<EOD
+            }
+            $html .= <<<EOD
 							</td>
-							<td width="50%" align="left"><img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px;"></td>
+							<td width="50%" align="left"><img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)"></td>
                         </tr>
 EOD;
-		}
-		
+        }
+
+
+        /**
+         * ###########################################################
+         *                            签名点评结束
+         * ##########################################################
+         * */
 		$html .= <<<EOD
 			</table>
 			<img src="$company_img">

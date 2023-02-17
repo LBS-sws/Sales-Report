@@ -1,163 +1,198 @@
 <?php
-class ReportFollowBatch {
-	public static function countJobReport() {
-		$model = new ReportfollowList;
-		$session = Yii::app()->session;
-		if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
-			$criteria = $session[$model->criteriaName()];
-			$model->setCriteria($criteria);
-		}
-		$sql = $model->getCountSQL();
-		$total = Yii::app()->db->createCommand($sql)->queryScalar();
-		return $total;
-	}
-	
-	public static function downloadJobReport() {
-		$model = new ReportfollowList;
-		$session = Yii::app()->session;
-		if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
-			$criteria = $session[$model->criteriaName()];
-			$model->setCriteria($criteria);
-		}
-		$sql = $model->getDataSQL();
-		
-		$file_list = array();
-		$data = Yii::app()->db->createCommand($sql)->queryAll();
-		foreach ($data as $row) {
-			$city = $row['code'];
-			$job_dt = $row['JobDate'];
-			$job_id = $row['FollowUpID'];
-			$servicename = $row['ServiceName'];
-			$custname = $row['CustomerName'];
-			$reportfile = Yii::app()->basePath."/images/report/$city/$job_dt/$job_id.pdf";
-			if (!file_exists($reportfile)) {
-				self::generateJobReport($row, $city, $reportfile);
-			}
-			if (file_exists($reportfile)) $file_list[$reportfile] = mb_convert_encoding("$custname-($servicename)$job_dt-$job_id.pdf",($city=='MO'?'BIG5':'GB2312'),'UTF-8');
-		}
 
-        if(count($data)){
-            if(count($data)>10){
+class ReportFollowBatch
+{
+
+    public static function countJobReport()
+    {
+        $model = new ReportfollowList;
+        $session = Yii::app()->session;
+        if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+            $criteria = $session[$model->criteriaName()];
+            $model->setCriteria($criteria);
+        }
+        $sql = $model->getCountSQL();
+        $total = Yii::app()->db->createCommand($sql)->queryScalar();
+        return $total;
+    }
+
+    public static function downloadJobReport()
+    {
+        $model = new ReportfollowList;
+        $session = Yii::app()->session;
+        if (isset($session[$model->criteriaName()]) && !empty($session[$model->criteriaName()])) {
+            $criteria = $session[$model->criteriaName()];
+            $model->setCriteria($criteria);
+        }
+        $sql = $model->getDataSQL();
+
+        $file_list = array();
+        $data = Yii::app()->db->createCommand($sql)->queryAll();
+        foreach ($data as $row) {
+            $city = $row['code'];
+            $job_dt = $row['JobDate'];
+            $job_id = $row['FollowUpID'];
+            $servicename = $row['ServiceName'];
+            $custname = $row['CustomerName'];
+            $reportfile = Yii::app()->basePath . "/images/report/$city/$job_dt/$job_id.pdf";
+            if (!file_exists($reportfile)) {
+                self::generateJobReport($row, $city, $reportfile);
+            }
+            if (file_exists($reportfile)) $file_list[$reportfile] = mb_convert_encoding("$custname-($servicename)$job_dt-$job_id.pdf", ($city == 'MO' ? 'BIG5' : 'GB2312'), 'UTF-8');
+        }
+
+        if (count($data)) {
+            if (count($data) > 10) {
                 $arr = array_slice($data, 0, 10);
                 $zipFileNameArr = [];
-                foreach ($arr as $key => $val){
+                foreach ($arr as $key => $val) {
                     $zipFileNameArr[] = $val['CustomerName'];
                 }
                 $zipNew = array_unique($zipFileNameArr);
-                $zipFileName = implode("、",$zipNew);
-                $zipFileName = $zipFileName."等".count($data)."个服务报告";
-            }else{
+                $zipFileName = implode("、", $zipNew);
+                $zipFileName = $zipFileName . "等" . count($data) . "个服务报告";
+            } else {
                 $zipFileNameArr = [];
-                foreach ($data as $key => $val){
+                foreach ($data as $key => $val) {
 //                    $zipFileName.=$val['CustomerName']."、";
                     $zipFileNameArr[] = $val['CustomerName'];
                 }
                 $zipNew = array_unique($zipFileNameArr);
-                $zipFileName = implode("、",$zipNew);
-                $zipFileName = $zipFileName."等".count($data)."个服务报告";
+                $zipFileName = implode("、", $zipNew);
+                $zipFileName = $zipFileName . "等" . count($data) . "个服务报告";
             }
         }
-        $zipNewName = date('Y-m-d').'_'.$zipFileName;
-		$fid = 'f'.md5(microtime());
-		$zip = new ZipArchive;
-		$zipname = sys_get_temp_dir().'/'.$fid.'.zip';
-		$zip->open($zipname, ZipArchive::CREATE);
-		foreach ($file_list as $pdf=>$result) {
-			$zip->addFile($pdf, $result);
-		}
-		$zip->close();
-		return [$fid,$zipNewName];
-	}
-	
-	public static function generateJobReport($data, $city, $reportfile) {
-		$data['Staffall'] = $data['Staff01Name'] . ($data['Staff02Name'] ? ',' . $data['Staff02Name'] : '') . ($data['Staff03Name'] ? ',' . $data['Staff03Name'] : '');
+        $zipNewName = date('Y-m-d') . '_' . $zipFileName;
+        $fid = 'f' . md5(microtime());
+        $zip = new ZipArchive;
+        $zipname = sys_get_temp_dir() . '/' . $fid . '.zip';
+        $zip->open($zipname, ZipArchive::CREATE);
+        foreach ($file_list as $pdf => $result) {
+            $zip->addFile($pdf, $result);
+        }
+        $zip->close();
+        return [$fid, $zipNewName];
+    }
 
-		$data['task_type'] = "跟进服务";
+    public static function generateJobReport($data, $city, $reportfile)
+    {
+        $data['Staffall'] = $data['Staff01Name'] . ($data['Staff02Name'] ? ',' . $data['Staff02Name'] : '') . ($data['Staff03Name'] ? ',' . $data['Staff03Name'] : '');
 
-		//服务项目
-		$service_projects = '';
-		$service_type = $data['ServiceType'];
-		$data['service_projects'] = $service_projects;
+        $data['task_type'] = "跟进服务";
 
-		$sql_briefing = "select * from lbs_service_briefings where job_type=2 and job_id=" . $data['FollowUpID'];
-		$briefing = Yii::app()->db->createCommand($sql_briefing)->queryRow();
+        //服务项目
+        $service_projects = '';
+        $service_type = $data['ServiceType'];
+        $data['service_projects'] = $service_projects;
 
-		$sql_material = "select * from lbs_service_materials where job_type=2 and job_id=" . $data['FollowUpID'];
-		$material = Yii::app()->db->createCommand($sql_material)->queryAll();
+        $sql_briefing = "select * from lbs_service_briefings where job_type=2 and job_id=" . $data['FollowUpID'];
+        $briefing = Yii::app()->db->createCommand($sql_briefing)->queryRow();
 
-		$sql_risk = "select * from lbs_service_risks where job_type=2 and job_id=" . $data['FollowUpID'];
-		$risk = Yii::app()->db->createCommand($sql_risk)->queryAll();
+        $sql_material = "select * from lbs_service_materials where job_type=2 and job_id=" . $data['FollowUpID'];
+        $material = Yii::app()->db->createCommand($sql_material)->queryAll();
 
-		$data['equipments'] = '';
-		$sql_basic_equipments = "
+        $sql_risk = "select * from lbs_service_risks where job_type=2 and job_id=" . $data['FollowUpID'];
+        $risk = Yii::app()->db->createCommand($sql_risk)->queryAll();
+
+        $data['equipments'] = '';
+        $sql_basic_equipments = "
 			select a.equipment_type_id, b.name, count(a.id) as counter from lbs_service_equipments a, lbs_service_equipment_type b
-			where b.id=a.equipment_type_id and a.job_type=2 and a.job_id=".$data['FollowUpID']."
+			where b.id=a.equipment_type_id and a.job_type=2 and a.job_id=" . $data['FollowUpID'] . "
 			group by a.equipment_type_id, b.name
 		";
-		$basic_equipments = Yii::app()->db->createCommand($sql_basic_equipments)->queryAll();
-		if (count($basic_equipments) > 0) {
-			foreach ($basic_equipments as $k => $equipment) {
-				$data['equipments'] .= ($data['equipments']=='' ? '' : ',').$equipment['name'].'-'.$equipment['counter'];
-			}
-		}
+        $basic_equipments = Yii::app()->db->createCommand($sql_basic_equipments)->queryAll();
+        if (count($basic_equipments) > 0) {
+            foreach ($basic_equipments as $k => $equipment) {
+                $data['equipments'] .= ($data['equipments'] == '' ? '' : ',') . $equipment['name'] . '-' . $equipment['counter'];
+            }
+        }
 
-		$equipmenthz_datas = [];
-		if (count($basic_equipments) > 0) {
-			foreach ($basic_equipments as $i => $type) {
-				$sql_check_datas = "select * from lbs_service_equipments where job_type=2 and job_id=" . $data['FollowUpID'] . " and equipment_type_id=" . $type['equipment_type_id'] . " and equipment_area is not null and equipment_area!='' and check_datas is not null and check_datas!='' order by id asc";
-				$check_datas = Yii::app()->db->createCommand($sql_check_datas)->queryAll();
-				
-				$equipmenthz_count = count($check_datas);
-				$equipmenthz_datas[$i]['title'] = $type['name'] . "(" . $equipmenthz_count . "/" . $type['counter'] . ")";
+        $equipmenthz_datas = [];
+        if (count($basic_equipments) > 0) {
+            foreach ($basic_equipments as $i => $type) {
+                $sql_check_datas = "select * from lbs_service_equipments where job_type=2 and job_id=" . $data['FollowUpID'] . " and equipment_type_id=" . $type['equipment_type_id'] . " and equipment_area is not null and equipment_area!='' and check_datas is not null and check_datas!='' order by id asc";
+                $check_datas = Yii::app()->db->createCommand($sql_check_datas)->queryAll();
 
-				if (count($check_datas) > 0) {
-					for ($j = 0; $j < count($check_datas); $j++) {
-						$check_data = json_decode($check_datas[$j]['check_datas'], true);
-						$equipmenthz_datas[$i]['table_title'][0] = '编号';
-						$equipmenthz_datas[$i]['content'][$j][0] = sprintf('%02s', $j + 1);
-						$equipmenthz_datas[$i]['table_title'][1] = '区域';
-						$equipmenthz_datas[$i]['content'][$j][1] = $check_datas[$j]['equipment_area'];
-						for ($m = 0; $m < count($check_data); $m++) {
-							$equipmenthz_datas[$i]['table_title'][$m + 2] = $check_data[$m]['label'];
-							$equipmenthz_datas[$i]['content'][$j][$m + 2] = $check_data[$m]['value'];
-						}
-						$equipmenthz_datas[$i]['table_title'][$m + 2] = '检查与处理';
-						$equipmenthz_datas[$i]['content'][$j][$m + 2] = $check_datas[$j]['check_handle'];
-						$equipmenthz_datas[$i]['table_title'][$m + 3] = '补充说明';
-						$equipmenthz_datas[$i]['content'][$j][$m + 3] = $check_datas[$j]['more_info'];
-						$equipmenthz_datas[$i]['site_photos'][$j] = $check_datas[$j]['site_photos'];
-					}
-				}
-			}
-		}
-		$equipment = $equipmenthz_datas;
+                $equipmenthz_count = count($check_datas);
+                $equipmenthz_datas[$i]['title'] = $type['name'] . "(" . $equipmenthz_count . "/" . $type['counter'] . ")";
 
-		$sql_photo = "select * from lbs_service_photos where job_type=2 and job_id=" . $data['FollowUpID'] . " limit 4";
-		$photo = Yii::app()->db->createCommand($sql_photo)->queryAll();
+                if (count($check_datas) > 0) {
+                    for ($j = 0; $j < count($check_datas); $j++) {
+                        $check_data = json_decode($check_datas[$j]['check_datas'], true);
+                        $equipmenthz_datas[$i]['table_title'][0] = '编号';
+                        $equipmenthz_datas[$i]['content'][$j][0] = sprintf('%02s', $j + 1);
+                        $equipmenthz_datas[$i]['table_title'][1] = '区域';
+                        $equipmenthz_datas[$i]['content'][$j][1] = $check_datas[$j]['equipment_area'];
+                        for ($m = 0; $m < count($check_data); $m++) {
+                            $equipmenthz_datas[$i]['table_title'][$m + 2] = $check_data[$m]['label'];
+                            $equipmenthz_datas[$i]['content'][$j][$m + 2] = $check_data[$m]['value'];
+                        }
+                        $equipmenthz_datas[$i]['table_title'][$m + 2] = '检查与处理';
+                        $equipmenthz_datas[$i]['content'][$j][$m + 2] = $check_datas[$j]['check_handle'];
+                        $equipmenthz_datas[$i]['table_title'][$m + 3] = '补充说明';
+                        $equipmenthz_datas[$i]['content'][$j][$m + 3] = $check_datas[$j]['more_info'];
+                        $equipmenthz_datas[$i]['site_photos'][$j] = $check_datas[$j]['site_photos'];
+                    }
+                }
+            }
+        }
+        $equipment = $equipmenthz_datas;
 
-		$sql_autograph = "select * from lbs_report_autograph where job_type='2' and job_id='" . $data['FollowUpID']."'";
-		$autograph = Yii::app()->db->createCommand($sql_autograph)->queryRow();
-         
-		 //查询服务板块
-		$sql_service_sections = "select * from lbs_service_reportsections where city='" . $city . "' and service_type=" . $service_type;
-		$service_sections_q = Yii::app()->db->createCommand($sql_service_sections)->queryRow();
-		if ($service_sections_q) {
-			$service_sections = explode(',', $service_sections_q['section_ids']);
-		} else {
-			$service_sections = '';
-		}
+        $sql_photo = "select * from lbs_service_photos where job_type=2 and job_id=" . $data['FollowUpID'] . " limit 4";
+        $photo = Yii::app()->db->createCommand($sql_photo)->queryAll();
 
-		$basic = $data;
-		$baseUrl_imgs = Yii::app()->params['baseUrl_imgs'];
-		$company_img = $baseUrl_imgs . "pdf/company/" . $city . ".jpg";
-		$logo_img = $baseUrl_imgs . "pdf/logo.png";
-		
-		include_once Yii::app()->basePath . '/extensions/tcpdf/tcpdf.php';//引入库
-		include_once Yii::app()->basePath . '/extensions/tcpdf/config/tcpdf_config.php';//引入库
-		$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-		
-		//pdf生成
-		$html = <<<EOD
+//        在这里 首先去获取 新的数据表中是存在相关数据 使用curl_get去获取
+
+        /**
+         * ###########################################################
+         *                            签名更改开始
+         * ##########################################################
+         * */
+        $params = [
+            'job_type' => 2,
+            'job_id' => $data['FollowUpID'],
+        ];
+        $utils = new Utils();
+        $params_str = http_build_query($params);
+        $res = $utils->httpCurl($utils->sign_url, $params_str);
+        $res_de = json_decode($res, true);
+        if (isset($res_de) && $res_de['code'] == 0) {
+            $autograph_new = $res_de;
+            //有图片进行处理
+        } else {
+            $autograph_new = $res_de;
+            //继续查询lbs的数据库
+            $sql_autograph = "select * from lbs_report_autograph where job_type='2' and job_id='" . $data['FollowUpID'] . "'";
+            $autograph = Yii::app()->db->createCommand($sql_autograph)->queryRow();
+        }
+
+        /**
+         * ###########################################################
+         *                            签名更改结束
+         * ##########################################################
+         * */
+
+
+        //查询服务板块
+        $sql_service_sections = "select * from lbs_service_reportsections where city='" . $city . "' and service_type=" . $service_type;
+        $service_sections_q = Yii::app()->db->createCommand($sql_service_sections)->queryRow();
+        if ($service_sections_q) {
+            $service_sections = explode(',', $service_sections_q['section_ids']);
+        } else {
+            $service_sections = '';
+        }
+
+        $basic = $data;
+        $baseUrl_imgs = Yii::app()->params['baseUrl_imgs'];
+        $company_img = $baseUrl_imgs . "pdf/company/" . $city . ".jpg";
+        $logo_img = $baseUrl_imgs . "pdf/logo.png";
+
+        include_once Yii::app()->basePath . '/extensions/tcpdf/tcpdf.php';//引入库
+        include_once Yii::app()->basePath . '/extensions/tcpdf/config/tcpdf_config.php';//引入库
+        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+        //pdf生成
+        $html = <<<EOD
             <style>
             body{
                 padding: 0;
@@ -240,9 +275,9 @@ class ReportFollowBatch {
                     <td width="85%" align="left">{$basic['equipments']}</td>
                 </tr>
 EOD;
-		if ($briefing !== false) {
-			if (($service_sections != '' && in_array('1', $service_sections)) || $service_sections == '') {
-				$html .= <<<EOD
+        if ($briefing !== false) {
+            if (($service_sections != '' && in_array('1', $service_sections)) || $service_sections == '') {
+                $html .= <<<EOD
                     <tr class="myTitle">
                         <th width="100%" align="left">服务简报</th>
                     </tr>
@@ -255,47 +290,47 @@ EOD;
                         <td width="85%" align="left">{$briefing['proposal']}</td>
                     </tr>
 EOD;
-			}
-		}
+            }
+        }
 
-		if (count($photo) > 0) {
-			if (($service_sections != '' && in_array('5', $service_sections)) || $service_sections == '') {
-				$html .= <<<EOD
+        if (count($photo) > 0) {
+            if (($service_sections != '' && in_array('5', $service_sections)) || $service_sections == '') {
+                $html .= <<<EOD
                         <tr class="myTitle">
                             <th width="100%" align="left">现场工作照</th>
                         </tr>
 EOD;
-				foreach ($photo as $photox) {
-					$html .= <<<EOD
+                foreach ($photo as $photox) {
+                    $html .= <<<EOD
                         <tr>
 							<td width="20%" align="left">{$photox['remarks']}</td>
 EOD;
-					$site_photos = explode(',', $photox['site_photos']);
-					for ($sp = 0; $sp < count($site_photos); $sp++) {
-						$spa = $baseUrl_imgs . str_replace("\/", '/', trim($site_photos[$sp], '"'));
-						if (!General::isWebImageValid($spa)) $spa = '/images/spacer.gif';
-						$html .= <<<EOD
+                    $site_photos = explode(',', $photox['site_photos']);
+                    for ($sp = 0; $sp < count($site_photos); $sp++) {
+                        $spa = $baseUrl_imgs . str_replace("\/", '/', trim($site_photos[$sp], '"'));
+                        if (!General::isWebImageValid($spa)) $spa = '/images/spacer.gif';
+                        $html .= <<<EOD
                             <td width="20%" align="center">
 								<img src="$spa" width="80" height="100" style="padding:20px 50px;">
                             </td>
 EOD;
-					}
-					$sy_unm = 4 - count($site_photos);
-					for ($j = 0; $j < $sy_unm; $j++) {
-						$html .= <<<EOD
+                    }
+                    $sy_unm = 4 - count($site_photos);
+                    for ($j = 0; $j < $sy_unm; $j++) {
+                        $html .= <<<EOD
                             <td width="20%" align="center"></td>
 EOD;
-					}
-					$html .= <<<EOD
+                    }
+                    $html .= <<<EOD
 						</tr>
 EOD;
-				}
-			}
-		}
-		
-		if (count($material) > 0) {
-			if (($service_sections != '' && in_array('2', $service_sections)) || $service_sections == '') {
-				$html .= <<<EOD
+                }
+            }
+        }
+
+        if (count($material) > 0) {
+            if (($service_sections != '' && in_array('2', $service_sections)) || $service_sections == '') {
+                $html .= <<<EOD
 						<tr class="myTitle">
 							<th width="100%" align="left">物料使用</th>
 						</tr>  
@@ -310,9 +345,9 @@ EOD;
                             <td width="22%">备注</td>
 						</tr>
 EOD;
-				foreach ($material as $materialx) {
-					$degrees = $materialx['dosage'].$materialx['unit'];
-					$html .= <<<EOD
+                foreach ($material as $materialx) {
+                    $degrees = $materialx['dosage'] . $materialx['unit'];
+                    $html .= <<<EOD
 						<tr>
 							<td width="15%">{$materialx['material_name']}</td>
 							<td width="12%">{$materialx['processing_space']}</td>
@@ -324,13 +359,13 @@ EOD;
 							<td width="22%" align="left">{$materialx['matters_needing_attention']}</td>
                         </tr>  
 EOD;
-				}
-			}
-		}
-        
-		if(count($risk)>0){
-			if(($service_sections!='' && in_array('4',$service_sections)) || $service_sections==''){
-				$html .= <<<EOD
+                }
+            }
+        }
+
+        if (count($risk) > 0) {
+            if (($service_sections != '' && in_array('4', $service_sections)) || $service_sections == '') {
+                $html .= <<<EOD
 						<tr class="myTitle">
 							<th width="100%"align="left">现场风险评估与建议</th>
 						</tr>  
@@ -344,10 +379,10 @@ EOD;
 							<td width="15%">跟进日期</td>
 						</tr>
 EOD;
-				foreach ($risk as $riskx) {
-					$c_t =  date('Y-m-d',strtotime($riskx['creat_time']));
+                foreach ($risk as $riskx) {
+                    $c_t = date('Y-m-d', strtotime($riskx['creat_time']));
 
-					$html .= <<<EOD
+                    $html .= <<<EOD
 						<tr>
 							<td width="16%">{$riskx['risk_types']}</td>
 							<td width="19%" align="left">{$riskx['risk_description']}</td>
@@ -360,94 +395,94 @@ EOD;
 						<tr>
 							<td width="16%">风险图片</td>
 EOD;
-					$site_photos = explode(',',$riskx['site_photos']);
-					for ($sp=0; $sp < count($site_photos); $sp++) {
-						$spa = $baseUrl_imgs.str_replace("\/",'/',trim($site_photos[$sp],'"'));
-						if (!General::isWebImageValid($spa)) $spa = '/images/spacer.gif';
-						$html .= <<<EOD
+                    $site_photos = explode(',', $riskx['site_photos']);
+                    for ($sp = 0; $sp < count($site_photos); $sp++) {
+                        $spa = $baseUrl_imgs . str_replace("\/", '/', trim($site_photos[$sp], '"'));
+                        if (!General::isWebImageValid($spa)) $spa = '/images/spacer.gif';
+                        $html .= <<<EOD
 							<td width="21%" align="center">
 								<img src="${spa}" width="80" height="100" style="padding:20px 50px;">
 							</td>
 EOD;
-					}
-					$sy_unm = 4-count($site_photos);
-					for($j=0;$j<$sy_unm;$j++){
-						$html .= <<<EOD
+                    }
+                    $sy_unm = 4 - count($site_photos);
+                    for ($j = 0; $j < $sy_unm; $j++) {
+                        $html .= <<<EOD
                             <td width="21%" align="center"></td>
 EOD;
-					}
-					$html .= <<<EOD
+                    }
+                    $html .= <<<EOD
                         </tr>  
 EOD;
-				}
-			}
-		}
-        
-		if (count($equipment) > 0) {
-			if (($service_sections != '' && in_array('3', $service_sections)) || $service_sections == '') {
-				//设备巡查
-				$total = count($equipment);
-				$html .= <<<EOD
+                }
+            }
+        }
+
+        if (count($equipment) > 0) {
+            if (($service_sections != '' && in_array('3', $service_sections)) || $service_sections == '') {
+                //设备巡查
+                $total = count($equipment);
+                $html .= <<<EOD
 						<tr class="myTitle">
 							<th  width="100%" align="left">设备巡查</th>
 						</tr>
 EOD;
-				for ($e = 0; $e < count($equipment); $e++) {
-					$titlex = json_encode($equipment[$e]['title'], JSON_UNESCAPED_UNICODE);
-					$titlex = str_replace("\/", '/', trim($titlex, '"'));
-					if (count($equipment[$e]) > 1) {
-						$total01 = count($equipment[$e]['table_title']);
-						$html .= <<<EOD
+                for ($e = 0; $e < count($equipment); $e++) {
+                    $titlex = json_encode($equipment[$e]['title'], JSON_UNESCAPED_UNICODE);
+                    $titlex = str_replace("\/", '/', trim($titlex, '"'));
+                    if (count($equipment[$e]) > 1) {
+                        $total01 = count($equipment[$e]['table_title']);
+                        $html .= <<<EOD
 						<tr>
 							<th width="100%" align="left">{$titlex}</th>
 						</tr>
 						<tr>
 EOD;
-						$targs = (31 / ($total01 - 4)) . "%";
-						$table_titlex = $equipment[$e]['table_title'];
-						foreach ($table_titlex as $ti => $record) {
-							if ($ti == 0) {
-								$wi01 = '8%';
-							} else if ($ti == 1) {
-								$wi01 = "11%";
-							} else if ($ti > 1 && $ti < count($table_titlex) - 2) {
-								$wi01 = $targs;
-							} else if ((($ti + 1) == count($table_titlex)) || (($ti + 2) == count($table_titlex))) {
-								$wi01 = "25%";
-							}
-							$html .= <<<EOD
+                        $targs = (31 / ($total01 - 4)) . "%";
+                        $table_titlex = $equipment[$e]['table_title'];
+                        foreach ($table_titlex as $ti => $record) {
+                            if ($ti == 0) {
+                                $wi01 = '8%';
+                            } else if ($ti == 1) {
+                                $wi01 = "11%";
+                            } else if ($ti > 1 && $ti < count($table_titlex) - 2) {
+                                $wi01 = $targs;
+                            } else if ((($ti + 1) == count($table_titlex)) || (($ti + 2) == count($table_titlex))) {
+                                $wi01 = "25%";
+                            }
+                            $html .= <<<EOD
 							<td width="{$wi01}">{$record}</td>
 EOD;
-						}
-						$html .= <<<EOD
+                        }
+                        $html .= <<<EOD
 						</tr>
 EOD;
-						$contentx = $equipment[$e]['content'];
-						foreach ($contentx as $c => $record1) {
-							$html .= <<<EOD
+                        $contentx = $equipment[$e]['content'];
+                        foreach ($contentx as $c => $record1) {
+                            $html .= <<<EOD
 						<tr>
 EOD;
-							for ($cd = 0; $cd < count($record1); $cd++) {
-								if ($cd == 0) {
-									$wi02 = '8%';
-								} else if ($cd == 1) {
-									$wi02 = "11%";
-								} else if ($cd > 1 && $cd < count($record1) - 2) {
-									$wi02 = $targs;
-								} else if ((($cd + 1) == count($record1)) || (($cd + 2) == count($record1))) {
-									$wi02 = "25%";
-								}
+                            for ($cd = 0; $cd < count($record1); $cd++) {
+                                if ($cd == 0) {
+                                    $wi02 = '8%';
+                                } else if ($cd == 1) {
+                                    $wi02 = "11%";
+                                } else if ($cd > 1 && $cd < count($record1) - 2) {
+                                    $wi02 = $targs;
+                                } else if ((($cd + 1) == count($record1)) || (($cd + 2) == count($record1))) {
+                                    $wi02 = "25%";
+                                }
 
-								$html .= <<<EOD
+                                $html .= <<<EOD
 							<td width="{$wi02}">$record1[$cd]</td>
 EOD;
-							}
-							$html .= <<<EOD
+                            }
+                            $html .= <<<EOD
 						</tr>
 EOD;
-						}
-					} else {
-							$html .= <<<EOD
+                        }
+                    } else {
+                        $html .= <<<EOD
 						<tr>
 							<th width="100%" align="left">{$titlex}</th>
 						</tr>
@@ -455,51 +490,69 @@ EOD;
 							<td width="100%">设备正常，无处理数据！</td>
 						</tr>
 EOD;
-					}
-				}
-			}
-		}
+                    }
+                }
+            }
+        }
 
-		//签名点评
-		if (count($autograph) > 0) {
-			$eimageName01 = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
-			$eimageName02 = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
-			$eimageName03 = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
-			//设置图片保存路径
-			$path = Yii::app()->basePath . "/images/pdf/" . date("Ymd", time());
-			//判断目录是否存在 不存在就创建
-			if (!is_dir($path)) {
-				mkdir($path, 0777, true);
-			}
-			$employee01_signature = str_replace("data:image/jpg;base64,", "", $autograph['employee01_signature']);
-			$employee02_signature = str_replace("data:image/jpg;base64,", "", $autograph['employee02_signature']);
-			$employee03_signature = str_replace("data:image/jpg;base64,", "", $autograph['employee03_signature']);
 
-			//图片路径
-			$eimageSrc01 = $path . "/" . $eimageName01;
-			if ($employee01_signature != '') file_put_contents($eimageSrc01, base64_decode($employee01_signature));
-			$eimageSrc02 = $path . "/" . $eimageName02;
-			if ($employee02_signature != '') file_put_contents($eimageSrc02, base64_decode($employee02_signature));
-			$eimageSrc03 = $path . "/" . $eimageName03;
-			if ($employee03_signature != '') file_put_contents($eimageSrc03, base64_decode($employee03_signature));
+        /**
+         * ###########################################################
+         *                            签名点评开始
+         * ##########################################################
+         * */
+        //签名点评
+        if ($res_de['code'] == 0) {
+//            这里是请求成功的情况
+            $img_data = $res_de['data'];
+            $eimageSrc01 = !empty($img_data['staff_id01_url']) ? $utils->sign_url . $img_data['staff_id01_url'] : '';
+            $eimageSrc02 = !empty($img_data['staff_id02_url']) ? $utils->sign_url . $img_data['staff_id02_url'] : '';
+            $eimageSrc03 = !empty($img_data['staff_id03_url']) ? $utils->sign_url . $img_data['staff_id03_url'] : '';
+            $cimageSrc = !empty($img_data['customer_signature_url']) ? $utils->sign_url . $img_data['customer_signature_url'] : '';
+            $customer_grade = isset($img_data['customer_grade']) ? $img_data['customer_grade'] : '';
+        } else {
+//            没有查询到图片
+            $eimageName01 = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
+            $eimageName02 = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
+            $eimageName03 = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
+            //设置图片保存路径
+            $path = Yii::app()->basePath . "/images/pdf/" . date("Ymd", time());
+            //判断目录是否存在 不存在就创建
+            if (!is_dir($path)) {
+                mkdir($path, 0777, true);
+            }
+            $employee01_signature = str_replace("data:image/jpg;base64,", "", $autograph['employee01_signature']);
+            $employee02_signature = str_replace("data:image/jpg;base64,", "", $autograph['employee02_signature']);
+            $employee03_signature = str_replace("data:image/jpg;base64,", "", $autograph['employee03_signature']);
+            //图片路径
+            $eimageSrc01 = $path . "/" . $eimageName01;
+            if ($employee01_signature != '') file_put_contents($eimageSrc01, base64_decode($employee01_signature));
+            $eimageSrc02 = $path . "/" . $eimageName02;
+            if ($employee02_signature != '') file_put_contents($eimageSrc02, base64_decode($employee02_signature));
+            $eimageSrc03 = $path . "/" . $eimageName03;
+            if ($employee03_signature != '') file_put_contents($eimageSrc03, base64_decode($employee03_signature));
 
-			if ($autograph['customer_signature'] != '' && $autograph['customer_signature'] != 'undefined') {
-				$cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
-				$cimageSrc = $path . "/" . $cimageName;
-				$customer_signature = str_replace("data:image/png;base64,", "", $autograph['customer_signature']);
-				file_put_contents($cimageSrc, base64_decode($customer_signature));
-				$degrees = 90;      //旋转角度
-				$url = $cimageSrc;  //图片存放位置
-				self::pic_rotating($degrees, $url);
-			} else {
-				$cimageSrc = '';
-			}
-			$html .= <<<EOD
+            if ($autograph['customer_signature'] != '' && $autograph['customer_signature'] != 'undefined') {
+                $cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
+                $cimageSrc = $path . "/" . $cimageName;
+                $customer_signature = str_replace("data:image/png;base64,", "", $autograph['customer_signature']);
+                file_put_contents($cimageSrc, base64_decode($customer_signature));
+                $degrees = 90;      //旋转角度
+                $url = $cimageSrc;  //图片存放位置
+                self::pic_rotating($degrees, $url);
+            } else {
+                $cimageSrc = '';
+            }
+            $customer_grade = $autograph['customer_grade'];
+        }
+        if (count($autograph) > 0 || $res_de['code'] == 0) {
+            $sign_datas = $res_de['data'];
+            $html .= <<<EOD
                         <tr class="myTitle">
                             <th width="100%" align="left">客户点评</th>
                         </tr>
                         <tr>
-							<td width="100%" align="left">{$autograph['customer_grade']}星(1~5)</td>
+							<td width="100%" align="left">{$customer_grade}星(1~5)</td>
                         </tr>
                         <tr class="myTitle">
                             <th  width="100%" align="left">报告签名</th>
@@ -512,50 +565,59 @@ EOD;
 							<td width="50%" align="left">
 								<img src="{$eimageSrc01}" width="130" height="80" style="magin:20px 50px;">
 EOD;
-			if ($employee02_signature != ''){
-				$html .= <<<EOD
+            if ($employee02_signature != '' || isset($sign_datas['staff_id02_url']) && $sign_datas['staff_id02_url'] != '') {
+                $html .= <<<EOD
 								<img src="{$eimageSrc02}" width="130" height="80" style="magin:20px 50px;">
 EOD;
-			}
-			if ($employee03_signature != ''){
-				$html .= <<<EOD
+            }
+            if ($employee03_signature != '' || isset($sign_datas['staff_id03_url']) && $sign_datas['staff_id03_url'] != '') {
+                $html .= <<<EOD
 								<img src="{$eimageSrc03}" width="130" height="80" style="magin:20px 50px;">
 EOD;
-			}
-			$html .= <<<EOD
+            }
+            $html .= <<<EOD
 							</td>
-							<td width="50%" align="left"><img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px;"></td>
+							<td width="50%" align="left"><img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)"></td>
                         </tr>
 EOD;
-		}
-		
-		$html .= <<<EOD
+        }
+
+
+        /**
+         * ###########################################################
+         *                            签名点评结束
+         * ##########################################################
+         * */
+
+        $html .= <<<EOD
 			</table>
 			<img src="$company_img">
 			</body>
 EOD;
-		
-		if (@file_exists(dirname(__FILE__) . '/lang/chi.php')) {
-			require_once(dirname(__FILE__) . '/lang/chi.php');
-		}
-		$pdf->SetPrintHeader(false);
-		$pdf->SetPrintFooter(false);
-		$pdf->AddPage();
-		$pdf->WriteHTML($html, 1);
-		//Close and output PDF document
 
-		//设置pdf保存路径
-		$path_parts = pathinfo($reportfile);
-		$reportpath = $path_parts['dirname'];
-		//判断目录是否存在 不存在就创建
-		if (!is_dir($reportpath)) {
-			mkdir($reportpath, 0777, true);
-		}
-		ob_clean();
-		$pdf->Output($reportfile, 'F');
-	}
-	
-	public static function array_to_object($arr) {
+        if (@file_exists(dirname(__FILE__) . '/lang/chi.php')) {
+            require_once(dirname(__FILE__) . '/lang/chi.php');
+        }
+        $pdf->SetPrintHeader(false);
+        $pdf->SetPrintFooter(false);
+        $pdf->AddPage();
+        $pdf->WriteHTML($html, 1);
+        //Close and output PDF document
+
+        //设置pdf保存路径
+        $path_parts = pathinfo($reportfile);
+        $reportpath = $path_parts['dirname'];
+        //判断目录是否存在 不存在就创建
+        if (!is_dir($reportpath)) {
+            mkdir($reportpath, 0777, true);
+        }
+        ob_clean();
+        $pdf->Output($reportfile, 'F');
+    }
+
+
+    public static function array_to_object($arr)
+    {
         if (gettype($arr) != 'array') {
             return;
         }
@@ -568,7 +630,8 @@ EOD;
         return (object)$arr;
     }
 
-    public static function pic_rotating($degrees,$url){
+    public static function pic_rotating($degrees, $url)
+    {
         $srcImg = imagecreatefrompng($url);     //获取图片资源
         $rotate = imagerotate($srcImg, $degrees, 0);        //原图旋转
 
@@ -591,4 +654,5 @@ EOD;
         imagepng($newImg, $url);
     }
 }
+
 ?>
