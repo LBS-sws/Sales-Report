@@ -603,6 +603,8 @@ EOD;
                         $eimageSrc03 = !empty($img_data['staff_id03_url']) ? $utils->sign_url . $img_data['staff_id03_url'] : '';
                         $cimageSrc = !empty($img_data['customer_signature_url']) ? $utils->sign_url . $img_data['customer_signature_url'] : '';
                         $customer_grade = isset($img_data['customer_grade']) ? $img_data['customer_grade'] : '';
+                        $employee02_signature = '';
+                        $employee03_signature = '';
                     } else {
 //            没有查询到图片
                         $eimageName01 = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
@@ -1190,6 +1192,9 @@ EOD;
             $eimageSrc03 = !empty($img_data['staff_id03_url']) ? $utils->sign_url . $img_data['staff_id03_url'] : '';
             $cimageSrc = !empty($img_data['customer_signature_url']) ? $utils->sign_url . $img_data['customer_signature_url'] : '';
             $customer_grade = isset($img_data['customer_grade']) ? $img_data['customer_grade'] : '';
+            $employee02_signature = '';
+            $employee03_signature = '';
+
         } else {
 //            没有查询到图片
             $eimageName01 = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
