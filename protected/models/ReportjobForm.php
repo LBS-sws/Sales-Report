@@ -645,7 +645,7 @@ EOD;
                     //签名点评
                     if ($res_de['code'] == 0) {
 //            这里是请求成功的情况
-                        $img_data = $res_de['data'];
+                        $img_data = $autograph_new['data'];
                         $eimageSrc01 = !empty($img_data['staff_id01_url']) ? $utils->sign_url . $img_data['staff_id01_url'] : '';
                         $eimageSrc02 = !empty($img_data['staff_id02_url']) ? $utils->sign_url . $img_data['staff_id02_url'] : '';
                         $eimageSrc03 = !empty($img_data['staff_id03_url']) ? $utils->sign_url . $img_data['staff_id03_url'] : '';
@@ -1283,7 +1283,7 @@ EOD;
         //签名点评
         if ($res_de['code'] == 0) {
 //            这里是请求成功的情况
-            $img_data = $res_de['data'];
+            $img_data = $autograph_new['data'];
             $eimageSrc01 = !empty($img_data['staff_id01_url']) ? $utils->sign_url . $img_data['staff_id01_url'] : '';
             $eimageSrc02 = !empty($img_data['staff_id02_url']) ? $utils->sign_url . $img_data['staff_id02_url'] : '';
             $eimageSrc03 = !empty($img_data['staff_id03_url']) ? $utils->sign_url . $img_data['staff_id03_url'] : '';
@@ -1378,7 +1378,7 @@ EOD;
         if (@file_exists(dirname(__FILE__).'/lang/chi.php')) {
             require_once(dirname(__FILE__).'/lang/chi.php');
         }
-        var_dump($html);exit();
+//        var_dump($html);exit();
         $pdf->SetPrintHeader(false);
         $pdf->SetPrintFooter(false);
         $pdf->AddPage();
