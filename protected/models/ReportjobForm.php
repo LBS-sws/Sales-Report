@@ -933,6 +933,7 @@ EOD;
         $res_de = json_decode($res, true);
         if (isset($res_de) && $res_de['code'] == 0) {
             $autograph_new = $res_de;
+
             var_dump($autograph_new);exit();
             //有图片进行处理
         } else {
