@@ -288,7 +288,7 @@ class ReportjobForm extends CFormModel
                     include_once Yii::app()->basePath . '/common/Utils.php';//引入类文件
                     $utils = new Utils();
                     $params_str = http_build_query($params);
-                    $res = $utils->httpCurl($utils->sign_url, $params_str);
+                    $res = $utils->httpCurl($utils->url, $params_str);
                     $res_de = json_decode($res, true);
                     if (isset($res_de) && $res_de['code'] == 0) {
                         $autograph_new = $res_de;
@@ -929,8 +929,8 @@ EOD;
         include_once Yii::app()->basePath . '/common/Utils.php';//引入类文件
         $utils = new Utils();
         $params_str = http_build_query($params);
-        $res = $utils->httpCurl($utils->sign_url, $params_str);
-        var_dump($res);exit();
+        $res = $utils->httpCurl($utils->url, $params_str);
+//        var_dump($res);exit();
 
         $res_de = json_decode($res, true);
         if (isset($res_de) && $res_de['code'] == 0) {
@@ -1383,7 +1383,7 @@ EOD;
         if (@file_exists(dirname(__FILE__).'/lang/chi.php')) {
             require_once(dirname(__FILE__).'/lang/chi.php');
         }
-        var_dump($html);exit();
+//        var_dump($html);exit();
         $pdf->SetPrintHeader(false);
         $pdf->SetPrintFooter(false);
         $pdf->AddPage();
