@@ -930,11 +930,11 @@ EOD;
         $utils = new Utils();
         $params_str = http_build_query($params);
         $res = $utils->httpCurl($utils->sign_url, $params_str);
+        var_dump($res);exit();
+
         $res_de = json_decode($res, true);
         if (isset($res_de) && $res_de['code'] == 0) {
             $autograph_new = $res_de;
-
-            var_dump($autograph_new);exit();
             //有图片进行处理
         } else {
             $autograph_new = $res_de;
