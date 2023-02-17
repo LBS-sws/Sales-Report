@@ -646,10 +646,10 @@ EOD;
                     if ($res_de['code'] == 0) {
 //            这里是请求成功的情况
                         $img_data = $autograph_new['data'];
-                        $eimageSrc01 = !empty($img_data['staff_id01_url']) ? $utils->sign_url . $img_data['staff_id01_url'] : '';
-                        $eimageSrc02 = !empty($img_data['staff_id02_url']) ? $utils->sign_url . $img_data['staff_id02_url'] : '';
-                        $eimageSrc03 = !empty($img_data['staff_id03_url']) ? $utils->sign_url . $img_data['staff_id03_url'] : '';
-                        $cimageSrc = !empty($img_data['customer_signature_url']) ? $utils->sign_url . $img_data['customer_signature_url'] : '';
+                        $eimageSrc01 = isset($img_data['staff_id01_url']) ? $utils->sign_url . $img_data['staff_id01_url'] : '';
+                        $eimageSrc02 = isset($img_data['staff_id02_url']) ? $utils->sign_url . $img_data['staff_id02_url'] : '';
+                        $eimageSrc03 = isset($img_data['staff_id03_url']) ? $utils->sign_url . $img_data['staff_id03_url'] : '';
+                        $cimageSrc = isset($img_data['customer_signature_url']) ? $utils->sign_url . $img_data['customer_signature_url'] : '';
                         $customer_grade = isset($img_data['customer_grade']) ? $img_data['customer_grade'] : '';
                         $employee02_signature = '';
                         $employee03_signature = '';
@@ -933,6 +933,7 @@ EOD;
         $res_de = json_decode($res, true);
         if (isset($res_de) && $res_de['code'] == 0) {
             $autograph_new = $res_de;
+            var_dump($autograph_new);exit();
             //有图片进行处理
         } else {
             $autograph_new = $res_de;
@@ -1284,18 +1285,14 @@ EOD;
         if ($res_de['code'] == 0) {
 //            这里是请求成功的情况
             $img_data = $autograph_new['data'];
-            $eimageSrc01 = !empty($img_data['staff_id01_url']) ? $utils->sign_url . $img_data['staff_id01_url'] : '';
-            $eimageSrc02 = !empty($img_data['staff_id02_url']) ? $utils->sign_url . $img_data['staff_id02_url'] : '';
-            $eimageSrc03 = !empty($img_data['staff_id03_url']) ? $utils->sign_url . $img_data['staff_id03_url'] : '';
-            $cimageSrc = !empty($img_data['customer_signature_url']) ? $utils->sign_url . $img_data['customer_signature_url'] : '';
+            $eimageSrc01 = isset($img_data['staff_id01_url']) ? $utils->sign_url . $img_data['staff_id01_url'] : '';
+            $eimageSrc02 = isset($img_data['staff_id02_url']) ? $utils->sign_url . $img_data['staff_id02_url'] : '';
+            $eimageSrc03 = isset($img_data['staff_id03_url']) ? $utils->sign_url . $img_data['staff_id03_url'] : '';
+            $cimageSrc = isset($img_data['customer_signature_url']) ? $utils->sign_url . $img_data['customer_signature_url'] : '';
             $customer_grade = isset($img_data['customer_grade']) ? $img_data['customer_grade'] : '';
             $employee02_signature = '';
             $employee03_signature = '';
-            var_dump($eimageSrc01);
-            var_dump($eimageSrc02);
-            var_dump($eimageSrc03);
-            var_dump($cimageSrc);
-            var_dump(1);exit();
+
 
         } else {
 //            没有查询到图片
@@ -1331,11 +1328,7 @@ EOD;
                 $cimageSrc = '';
             }
             $customer_grade = $autograph['customer_grade'];
-            var_dump($eimageSrc01);
-            var_dump($eimageSrc02);
-            var_dump($eimageSrc03);
-            var_dump($cimageSrc);
-            var_dump(2);exit();
+           
         }
         if (count($autograph) > 0 || $res_de['code'] == 0) {
             $sign_datas = $res_de['data'];
