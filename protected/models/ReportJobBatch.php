@@ -202,6 +202,7 @@ class ReportJobBatch {
             'job_type' => 1,
             'job_id' => $data['JobID'],
         ];
+        include_once Yii::app()->basePath . '/common/Utils.php';//引入类文件
         $utils = new Utils();
         $params_str = http_build_query($params);
         $res = $utils->httpCurl($utils->sign_url, $params_str);

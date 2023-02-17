@@ -239,6 +239,7 @@ class ReportfollowForm extends CFormModel
                         'job_type' => 2,
                         'job_id' => $index,
                     ];
+                    include_once Yii::app()->basePath . '/common/Utils.php';//引入类文件
                     $utils = new Utils();
                     $params_str = http_build_query($params);
                     $res = $utils->httpCurl($utils->sign_url, $params_str);
@@ -828,6 +829,7 @@ EOD;
             'job_type' => 2,
             'job_id' => $index,
         ];
+        include_once Yii::app()->basePath . '/common/Utils.php';//引入类文件
         $utils = new Utils();
         $params_str = http_build_query($params);
         $res = $utils->httpCurl($utils->sign_url, $params_str);
