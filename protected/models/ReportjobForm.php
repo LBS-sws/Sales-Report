@@ -1291,6 +1291,12 @@ EOD;
             $customer_grade = isset($img_data['customer_grade']) ? $img_data['customer_grade'] : '';
             $employee02_signature = '';
             $employee03_signature = '';
+            var_dump($eimageSrc01);
+            var_dump($eimageSrc02);
+            var_dump($eimageSrc03);
+            var_dump($cimageSrc);
+            var_dump(1);exit();
+
         } else {
 //            没有查询到图片
             $eimageName01 = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
@@ -1325,6 +1331,11 @@ EOD;
                 $cimageSrc = '';
             }
             $customer_grade = $autograph['customer_grade'];
+            var_dump($eimageSrc01);
+            var_dump($eimageSrc02);
+            var_dump($eimageSrc03);
+            var_dump($cimageSrc);
+            var_dump(2);exit();
         }
         if (count($autograph) > 0 || $res_de['code'] == 0) {
             $sign_datas = $res_de['data'];
