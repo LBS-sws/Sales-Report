@@ -540,9 +540,11 @@ EOD;
                 $cimageSrc = $path . "/" . $cimageName;
                 $customer_signature = str_replace("data:image/png;base64,", "", $autograph['customer_signature']);
                 file_put_contents($cimageSrc, base64_decode($customer_signature));
+                //直接使用css样式旋转即可，无需特殊处理。
+/*
                 $degrees = 90;      //旋转角度
                 $url = $cimageSrc;  //图片存放位置
-                self::pic_rotating($degrees, $url);
+                self::pic_rotating($degrees, $url);*/
             } else {
                 $cimageSrc = '';
             }
