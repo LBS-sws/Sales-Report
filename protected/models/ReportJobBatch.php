@@ -586,7 +586,7 @@ EOD;
                     $file = @file_get_contents($cimageSrc);
                     $cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
                     $cimageSrc = $path . "/" . $cimageName;
-                    file_put_contents($cimageName, $file);
+                    file_put_contents($cimageSrc, $file);
                     $degrees = 90;      //旋转角度
                     $utils->pic_rotating($degrees, $cimageSrc);
                 } else {
