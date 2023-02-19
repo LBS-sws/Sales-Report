@@ -567,7 +567,7 @@ EOD;
             }
             $customer_grade = $autograph['customer_grade'];
         }
-        if (count($autograph) > 0 || $res_de['code'] == 0) {
+        if ($res_de['code'] == 0) {
             $sign_datas = $autograph_new['data'];
             $html .= <<<EOD
                         <tr class="myTitle">
