@@ -582,10 +582,13 @@ EOD;
 
             if ($cimageSrcOrg != '' && $img_data['customer_signature_url'] != 'undefined') {
                 $file = @file_get_contents($cimageSrcOrg);
-                $cimageSrc = $path.$img_data['customer_signature_url'];
-                file_put_contents($path.$img_data['customer_signature_url'],$file);
+                $cimageSrc = $path . $img_data['customer_signature_url'];
+                file_put_contents($path . $img_data['customer_signature_url'], $file);
                 $degrees = 90;      //旋转角度
-                self::pic_rotating($degrees, $cimageSrc);
+                $utils->pic_rotating($degrees, $cimageSrc);
+            } else {
+                $cimageSrc = '';
+            }
 
         } else {
 //            没有查询到图片
@@ -611,7 +614,7 @@ EOD;
                 file_put_contents($cimageSrc, base64_decode($customer_signature));
                 $degrees = 90;      //旋转角度
                 $url = $cimageSrc;  //图片存放位置
-                self::pic_rotating($degrees, $url);
+                $utils->pic_rotating($degrees, $url);
             } else {
                 $cimageSrc = '';
             }
