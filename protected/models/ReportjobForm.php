@@ -660,14 +660,18 @@ EOD;
                         $employee02_signature = '';
                         $employee03_signature = '';
 
-                        if ($cimageSrcOrg != '' && $img_data['customer_signature_url'] != 'undefined') {
-                            $file = @file_get_contents($cimageSrcOrg);
-                            $cimageSrc = $path . $img_data['customer_signature_url'];
-                            file_put_contents($path . $img_data['customer_signature_url'], $file);
-                            $degrees = 90;      //旋转角度
-                            $utils->pic_rotating($degrees, $cimageSrc);
-                        } else {
-                            $cimageSrc = '';
+                        // conversion_flag = 1 图片未旋转 需要先下载
+                        if($img_data['conversion_flag'] == 1){
+                            if ($cimageSrc != '' && $img_data['customer_signature_url'] != 'undefined') {
+                                $file = @file_get_contents($cimageSrc);
+                                $cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
+                                $cimageSrc = $path . "/" . $cimageName;
+                                file_put_contents($cimageName, $file);
+                                $degrees = 90;      //旋转角度
+                                $utils->pic_rotating($degrees, $cimageSrc);
+                            } else {
+                                $cimageSrc = '';
+                            }
                         }
 
                     } else {
@@ -1316,18 +1320,19 @@ EOD;
             $customer_grade = !empty($img_data['customer_grade']) ? $img_data['customer_grade'] : '';
             $employee02_signature = '';
             $employee03_signature = '';
-
-//            if ($cimageSrcOrg != '' && $img_data['customer_signature_url'] != 'undefined') {
-//                $file = @file_get_contents($cimageSrcOrg);
-//                $cimageSrc = $path . $img_data['customer_signature_url'];
-//                file_put_contents($path . $img_data['customer_signature_url'], $file);
-//                $degrees = 90;      //旋转角度
-//                $utils->pic_rotating($degrees, $cimageSrc);
-//            } else {
-//                $cimageSrc = '';
-//            }
-//            var_dump($cimageSrc);
-
+            // conversion_flag = 1 图片未旋转 需要先下载
+            if($img_data['conversion_flag'] == 1){
+                if ($cimageSrc != '' && $img_data['customer_signature_url'] != 'undefined') {
+                    $file = @file_get_contents($cimageSrc);
+                    $cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
+                    $cimageSrc = $path . "/" . $cimageName;
+                    file_put_contents($cimageName, $file);
+                    $degrees = 90;      //旋转角度
+                    $utils->pic_rotating($degrees, $cimageSrc);
+                } else {
+                    $cimageSrc = '';
+                }
+            }
 
         } else {
 //            没有查询到图片
