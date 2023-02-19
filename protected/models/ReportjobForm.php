@@ -948,7 +948,7 @@ EOD;
         $utils = new Utils();
         $params_str = http_build_query($params);
         $res = $utils->httpCurl($utils->url, $params_str);
-//        var_dump($res);exit();
+        var_dump($res);
 
         $res_de = json_decode($res, true);
         if (isset($res_de) && $res_de['code'] == 0) {
@@ -960,6 +960,7 @@ EOD;
             $sql_autograph = "select * from lbs_report_autograph where job_type='1' and job_id='" . $index."'";
             $this->autograph = Yii::app()->db->createCommand($sql_autograph)->queryRow();
         }
+        var_dump($autograph_new);exit();
 
         /**
          * ###########################################################
