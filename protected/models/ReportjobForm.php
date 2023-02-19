@@ -288,7 +288,7 @@ class ReportjobForm extends CFormModel
                     include_once Yii::app()->basePath . '/common/Utils.php';//引入类文件
                     $utils = new Utils();
                     $params_str = http_build_query($params);
-                    $res = $utils->httpCurl($utils->url, $params_str);
+                    $res = $utils->httpCurl($utils->url.$params_str);
                     $res_de = json_decode($res, true);
                     if (isset($res_de) && $res_de['code'] == 0) {
                         $autograph_new = $res_de;
@@ -947,9 +947,7 @@ EOD;
         include_once Yii::app()->basePath . '/common/Utils.php';//引入类文件
         $utils = new Utils();
         $params_str = http_build_query($params);
-        $res = $utils->httpCurl($utils->url, $params_str);
-        var_dump($res);
-
+        $res = $utils->httpCurl($utils->url.$params_str);
         $res_de = json_decode($res, true);
         if (isset($res_de) && $res_de['code'] == 0) {
             $autograph_new = $res_de;
@@ -960,7 +958,6 @@ EOD;
             $sql_autograph = "select * from lbs_report_autograph where job_type='1' and job_id='" . $index."'";
             $this->autograph = Yii::app()->db->createCommand($sql_autograph)->queryRow();
         }
-        var_dump($autograph_new);exit();
 
         /**
          * ###########################################################
@@ -1312,7 +1309,6 @@ EOD;
         if ($res_de['code'] == 0) {
 //            这里是请求成功的情况
             $img_data = $autograph_new['data'];
-            var_dump($img_data);
             $eimageSrc01 = !empty($img_data['staff_id01_url']) ? $utils->sign_url . $img_data['staff_id01_url'] : '';
             $eimageSrc02 = !empty($img_data['staff_id02_url']) ? $utils->sign_url . $img_data['staff_id02_url'] : '';
             $eimageSrc03 = !empty($img_data['staff_id03_url']) ? $utils->sign_url . $img_data['staff_id03_url'] : '';
@@ -1330,7 +1326,7 @@ EOD;
             } else {
                 $cimageSrc = '';
             }
-            var_dump($cimageSrc);
+//            var_dump($cimageSrc);
 
 
         } else {
@@ -1418,7 +1414,7 @@ EOD;
         if (@file_exists(dirname(__FILE__).'/lang/chi.php')) {
             require_once(dirname(__FILE__).'/lang/chi.php');
         }
-        var_dump($html);exit();
+//        var_dump($html);exit();
         $pdf->SetPrintHeader(false);
         $pdf->SetPrintFooter(false);
         $pdf->AddPage();
