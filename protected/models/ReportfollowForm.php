@@ -607,11 +607,11 @@ EOD;
 
 //                        $autograph_new
                         $img_data = $autograph_new['data'];
-                        $eimageSrc01 = isset($img_data['staff_id01_url']) ? $utils->sign_url . $img_data['staff_id01_url'] : '';
-                        $eimageSrc02 = isset($img_data['staff_id02_url']) ? $utils->sign_url . $img_data['staff_id02_url'] : '';
-                        $eimageSrc03 = isset($img_data['staff_id03_url']) ? $utils->sign_url . $img_data['staff_id03_url'] : '';
-                        $cimageSrcOrg = isset($img_data['customer_signature_url']) ? $utils->sign_url . $img_data['customer_signature_url'] : '';
-                        $customer_grade = isset($img_data['customer_grade']) ? $img_data['customer_grade'] : '';
+                        $eimageSrc01 = !empty($img_data['staff_id01_url']) ? $utils->sign_url . $img_data['staff_id01_url'] : '';
+                        $eimageSrc02 = !empty($img_data['staff_id02_url']) ? $utils->sign_url . $img_data['staff_id02_url'] : '';
+                        $eimageSrc03 = !empty($img_data['staff_id03_url']) ? $utils->sign_url . $img_data['staff_id03_url'] : '';
+                        $cimageSrcOrg = !empty($img_data['customer_signature_url']) ? $utils->sign_url . $img_data['customer_signature_url'] : '';
+                        $customer_grade = !empty($img_data['customer_grade']) ? $img_data['customer_grade'] : '';
                         $employee02_signature = '';
                         $employee03_signature = '';
 
@@ -1207,11 +1207,11 @@ EOD;
         if ($res_de['code'] == 0) {
 //            这里是请求成功的情况
             $img_data = $autograph_new['data'];
-            $eimageSrc01 = isset($img_data['staff_id01_url']) ? $utils->sign_url . $img_data['staff_id01_url'] : '';
-            $eimageSrc02 = isset($img_data['staff_id02_url']) ? $utils->sign_url . $img_data['staff_id02_url'] : '';
-            $eimageSrc03 = isset($img_data['staff_id03_url']) ? $utils->sign_url . $img_data['staff_id03_url'] : '';
-            $cimageSrcOrg = isset($img_data['customer_signature_url']) ? $utils->sign_url . $img_data['customer_signature_url'] : '';
-            $customer_grade = isset($img_data['customer_grade']) ? $img_data['customer_grade'] : '';
+            $eimageSrc01 = !empty($img_data['staff_id01_url']) ? $utils->sign_url . $img_data['staff_id01_url'] : '';
+            $eimageSrc02 = !empty($img_data['staff_id02_url']) ? $utils->sign_url . $img_data['staff_id02_url'] : '';
+            $eimageSrc03 = !empty($img_data['staff_id03_url']) ? $utils->sign_url . $img_data['staff_id03_url'] : '';
+            $cimageSrcOrg = !empty($img_data['customer_signature_url']) ? $utils->sign_url . $img_data['customer_signature_url'] : '';
+            $customer_grade = !empty($img_data['customer_grade']) ? $img_data['customer_grade'] : '';
             $employee02_signature = '';
             $employee03_signature = '';
 
