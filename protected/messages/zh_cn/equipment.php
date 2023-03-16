@@ -25,4 +25,16 @@ return array(
     'Check_selects'=>'设备选项',
     'Check_project'=>'检查项目',
 
+    'Equipmentnumber List'=>'设备编号列表',
+    'Add Equipmentnumber'=>'新增设备编号',
+    'Equipmentnumber Form'=>'新增设备编号',
+    'Equipment_number'=>'设备编号',
+    'Status'=>'设备状态',
+    'Downcount'=>'下载次数',
+    'Number'=>'数量',
+    'Eq_type_id'=>'设备名称',
+
+    'Number_code'=>'编号标识',
+    'Equipmentnumber Down'=>'下载设备编号',
+
 );

@@ -61,6 +61,14 @@ return array(
                 'access'=>'OS03',
                 'url'=>'/equipmenttype/index',
             ),
+            'Number Code'=>array(
+                'access'=>'OS11',
+                'url'=>'/numbercode/index',
+            ),
+            'Equipment Number'=>array(
+                'access'=>'OS10',
+                'url'=>'/equipmentnumber/index',
+            ),
             'Equipment Type Select'=>array(
                 'access'=>'OS04',
                 'url'=>'/equipmenttypeselect/index',

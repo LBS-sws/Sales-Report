@@ -77,5 +77,7 @@ return array(
 	'City Launch Date'=>'城市上线日期',
 	'Statement report'=>'工作单',
 	'Statement'=>'工作单报表',
+	'Equipment Number'=>'设备编号',
+	'Number Code'=>'设置编号',
 );
 ?>
