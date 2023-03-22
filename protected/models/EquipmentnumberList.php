@@ -56,7 +56,7 @@ class EquipmentnumberList extends CListPageModel
                 case 'name':
                     $clause .= General::getSqlConditionClause('m.name',$svalue);
                     break;
-                case 'number':
+                case 'equipment_number':
                     $clause .= General::getSqlConditionClause('m.equipment_number',$svalue);
                     break;
             }
@@ -71,7 +71,7 @@ class EquipmentnumberList extends CListPageModel
                 case 'name':
                     $order .= " order by m.name ";
                     break;
-                case 'number':
+                case 'equipment_number':
                     $order .= " order by m.equipment_number ";
                     break;
             }

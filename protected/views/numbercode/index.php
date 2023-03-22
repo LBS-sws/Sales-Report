@@ -11,7 +11,14 @@ $this->pageTitle=Yii::app()->name . ' - numbercode';
 
 <section class="content">
     <div class="box"><div class="box-body">
-
+<div class="btn-group" role="group">
+                <?php
+                if (Yii::app()->user->validRWFunction('OS03'))
+                    echo TbHtml::button('<span class="fa fa-file-o"></span> '.Yii::t('equipment','Add Equipmenttype'), array(
+                        'submit'=>Yii::app()->createUrl('equipmenttype/new'),
+                    ));
+                ?>
+            </div>
         </div></div>
     <?php $this->widget('ext.layout.ListPageWidget', array(
         'title'=>Yii::t('equipment','Equipmenttype List'),
@@ -41,25 +48,8 @@ echo $form->hiddenField($model,'orderType');
 //    ?>
 </form>
 <?php
+
 $js = Script::genTableRowClick();
 Yii::app()->clientScript->registerScript('rowClick',$js,CClientScript::POS_READY);
-
-$js = "
-$('body').on('click','#chkboxAll',function() {
-	var val = $(this).prop('checked');
-	$('input[type=checkbox][name*=\"select\"]').prop('checked',val);
-});
-";
-Yii::app()->clientScript->registerScript('selectAll',$js,CClientScript::POS_READY);
-
-$js = "
-$('input[type=checkbox][name*=\"select\"]').on('click', function() {
-	var val = $(this).prop('checked');
-});
-";
-Yii::app()->clientScript->registerScript('enableButton',$js,CClientScript::POS_READY);
-
-$link = Yii::app()->createAbsoluteUrl("realize");
-
 ?>
 
