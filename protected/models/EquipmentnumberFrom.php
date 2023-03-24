@@ -133,15 +133,16 @@ class EquipmentnumberFrom extends CFormModel
         $transaction=$connection->beginTransaction();
         try {
             $tab_suffix = Yii::app()->params['table_envSuffix'];
+            $lists = Yii::app()->db->createCommand()
+                ->select('name,equipment_number')
+                ->from($tab_suffix.'equipment_numbers e')
+                ->Where(['in','id',$ids['id']])
+                ->queryAll();
+            
             $ids_u = implode(',',$ids['id']);
             $update_sql="update ".$tab_suffix."equipment_numbers set downcount=downcount+1 where id in (".$ids_u.")";
             $command=$connection->createCommand($update_sql);
             $rowCount=$command->execute();
-            $lists = Yii::app()->db->createCommand()
-                ->select('name,equipment_number')
-                ->from($tab_suffix.'equipment_numbers e')
-                ->Where(['in','id',$ids_u])
-                ->queryAll();
             Yii::$enableIncludePath = false;
             $phpExcelPath = Yii::getPathOfAlias('ext.phpexcel');
             spl_autoload_unregister(array('YiiBase','autoload'));
