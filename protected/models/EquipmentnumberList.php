@@ -46,7 +46,7 @@ class EquipmentnumberList extends CListPageModel
         $sql2 = "select count(m.id)
 				 from ".$tab_suffix."equipment_numbers as m left join  ".$tab_suffix."equipment_type as t on t.id=m.eq_type_id  left join security".$se_suffix.".sec_city as b on t.city=b.code
 				";
-                $order .= " order by m.equipment_number ";$clause = "";
+            $clause = "";
         if (!empty($this->searchField) && !empty($this->searchValue)) {
             $svalue = str_replace("'","\'",$this->searchValue);
             switch ($this->searchField) {
@@ -65,10 +65,10 @@ class EquipmentnumberList extends CListPageModel
             }
         }elseif($this->searchField=='downcount' && $this->searchValue==0){
             $clause .= " AND m.downcount=0 ";
-            // var_dump('ss');die();
         }
         
         $order = "";
+        $order .= " order by m.equipment_number ";
         if (!empty($this->orderField)) {
             switch ($this->orderField) {
                 case 'city':
