@@ -35,6 +35,7 @@ $this->pageTitle=Yii::app()->name . ' - Equipment_number';
             'city',
             'name',
             'equipment_number',
+            'downcount',
         ),
     ));
     ?>

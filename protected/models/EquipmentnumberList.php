@@ -46,7 +46,7 @@ class EquipmentnumberList extends CListPageModel
         $sql2 = "select count(m.id)
 				 from ".$tab_suffix."equipment_numbers as m left join  ".$tab_suffix."equipment_type as t on t.id=m.eq_type_id  left join security".$se_suffix.".sec_city as b on t.city=b.code
 				";
-        $clause = "";
+                $order .= " order by m.equipment_number ";$clause = "";
         if (!empty($this->searchField) && !empty($this->searchValue)) {
             $svalue = str_replace("'","\'",$this->searchValue);
             switch ($this->searchField) {
@@ -59,9 +59,15 @@ class EquipmentnumberList extends CListPageModel
                 case 'equipment_number':
                     $clause .= General::getSqlConditionClause('m.equipment_number',$svalue);
                     break;
+                case 'downcount':
+                    $clause .= General::getSqlConditionClause('m.downcount',$svalue);
+                    break;
             }
+        }elseif($this->searchField=='downcount' && $this->searchValue==0){
+            $clause .= " AND m.downcount=0 ";
+            // var_dump('ss');die();
         }
-
+        
         $order = "";
         if (!empty($this->orderField)) {
             switch ($this->orderField) {
@@ -73,6 +79,9 @@ class EquipmentnumberList extends CListPageModel
                     break;
                 case 'equipment_number':
                     $order .= " order by m.equipment_number ";
+                    break;
+                case 'downcount':
+                    $order .= " order by m.downcount ";
                     break;
             }
             if ($this->orderType=='D') $order .= "desc ";
