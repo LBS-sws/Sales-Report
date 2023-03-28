@@ -611,6 +611,7 @@ EOD;
                         $eimageSrc02 = !empty($img_data['staff_id02_url']) ? $utils->sign_url . $img_data['staff_id02_url'] : '';
                         $eimageSrc03 = !empty($img_data['staff_id03_url']) ? $utils->sign_url . $img_data['staff_id03_url'] : '';
                         $cimageSrc = !empty($img_data['customer_signature_url']) ? $utils->sign_url . $img_data['customer_signature_url'] : '';
+                        $cimageSrc_add = !empty($img_data['customer_signature_url_add']) ? $utils->sign_url . $img_data['customer_signature_url_add'] : '';
                         $customer_grade = !empty($img_data['customer_grade']) ? $img_data['customer_grade'] : '';
                         $employee02_signature = '';
                         $employee03_signature = '';
@@ -626,6 +627,16 @@ EOD;
                                 $utils->pic_rotating($degrees, $cimageSrc);
                             } else {
                                 $cimageSrc = '';
+                            }
+                            if ($cimageSrc_add != '' && $img_data['customer_signature_url_add'] != 'undefined') {
+                                $file = @file_get_contents($cimageSrc_add);
+                                $cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
+                                $cimageSrc_add = $path . "/" . $cimageName;
+                                file_put_contents($cimageSrc_add, $file);
+                                $degrees = 90;      //旋转角度
+                                $utils->pic_rotating($degrees, $cimageSrc_add);
+                            } else {
+                                $cimageSrc_add = '';
                             }
                         }
                     } else {
@@ -1215,6 +1226,7 @@ EOD;
             $eimageSrc02 = !empty($img_data['staff_id02_url']) ? $utils->sign_url . $img_data['staff_id02_url'] : '';
             $eimageSrc03 = !empty($img_data['staff_id03_url']) ? $utils->sign_url . $img_data['staff_id03_url'] : '';
             $cimageSrc = !empty($img_data['customer_signature_url']) ? $utils->sign_url . $img_data['customer_signature_url'] : '';
+            $cimageSrc_add = !empty($img_data['customer_signature_url_add']) ? $utils->sign_url . $img_data['customer_signature_url_add'] : '';
             $customer_grade = !empty($img_data['customer_grade']) ? $img_data['customer_grade'] : '';
             $employee02_signature = '';
             $employee03_signature = '';
@@ -1230,6 +1242,16 @@ EOD;
                     $utils->pic_rotating($degrees, $cimageSrc);
                 } else {
                     $cimageSrc = '';
+                }
+                if ($cimageSrc_add != '' && $img_data['customer_signature_url_add'] != 'undefined') {
+                    $file = @file_get_contents($cimageSrc_add);
+                    $cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
+                    $cimageSrc_add = $path . "/" . $cimageName;
+                    file_put_contents($cimageSrc_add, $file);
+                    $degrees = 90;      //旋转角度
+                    $utils->pic_rotating($degrees, $cimageSrc_add);
+                } else {
+                    $cimageSrc_add = '';
                 }
             }
 
@@ -1296,7 +1318,7 @@ EOD;
             }
             $html .= <<<EOD
 							</td>
-							<td width="50%" align="left"><img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)"></td>
+							<td width="50%" align="left"><img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)"><img src="{$cimageSrc_add}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)"></td>
                         </tr>
 EOD;
         }

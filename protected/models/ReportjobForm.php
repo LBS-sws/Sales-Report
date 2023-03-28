@@ -673,9 +673,6 @@ EOD;
                             } else {
                                 $cimageSrc = '';
                             }
-                        }
-                        // conversion_flag = 1 图片未旋转 需要先下载
-                        if($img_data['conversion_flag'] == 1){
                             if ($cimageSrc_add != '' && $img_data['customer_signature_url_add'] != 'undefined') {
                                 $file = @file_get_contents($cimageSrc_add);
                                 $cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
@@ -687,6 +684,7 @@ EOD;
                                 $cimageSrc_add = '';
                             }
                         }
+                       
 
                     } else {
 //            没有查询到图片
@@ -1347,8 +1345,6 @@ EOD;
                 } else {
                     $cimageSrc = '';
                 }
-            }
-            if($img_data['conversion_flag'] == 1){
                 if ($cimageSrc_add != '' && $img_data['customer_signature_url_add'] != 'undefined') {
                     $file = @file_get_contents($cimageSrc_add);
                     $cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
