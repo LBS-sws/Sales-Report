@@ -3,9 +3,17 @@ class Utils {
     /**
      * 定义访问地址
      * */
-	public $url = 'https://xcx.lbsapps.cn/index.php/api/index/getSignUrl?';
 
-	public $sign_url = 'https://xcx.lbsapps.cn';
+    //正式版
+	// public $url = 'https://xcx.lbsapps.cn/index.php/api/index/getSignUrl?';
+
+	// public $sign_url = 'https://xcx.lbsapps.cn';
+    
+    //测试版
+    public $url = 'https://operation.lbsapps.cn/index.php/api/index/getSignUrl?';
+
+	public $sign_url = 'https://operation.lbsapps.cn';
+
 
     /**
     $url 访问地址
