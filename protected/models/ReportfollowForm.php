@@ -667,6 +667,7 @@ EOD;
                         } else {
                             $cimageSrc = '';
                         }
+                        $cimageSrc_add = '';
                         $customer_grade = $autograph['customer_grade'];
                     }
                     if (count($autograph) > 0 || $res_de['code'] == 0) {
@@ -1293,6 +1294,7 @@ EOD;
             } else {
                 $cimageSrc = '';
             }
+            $cimageSrc_add = '';
             $customer_grade = $autograph['customer_grade'];
         }
         if ($res_de['code'] == 0) {
