@@ -6,7 +6,7 @@
  * Date: 2023/04/14
  * Time: 10:45
  */
-class PestDictController extends Controller
+class PestdictController extends Controller
 {
     public $function_id = 'PE02';
 
@@ -26,11 +26,11 @@ class PestDictController extends Controller
         return array(
             array('allow',
                 'actions' => array('new', 'edit', 'delete', 'save'),
-                'expression' => array('PestDictController', 'allowReadWrite'),
+                'expression' => array('PestdictController', 'allowReadWrite'),
             ),
             array('allow',
                 'actions' => array('index', 'view','api'),
-                'expression' => array('PestDictController', 'allowReadOnly'),
+                'expression' => array('PestdictController', 'allowReadOnly'),
             ),
             array('allow',
                 'actions' => array('api'),

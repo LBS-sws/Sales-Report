@@ -6,7 +6,7 @@
  * Date: 2023/04/14
  * Time: 10:45
  */
-class PestTypeController extends Controller
+class PesttypeController extends Controller
 {
     public $function_id = 'PE01';
 
@@ -26,11 +26,11 @@ class PestTypeController extends Controller
         return array(
             array('allow',
                 'actions' => array('new', 'edit', 'delete', 'save'),
-                'expression' => array('PestTypeController', 'allowReadWrite'),
+                'expression' => array('PesttypeController', 'allowReadWrite'),
             ),
             array('allow',
                 'actions' => array('index', 'view'),
-                'expression' => array('PestTypeController', 'allowReadOnly'),
+                'expression' => array('PesttypeController', 'allowReadOnly'),
             ),
             array('deny',  // deny all users
                 'users' => array('*'),
