@@ -13,5 +13,6 @@ return array(
     'type_id'=>'虫害类型',
     'delete_flag'=>'是否删除',
     'created_at'=>'创建时间',
+    'city_name' => '地区'
 );
 ?>

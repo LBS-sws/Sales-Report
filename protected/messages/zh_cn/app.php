@@ -88,5 +88,6 @@ return array(
 	'delete_flag'=>'是否删除',
 	'Pest Dict'=>'虫害字典管理',
 	'pestdict Form'=>'虫害类型表单',
+	'city_name' => '地区'
 );
 ?>

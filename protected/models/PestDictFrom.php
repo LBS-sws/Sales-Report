@@ -84,12 +84,11 @@ class PestDictFrom extends CFormModel
             foreach ($rows as $row) {
                 $this->id = $row['id'];
                 $this->type_id = $row['type_id'];
-                $this->type_name = $row['city'];
+                $this->type_name = $row['type_name'];
                 $this->insect_name = $row['insect_name'];
                 $this->analysis_result = $row['analysis_result'];
                 $this->suggestion = $row['suggestion'];
                 $this->measure = $row['measure'];
-                $this->delete_flag = $row['delete_flag']?'否':'是';
                 $this->created_at = $row['created_at'];
                 $this->updated_at = $row['updated_at'];
                 $this->deleted_at = $row['deleted_at'];
