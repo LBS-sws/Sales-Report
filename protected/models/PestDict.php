@@ -128,7 +128,6 @@ class PestDict extends CListPageModel
                     'suggestion'=>$record['suggestion'],
                     'measure'=>$record['measure'],
                     'disabled_flag'=>$record['disabled_flag'],
-                    'delete_flag'=>$record['delete_flag'],
                     'created_at'=>$record['created_at'],
                     'updated_at'=>$record['updated_at'],
                     'deleted_at'=>$record['deleted_at'],
