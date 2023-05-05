@@ -129,4 +129,25 @@ return array(
             )
         ),
     ),
+   //数据分析词设置
+   'Analyse Settings'=>array(
+    'access'=>'PE',
+    'icon'=>'fa fa-industry',
+    'items'=>array(
+
+        'Pest Type'=>array(
+            'access'=>'PE01',
+            'url'=>'/pestType/index',
+        ),
+        'Pest Dict'=>array(
+            'access'=>'PE02',
+            'url'=>'/pestDict/index',
+        ),
+        // 分析报告
+        'Analyse Report'=>array(
+            'access'=>'PE03',
+            'url'=>'/analyse/index',
+        ),
+    ),
+),
 );
