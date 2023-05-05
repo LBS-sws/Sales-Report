@@ -137,11 +137,11 @@ return array(
 
         'Pest Type'=>array(
             'access'=>'PE01',
-            'url'=>'/pestType/index',
+            'url'=>'/pesttype/index',
         ),
         'Pest Dict'=>array(
             'access'=>'PE02',
-            'url'=>'/pestDict/index',
+            'url'=>'/pestdict/index',
         ),
         // 分析报告
         'Analyse Report'=>array(
