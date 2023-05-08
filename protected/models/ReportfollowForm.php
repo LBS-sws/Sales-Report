@@ -611,7 +611,7 @@ EOD;
                         $eimageSrc02 = !empty($img_data['staff_id02_url']) ? $utils->sign_url . $img_data['staff_id02_url'] : '';
                         $eimageSrc03 = !empty($img_data['staff_id03_url']) ? $utils->sign_url . $img_data['staff_id03_url'] : '';
                         $cimageSrc = !empty($img_data['customer_signature_url']) ? $utils->sign_url . $img_data['customer_signature_url'] : '';
-                        $cimageSrc_add = !empty($img_data['customer_signature_url_add']) ? $utils->sign_url . $img_data['customer_signature_url_add'] : '';
+                        $cimageSrc_add = !empty($img_data['customer_signature_url_add']) ? $utils->sign_url . $img_data['customer_signature_url_add']:'';
                         $customer_grade = !empty($img_data['customer_grade']) ? $img_data['customer_grade'] : '';
                         $employee02_signature = '';
                         $employee03_signature = '';
@@ -628,7 +628,7 @@ EOD;
                             } else {
                                 $cimageSrc = '';
                             }
-                            if ($cimageSrc_add != '' && $img_data['customer_signature_url_add'] != 'undefined') {
+                            if ($cimageSrc_add != '' && $img_data['customer_signature_url_add'] != 'undefined' ) {
                                 $file = @file_get_contents($cimageSrc_add);
                                 $cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
                                 $cimageSrc_add = $path . "/" . $cimageName;
@@ -1331,12 +1331,12 @@ EOD;
             </td>
             <td width="50%" align="left">
             <img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
-EOD;
-            if ($cimageSrc_add != '') {
-                $html .= <<<EOD
+// EOD;
+            // if ($cimageSrc_add != '') {
+                // $html .= <<<EOD
                 <img src="{$cimageSrc_add}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
 EOD;
-            }           
+            // }           
 $html .= <<<EOD
             </td>
         </tr>
