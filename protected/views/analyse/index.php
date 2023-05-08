@@ -25,13 +25,13 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
 
                     <!-- 远程搜索要使用filterable和remote -->
                     <el-autocomplete srt
-                            v-model="state2"
+                                     v-model="state2"
                                      clearable
                                      :fetch-suggestions="querySearch"
-                            placeholder="请输入内容"
-                            :trigger-on-focus="false"
-                            @select="handleSelect"
-                            size="small"
+                                     placeholder="请输入内容"
+                                     :trigger-on-focus="false"
+                                     @select="handleSelect"
+                                     size="small"
                     ></el-autocomplete>
 
 
@@ -58,23 +58,12 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                 :key="tableKey"
                 :data="tableData"
                 style="width: 100%">
-            <el-table-column label="客户ID" prop="CustomerID"> </el-table-column>
-            <el-table-column label="客户名称" prop="NameZH"> </el-table-column>
+            <el-table-column label="日期" prop="date"> </el-table-column>
+            <el-table-column label="客户编号" prop="customer_id"> </el-table-column>
+            <el-table-column label="客户名称" prop="customer_name"> </el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
-                    <el-popover  placement="top" :visible.sync="popupVisible" :width="400" trigger="click">
-                        <template #reference>
-                            <el-button size="mini"  @click="handleClick(scope.$index, scope.row)">选择日期</el-button>
 
-                        </template>
-                            <el-date-picker
-                                    placeholder="日期"
-                                    type="month"
-                                    v-model="yearMonth"
-                                    value-format="yyyy-MM"
-                            >
-                                <el-button size="mini"  @click="handleClick(scope.$index, scope.row)">选择日期</el-button>
-                    </el-popover>
                     <el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">下载</el-button>
 
                 </template>
@@ -233,8 +222,8 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                                     // 把数据库做遍历，拿用户输入的这个字，和数据库中的每一项做对比
                                     // if (item.value.indexOf(queryString) == 0) { // 等于0 以什么什么开头
                                     // if (result.label.indexOf(queryString) > -1) { // 大于-1，只要包含就行，不再乎位置
-                                        // 如果有具有关联性的数据
-                                        callBackArr.push(item); // 就存到callBackArr里面准备返回呈现
+                                    // 如果有具有关联性的数据
+                                    callBackArr.push(item); // 就存到callBackArr里面准备返回呈现
                                     // }
                                 });
                                 // 经过这么一波查询操作以后，如果这个数组还为空，说明没有查询到具有关联的数据，就直接返回给用户暂无数据
@@ -265,20 +254,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
             },
             //表格编辑
             handleEdit(index, row) {
-                if(this.yearMonth == '' || this.yearMonth == undefined){
-                    this.$message({
-                        message: '请选择日期',
-                        type: 'warning'
-                    });
-                    return;
-                }
-                if(row.NameZH == '' || row.NameZH == undefined){
-                    this.$message({
-                        message: '查询条件不足',
-                        type: 'warning'
-                    });
-                    return
-                }
+                console.log(row)
                 this.loading = true
                 this.$message({
                     message: '正在加载报告，请稍后~',
@@ -288,7 +264,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                 // const dateStr = this.yearMonth;
                 // const formattedDate = dateStr.replace(/-/g, "");
                 console.log(this.city)
-                fetch(this.api_url+'index.php/api/Customer/getPdf?' + 'month=' + this.yearMonth + '&cust=' + row.CustomerID + '&custzh=' + encodeURIComponent(row.NameZH) + '&city=' + this.city, {
+                fetch(this.api_url+'index.php/api/Customer/getPdf?' + 'month=' + row.date + '&cust=' + row.customer_id + '&custzh=' + encodeURIComponent(row.customer_name) + '&city=' + row.city, {
                     method: "get",
                     // body: JSON.stringify({City:val}),
                     headers: {

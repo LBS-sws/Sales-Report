@@ -6,7 +6,7 @@
  * Date: 2023/04/14
  * Time: 10:45
  */
-class PesttypeController extends Controller
+class PestTypeController extends Controller
 {
     public $function_id = 'PE01';
 
@@ -26,11 +26,11 @@ class PesttypeController extends Controller
         return array(
             array('allow',
                 'actions' => array('new', 'edit', 'delete', 'save'),
-                'expression' => array('PesttypeController', 'allowReadWrite'),
+                'expression' => array('PestTypeController', 'allowReadWrite'),
             ),
             array('allow',
                 'actions' => array('index', 'view'),
-                'expression' => array('PesttypeController', 'allowReadOnly'),
+                'expression' => array('PestTypeController', 'allowReadOnly'),
             ),
             array('deny',  // deny all users
                 'users' => array('*'),
@@ -76,7 +76,7 @@ class PesttypeController extends Controller
                 $res = $model->saveData();
                 $model->scenario = 'edit';
                 Dialog::message(Yii::t('dialog', 'Information'), Yii::t('dialog', 'Save Done'));
-                $this->redirect(Yii::app()->createUrl('PestType/edit', array('index' => $model->id)));
+                $this->redirect(Yii::app()->createUrl('pesttype/edit', array('index' => $model->id)));
             } else {
                 $message = CHtml::errorSummary($model);
                 Dialog::message(Yii::t('dialog', 'Validation Message'), $message);
