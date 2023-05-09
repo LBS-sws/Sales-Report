@@ -1330,13 +1330,13 @@ EOD;
             $html .= <<<EOD
             </td>
             <td width="50%" align="left">
-            <img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
-// EOD;
-            // if ($cimageSrc_add != '') {
-                // $html .= <<<EOD
+            <img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)"> 
+EOD;
+            if ($cimageSrc_add != '') {
+                 $html .= <<<EOD
                 <img src="{$cimageSrc_add}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
 EOD;
-            // }           
+             }           
 $html .= <<<EOD
             </td>
         </tr>
