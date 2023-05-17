@@ -1119,7 +1119,6 @@ EOD;
                     </tr>
 EOD;
             }}
-
         if(count($photo)>0){
         if(($this->service_sections!='' && in_array('5',$this->service_sections)) || $this->service_sections==''){
             $html .= <<<EOD
@@ -1297,7 +1296,6 @@ EOD;
                                 }else if ((($cd+1)==count($record1)) || (($cd+2)==count($record1))) {
                                    $wi02 = "25%";
                                 }
-
                                 $html .= <<<EOD
                                             <td width="{$wi02}">$record1[$cd]</td>
 EOD;
@@ -1305,7 +1303,6 @@ EOD;
                             $html .= <<<EOD
                                     </tr>
 EOD;
-
                         }
                     }else{
                         $html .= <<<EOD
