@@ -244,7 +244,6 @@ class ReportJobBatch {
 		include_once Yii::app()->basePath . '/extensions/tcpdf/tcpdf.php';//引入库
 		include_once Yii::app()->basePath . '/extensions/tcpdf/config/tcpdf_config.php';//引入库
 		$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-		
 		//pdf生成
 		$html = <<<EOD
             <style>
@@ -642,22 +641,22 @@ EOD;
                         </tr>
                         <tr>
 							<td width="50%" align="left">
-								<img src="{$eimageSrc01}" width="130" height="80" style="margin:20px 50px;">
+								<img src="{$eimageSrc01}" width="130" height="80" >
 EOD;
             if ($employee02_signature != '' || isset($sign_datas['staff_id02_url']) && $sign_datas['staff_id02_url'] != '') {
                 $html .= <<<EOD
-								<img src="{$eimageSrc02}" width="130" height="80" style="margin:20px 50px;">
+								<img src="{$eimageSrc02}" width="130" height="80" >
 EOD;
             }
             if ($employee03_signature != '' || isset($sign_datas['staff_id03_url']) && $sign_datas['staff_id03_url'] != '') {
                 $html .= <<<EOD
-								<img src="{$eimageSrc03}" width="130" height="80" style="margin:20px 50px;">
+								<img src="{$eimageSrc03}" width="130" height="80" >
 EOD;
             }
             $html .= <<<EOD
 							</td>
 							<td width="50%" align="left">
-							    <img src="{$cimageSrc}" width="130" height="80" style="margin:20px 50px;">
+							    <img src="{$cimageSrc}" width="130" height="80" >
 							</td>
                         </tr>
 EOD;
@@ -674,7 +673,6 @@ EOD;
 			<img src="$company_img">
 			</body>
 EOD;
-		
 		if (@file_exists(dirname(__FILE__) . '/lang/chi.php')) {
 			require_once(dirname(__FILE__) . '/lang/chi.php');
 		}

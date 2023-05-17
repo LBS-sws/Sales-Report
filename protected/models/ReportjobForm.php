@@ -575,6 +575,7 @@ EOD;
                             </tr>
                             <tr>
 EOD;
+
                                     $targs = (31 / ($total01 - 4)) . "%";
                                     $table_titlex = $equipment[$e]['table_title'];
                                     foreach ($table_titlex as $ti => $record) {
@@ -742,26 +743,26 @@ EOD;
                         </tr>
                         <tr>
 							<td width="50%" align="left">
-								<img src="{$eimageSrc01}" width="130" height="80" style="magin:20px 50px;">
+								<img src="{$eimageSrc01}" width="130" height="80">
 EOD;
                         if ($employee02_signature != '' || isset($sign_datas['staff_id02_url']) && $sign_datas['staff_id02_url'] != '') {
                             $html .= <<<EOD
-								<img src="{$eimageSrc02}" width="130" height="80" style="magin:20px 50px;">
+								<img src="{$eimageSrc02}" width="130" height="80">
 EOD;
                         }
                         if ($employee03_signature != '' || isset($sign_datas['staff_id03_url']) && $sign_datas['staff_id03_url'] != '') {
                             $html .= <<<EOD
-								<img src="{$eimageSrc03}" width="130" height="80" style="magin:20px 50px;">
+								<img src="{$eimageSrc03}" width="130" height="80" >
 EOD;
                         }
                         $html .= <<<EOD
                         </td>
                         <td width="50%" align="left">
-                        <img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
+                        <img src="{$cimageSrc}" width="130" height="80">
 // EOD;
                         // if ($cimageSrc_add != '') {
                             // $html .= <<<EOD
-                            <img src="{$cimageSrc_add}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
+                            <img src="{$cimageSrc_add}" width="130" height="80">
 EOD;
                         // }           
         $html .= <<<EOD
@@ -1420,26 +1421,26 @@ EOD;
                         </tr>
                         <tr>
 							<td width="50%" align="left">
-								<img src="{$eimageSrc01}" width="130" height="80" style="magin:20px 50px;">
+								<img src="{$eimageSrc01}" width="130" height="80" >
 EOD;
             if ($employee02_signature != '' || isset($sign_datas['staff_id02_url']) && $sign_datas['staff_id02_url'] != '') {
                 $html .= <<<EOD
-								<img src="{$eimageSrc02}" width="130" height="80" style="magin:20px 50px;">
+								<img src="{$eimageSrc02}" width="130" height="80" >
 EOD;
             }
             if ($employee03_signature != '' || isset($sign_datas['staff_id03_url']) && $sign_datas['staff_id03_url'] != '') {
                 $html .= <<<EOD
-								<img src="{$eimageSrc03}" width="130" height="80" style="magin:20px 50px;">
+								<img src="{$eimageSrc03}" width="130" height="80" >
 EOD;
             }
             $html .= <<<EOD
 							</td>
 							<td width="50%" align="left">
-                            <img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
+                            <img src="{$cimageSrc}" width="130" height="80" >
 EOD;
                             if ($cimageSrc_add != '') {
                                 $html .= <<<EOD
-                                <img src="{$cimageSrc_add}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
+                                <img src="{$cimageSrc_add}" width="130" height="80" >
 EOD;
                             }           
             $html .= <<<EOD
