@@ -174,16 +174,13 @@ class ReportjobList extends CListPageModel
 		$records = Yii::app()->db->createCommand($sql)->queryAll();
 //		print_r($sql);
 		foreach($records as $key=>$val){
-//			echo $val['JobID'];
-//			echo "<br/>"; ReportjobList.php
-			$command1 = Yii::app()->db2->createCommand('SELECT pics FROM lbs_invoice WHERE jobid="'.$val['JobID'].'" ')->queryRow();
+			// $command1 = Yii::app()->db2->createCommand('SELECT pics FROM lbs_invoice WHERE jobid="'.$val['JobID'].'" ')->queryRow();
 
-			if($command1){
-				$records[$key]['pics'] = $command1['pics'];
-			}else{
-				$records[$key]['pics'] = '';
-			}
-//			print_r($command1);
+			// if($command1){
+			// 	$records[$key]['pics'] = $command1['pics'];
+			// }else{
+			// 	$records[$key]['pics'] = '';
+			// }
 		}
 		$list = array();
 		$this->attr = array();
