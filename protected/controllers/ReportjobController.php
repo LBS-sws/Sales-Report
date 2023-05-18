@@ -30,7 +30,7 @@ class ReportjobController extends Controller
 			),
 */
 			array('allow', 
-				'actions'=>array('new','edit','delete','save','add','down','AllDelete','delcache','batch','batchcreate','batchdown','emaildetail','resentemail','downloadinbatch','downloadzip'),
+				'actions'=>array('new','edit','delete','save','add','down','look','AllDelete','delcache','batch','batchcreate','batchdown','emaildetail','resentemail','downloadinbatch','downloadzip'),
 				'expression'=>array('ReportjobController','allowReadWrite'),
 			),
 			array('allow', 
@@ -42,7 +42,23 @@ class ReportjobController extends Controller
 			),
 		);
 	}
+	// 查看发票
+	public function actionLook(){
+		// ReportjobController.php
+		$id = $_GET['index'];
+//		echo $id;
+		$item = Yii::app()->db2->createCommand('SELECT pics FROM lbs_invoice WHERE jobid="'.$id.'" ')->queryRow();
+//		print_r($item);
+		$pics = $item['pics'];
+		if($pics){
 
+			$picarr = explode(",", $pics);
+//			print_r($picarr);
+			foreach($picarr as $key=>$val){
+				echo '<img src="'.$val.'"/>.<br/>';
+			}
+		}
+	}
 	public function actionIndex($pageNum=0,$fid='',$fileName='')
 	{
 		$model = new ReportjobList;

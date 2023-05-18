@@ -70,7 +70,15 @@ return array(
             'password' => 'swisher168',
             'charset' => 'utf8',
         ),
-
+		'db2'=>array(
+            'class'=>'CDbConnection',
+            'connectionString' => 'mysql:host=localhost;dbname=db_lbs_xcx',
+            'emulatePrepare' => true,
+            'username' => 'root',
+            'password' => 'root',
+            'charset' => 'utf8',
+            'tablePrefix'=>''
+        ),
         'errorHandler'=>array(
             // use 'site/error' action to display errors
             'errorAction'=>'site/error',
