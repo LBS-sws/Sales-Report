@@ -7,50 +7,50 @@
  */
 class ReportjobForm extends CFormModel
 {
-	/* User Fields */
+    /* User Fields */
     public $city = [];
     public $job = [];
-	public $basic = [];////基础信息
-	public $briefing = [];//服务简报
-	public $material = [];//物料使用
-	public $equipment = [];//设备巡查
+    public $basic = [];////基础信息
+    public $briefing = [];//服务简报
+    public $material = [];//物料使用
+    public $equipment = [];//设备巡查
     public $risk = [];//风险跟进
     public $photo = [];//现场工作照
     public $autograph = [];//签名点评
     public $service_sections = [];//服务板块
     public $start_dt;
     public $end_dt;
-	public $fields;
-	public $customer_name;
-	/**
-	 * Declares customized attribute labels.
-	 * If not declared here, an attribute would have a label that is
-	 * the same as its name with the first letter in upper case.
-	 */
-	public function attributeLabels()
-	{
-		return array(
-			'customer_name'=>Yii::t('reportjob','CustomerName'),
-			'start_dt'=>Yii::t('reportjob','Start_dt'),
-			'end_dt'=>Yii::t('reportjob','End_dt'),
-		);
-	}
+    public $fields;
+    public $customer_name;
+    /**
+     * Declares customized attribute labels.
+     * If not declared here, an attribute would have a label that is
+     * the same as its name with the first letter in upper case.
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'customer_name'=>Yii::t('reportjob','CustomerName'),
+            'start_dt'=>Yii::t('reportjob','Start_dt'),
+            'end_dt'=>Yii::t('reportjob','End_dt'),
+        );
+    }
 
-	/**
-	 * Declares the validation rules.
-	 */
-	public function rules()
-	{
-		return array(
-			array('id,number,type,dates,payment_term,customer_po_no,customer_account,salesperson,sales_order_no,sales_order_date,
+    /**
+     * Declares the validation rules.
+     */
+    public function rules()
+    {
+        return array(
+            array('id,number,type,dates,payment_term,customer_po_no,customer_account,salesperson,sales_order_no,sales_order_date,
 			ship_via,invoice_company,invoice_address,invoice_tel,delivery_company,delivery_address,delivery_tel,
 			disc,sub_total,gst,total_amount,city,generated_by,start_dt,end_dt,customer_name','safe'),
-			array('','required'),
-			//array('code','validateCode'),
+            array('','required'),
+            //array('code','validateCode'),
 //			array('code','safe','on'=>'edit'),
 
-		);
-	}
+        );
+    }
     function array_to_object($arr) {
         if (gettype($arr) != 'array') {
             return;
@@ -92,7 +92,7 @@ class ReportjobForm extends CFormModel
         $city_off = Yii::app()->db->createCommand($sql_city)->queryRow();
         $jobids = "select JobID from joborder where Status=3 and FinishDate>='" . $dates['start_dt'] . "' and FinishDate<='" . $dates['end_dt'] . "' and City in(" . $city_off['citys'] . ")";
 
-		if (!empty($dates['customer_name'])) $jobids .= " and CustomerName like '%".$dates['customer_name']."%'";
+        if (!empty($dates['customer_name'])) $jobids .= " and CustomerName like '%".$dates['customer_name']."%'";
         $jobids_data = Yii::app()->db->createCommand($jobids)->queryAll();
         if ($jobids_data) {
             $zipname = sys_get_temp_dir() . '/' . 'zipped_file.zip';
@@ -136,7 +136,7 @@ class ReportjobForm extends CFormModel
         $sql_city = "select GROUP_CONCAT(DISTINCT o.City) as citys from enums as e left join officecity as o on o.Office=e.EnumID where e.Text='".$city."' and e.EnumType=8";
         $city_off = Yii::app()->db->createCommand($sql_city)->queryRow();
         $jobids = "select JobID from joborder where Status=3 and FinishDate>='".$dates['start_dt']."' and FinishDate<='".$dates['end_dt']."' and City in(".$city_off['citys'].")";
-		if (!empty($dates['customer_name'])) $jobids .= " and CustomerName like '%".$dates['customer_name']."%'";
+        if (!empty($dates['customer_name'])) $jobids .= " and CustomerName like '%".$dates['customer_name']."%'";
         $jobids_data =  Yii::app()->db->createCommand($jobids)->queryAll();
         if ($jobids_data){
             for ($fj =0;$fj<count($jobids_data);$fj++) {
@@ -330,7 +330,14 @@ class ReportjobForm extends CFormModel
                     $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
                     //pdf生成
                     $html = <<<EOD
-            <style>
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+              <meta charset="UTF-8">
+              <meta http-equiv="X-UA-Compatible" content="IE=edge">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>LBS-SERVICE REPORT</title>
+              <style>
             body{
                 padding: 0;
                 font-family: STFangsong;
@@ -364,6 +371,7 @@ class ReportjobForm extends CFormModel
                 line-height:10px;
             }
             </style>
+            </head>
             <body>
             <table class="myTable" cellpadding="5">
                 <tr style="border: none;border-top: none;border-right:none;border-left:none;">
@@ -413,9 +421,9 @@ class ReportjobForm extends CFormModel
 EOD;
                     if ($briefing != '') {
                         if (($this->service_sections != '' && in_array('1', $this->service_sections)) || $this->service_sections == '') {
-							$bc = $city=='MO' ? $briefing->content : mb_convert_encoding(mb_convert_encoding($briefing->content, 'GB2312', 'UTF-8'), 'UTF-8', 'GB2312');
-							$bp = $city=='MO' ? $briefing->proposal : mb_convert_encoding(mb_convert_encoding($briefing->proposal, 'GB2312', 'UTF-8'), 'UTF-8', 'GB2312');
-                           $html .= <<<EOD
+                            $bc = $city=='MO' ? $briefing->content : mb_convert_encoding(mb_convert_encoding($briefing->content, 'GB2312', 'UTF-8'), 'UTF-8', 'GB2312');
+                            $bp = $city=='MO' ? $briefing->proposal : mb_convert_encoding(mb_convert_encoding($briefing->proposal, 'GB2312', 'UTF-8'), 'UTF-8', 'GB2312');
+                            $html .= <<<EOD
                     <tr class="myTitle">
                         <th width="100%" align="left">服务简报</th>
                     </tr>
@@ -447,7 +455,7 @@ EOD;
                                 $site_photos = explode(',', $photox->site_photos);
                                 for ($sp = 0; $sp < count($site_photos); $sp++) {
                                     $spa = $baseUrl_imgs . str_replace("\/", '/', trim($site_photos[$sp], '"'));
-									if (!General::isWebImageValid($spa)) $spa = '/images/spacer.gif';
+                                    if (!General::isWebImageValid($spa)) $spa = '/images/spacer.gif';
                                     $html .= <<<EOD
                             <td width="20%" align="center">
                             <img src="$spa" width="80" height="100" style="padding:20px 50px;">
@@ -537,16 +545,16 @@ EOD;
                                 $site_photos = explode(',',$riskx->site_photos);
                                 for ($sp=0; $sp < count($site_photos); $sp++) {
                                     $spa = $baseUrl_imgs.str_replace("\/",'/',trim($site_photos[$sp],'"'));
-									if (!General::isWebImageValid($spa)) $spa = '/images/spacer.gif';
+                                    if (!General::isWebImageValid($spa)) $spa = '/images/spacer.gif';
                                     $html .= <<<EOD
                         <td width="21%" align="center">
                             <img src="${spa}" width="80" height="100" style="padding:20px 50px;">
                         </td>
 EOD;
-                    }
-                    $sy_unm = 4-count($site_photos);
-                        for($j=0;$j<$sy_unm;$j++){
-                            $html .= <<<EOD
+                                }
+                                $sy_unm = 4-count($site_photos);
+                                for($j=0;$j<$sy_unm;$j++){
+                                    $html .= <<<EOD
                             <td width="21%" align="center"></td>
 EOD;
                                 }
@@ -575,7 +583,6 @@ EOD;
                             </tr>
                             <tr>
 EOD;
-
                                     $targs = (31 / ($total01 - 4)) . "%";
                                     $table_titlex = $equipment[$e]['table_title'];
                                     foreach ($table_titlex as $ti => $record) {
@@ -685,7 +692,7 @@ EOD;
                                 $cimageSrc_add = '';
                             }
                         }
-                       
+
 
                     } else {
 //            没有查询到图片
@@ -721,7 +728,6 @@ EOD;
                         } else {
                             $cimageSrc = '';
                         }
-                        
                         $cimageSrc_add = '';
                         $customer_grade = $autograph['customer_grade'];
                     }
@@ -743,34 +749,33 @@ EOD;
                         </tr>
                         <tr>
 							<td width="50%" align="left">
-								<img src="{$eimageSrc01}" width="130" height="80">
+								<img src="{$eimageSrc01}" width="130" height="80" style="magin:20px 50px;">
 EOD;
                         if ($employee02_signature != '' || isset($sign_datas['staff_id02_url']) && $sign_datas['staff_id02_url'] != '') {
                             $html .= <<<EOD
-								<img src="{$eimageSrc02}" width="130" height="80">
+								<img src="{$eimageSrc02}" width="130" height="80" style="magin:20px 50px;">
 EOD;
                         }
                         if ($employee03_signature != '' || isset($sign_datas['staff_id03_url']) && $sign_datas['staff_id03_url'] != '') {
                             $html .= <<<EOD
-								<img src="{$eimageSrc03}" width="130" height="80" >
+								<img src="{$eimageSrc03}" width="130" height="80" style="magin:20px 50px;">
 EOD;
                         }
                         $html .= <<<EOD
                         </td>
                         <td width="50%" align="left">
-                        <img src="{$cimageSrc}" width="130" height="80">
-// EOD;
-                        // if ($cimageSrc_add != '') {
-                            // $html .= <<<EOD
-                            <img src="{$cimageSrc_add}" width="130" height="80">
+                        <img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
 EOD;
-                        // }           
-        $html .= <<<EOD
+                        if ($cimageSrc_add != '') {
+                            $html .= <<<EOD
+                            <img src="{$cimageSrc_add}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
+EOD;
+                        }
+                        $html .= <<<EOD
                         </td>
                     </tr>
 EOD;
                     }
-
 
                     /**
                      * ###########################################################
@@ -785,6 +790,7 @@ EOD;
             </table>
             <img src="$company_img">
             </body>
+</html>
 EOD;
                     if (@file_exists(dirname(__FILE__) . '/lang/chi.php')) {
                         require_once(dirname(__FILE__) . '/lang/chi.php');
@@ -814,14 +820,14 @@ EOD;
 
     }
 
-	public function retrieveData($index,$status)
-	{
+    public function retrieveData($index,$status)
+    {
         $suffix = Yii::app()->params['envSuffix'];
-		$city = Yii::app()->user->city_allow();
-		$sql_basic = "select j.JobID,j.CustomerName,j.Addr,j.ContactName,j.Mobile,j.JobDate,j.StartTime,j.FinishTime,u.StaffName as Staff01,uo.StaffName as Staff02,ut.StaffName as Staff03,s.ServiceName,j.Status,j.City,j.ServiceType,j.FirstJob,j.FinishDate  from joborder as j left join service as s on s.ServiceType=j.ServiceType left join staff as u on u.StaffID=j.Staff01 left join staff as uo on uo.StaffID=j.Staff02 left join staff as ut on ut.StaffID=j.Staff03 where j.JobID=".$index;
+        $city = Yii::app()->user->city_allow();
+        $sql_basic = "select j.JobID,j.CustomerName,j.Addr,j.ContactName,j.Mobile,j.JobDate,j.StartTime,j.FinishTime,u.StaffName as Staff01,uo.StaffName as Staff02,ut.StaffName as Staff03,s.ServiceName,j.Status,j.City,j.ServiceType,j.FirstJob,j.FinishDate  from joborder as j left join service as s on s.ServiceType=j.ServiceType left join staff as u on u.StaffID=j.Staff01 left join staff as uo on uo.StaffID=j.Staff02 left join staff as ut on ut.StaffID=j.Staff03 where j.JobID=".$index;
         $this->basic = Yii::app()->db->createCommand($sql_basic)->queryRow();
 
-		$sql_job = "select * from joborder where JobID=".$index;
+        $sql_job = "select * from joborder where JobID=".$index;
         $this->job = Yii::app()->db->createCommand($sql_job)->queryRow();
 
         $sql_city = "select * from enums as e left join officecity as o on o.Office=e.EnumID where o.City=".$this->basic['City']." and e.EnumType=8";
@@ -1102,10 +1108,10 @@ EOD;
                 </tr>
 EOD;
         if($briefing!=''){
-        if(($this->service_sections!='' && in_array('1',$this->service_sections)) || $this->service_sections==''){
-			$bc = $city=='MO' ? $briefing->content : mb_convert_encoding(mb_convert_encoding($briefing->content, 'GB2312', 'UTF-8'), 'UTF-8', 'GB2312');
-			$bp = $city=='MO' ? $briefing->proposal : mb_convert_encoding(mb_convert_encoding($briefing->proposal, 'GB2312', 'UTF-8'), 'UTF-8', 'GB2312');
-            $html .= <<<EOD
+            if(($this->service_sections!='' && in_array('1',$this->service_sections)) || $this->service_sections==''){
+                $bc = $city=='MO' ? $briefing->content : mb_convert_encoding(mb_convert_encoding($briefing->content, 'GB2312', 'UTF-8'), 'UTF-8', 'GB2312');
+                $bp = $city=='MO' ? $briefing->proposal : mb_convert_encoding(mb_convert_encoding($briefing->proposal, 'GB2312', 'UTF-8'), 'UTF-8', 'GB2312');
+                $html .= <<<EOD
                     <tr class="myTitle">
                         <th width="100%" align="left">服务简报</th>
                     </tr>
@@ -1119,9 +1125,10 @@ EOD;
                     </tr>
 EOD;
             }}
+
         if(count($photo)>0){
-        if(($this->service_sections!='' && in_array('5',$this->service_sections)) || $this->service_sections==''){
-            $html .= <<<EOD
+            if(($this->service_sections!='' && in_array('5',$this->service_sections)) || $this->service_sections==''){
+                $html .= <<<EOD
                         <tr class="myTitle">
                             <th width="100%" align="left">现场工作照</th>
                         </tr>
@@ -1132,30 +1139,30 @@ EOD;
                         <tr>
                         <td width="20%" align="left">$photox->remarks</td>
 EOD;
-                        $site_photos = explode(',',$photox->site_photos);
-                        for ($sp=0; $sp < count($site_photos); $sp++) {
-                            $spa = $baseUrl_imgs.str_replace("\/",'/',trim($site_photos[$sp],'"'));
-							if (!General::isWebImageValid($spa)) $spa = '/images/spacer.gif';
-                            $html .= <<<EOD
+                    $site_photos = explode(',',$photox->site_photos);
+                    for ($sp=0; $sp < count($site_photos); $sp++) {
+                        $spa = $baseUrl_imgs.str_replace("\/",'/',trim($site_photos[$sp],'"'));
+                        if (!General::isWebImageValid($spa)) $spa = '/images/spacer.gif';
+                        $html .= <<<EOD
                             <td width="20%" align="center">
                             <img src="$spa" width="80" height="100" style="padding:20px 50px;">
                             </td>
 EOD;
-                        }
-                        $sy_unm = 4-count($site_photos);
-                        for($j=0;$j<$sy_unm;$j++){
-                            $html .= <<<EOD
+                    }
+                    $sy_unm = 4-count($site_photos);
+                    for($j=0;$j<$sy_unm;$j++){
+                        $html .= <<<EOD
                             <td width="20%" align="center"></td>
 EOD;
-                        }
+                    }
                     $html .= <<<EOD
                                 </tr>
 EOD;
                 }
             }}
         if(count($material)>0){
-        if(($this->service_sections!='' && in_array('2',$this->service_sections)) || $this->service_sections==''){
-            $html .= <<<EOD
+            if(($this->service_sections!='' && in_array('2',$this->service_sections)) || $this->service_sections==''){
+                $html .= <<<EOD
                             <tr class="myTitle">
                                 <th width="100%" align="left">物料使用</th>
                             </tr>  
@@ -1223,7 +1230,7 @@ EOD;
                     $site_photos = explode(',',$riskx->site_photos);
                     for ($sp=0; $sp < count($site_photos); $sp++) {
                         $spa = $baseUrl_imgs.str_replace("\/",'/',trim($site_photos[$sp],'"'));
-						if (!General::isWebImageValid($spa)) $spa = '/images/spacer.gif';
+                        if (!General::isWebImageValid($spa)) $spa = '/images/spacer.gif';
                         $html .= <<<EOD
                         <td width="21%" align="center">
                             <img src="${spa}" width="80" height="100" style="padding:20px 50px;">
@@ -1231,8 +1238,8 @@ EOD;
 EOD;
                     }
                     $sy_unm = 4-count($site_photos);
-                        for($j=0;$j<$sy_unm;$j++){
-                            $html .= <<<EOD
+                    for($j=0;$j<$sy_unm;$j++){
+                        $html .= <<<EOD
                             <td width="21%" align="center"></td>
 EOD;
                     }
@@ -1242,10 +1249,10 @@ EOD;
                 }
             }}
         if(count($equipment)>0){
-        if(($this->service_sections!='' && in_array('3',$this->service_sections)) || $this->service_sections==''){
-            //设备巡查
-            $total = count($equipment);
-            $html .= <<<EOD
+            if(($this->service_sections!='' && in_array('3',$this->service_sections)) || $this->service_sections==''){
+                //设备巡查
+                $total = count($equipment);
+                $html .= <<<EOD
                             <tr class="myTitle">
                                 <th  width="100%" align="left">设备巡查</th>
                             </tr>
@@ -1267,11 +1274,11 @@ EOD;
                             if ($ti==0) {
                                 $wi01 = '8%';
                             }else if ($ti==1) {
-                               $wi01 = "11%";
+                                $wi01 = "11%";
                             }else if($ti>1 && $ti<count($table_titlex)-2){
                                 $wi01 = $targs;
                             }else if ((($ti+1)==count($table_titlex)) || (($ti+2)==count($table_titlex))) {
-                               $wi01 = "25%";
+                                $wi01 = "25%";
                             }
                             $html .= <<<EOD
                                         <td width="{$wi01}">$record</td>
@@ -1290,12 +1297,13 @@ EOD;
                                 if ($cd==0) {
                                     $wi02 = '8%';
                                 }else if ($cd==1) {
-                                   $wi02 = "11%";
+                                    $wi02 = "11%";
                                 }else if($cd>1 && $cd<count($record1)-2){
                                     $wi02 = $targs;
                                 }else if ((($cd+1)==count($record1)) || (($cd+2)==count($record1))) {
-                                   $wi02 = "25%";
+                                    $wi02 = "25%";
                                 }
+
                                 $html .= <<<EOD
                                             <td width="{$wi02}">$record1[$cd]</td>
 EOD;
@@ -1303,6 +1311,7 @@ EOD;
                             $html .= <<<EOD
                                     </tr>
 EOD;
+
                         }
                     }else{
                         $html .= <<<EOD
@@ -1398,7 +1407,7 @@ EOD;
             }
             $cimageSrc_add = '';
             $customer_grade = $autograph['customer_grade'];
-           
+
         }
         if (count($autograph) > 0 || $res_de['code'] == 0) {
             $sign_datas = $res_de['data'];
@@ -1418,28 +1427,28 @@ EOD;
                         </tr>
                         <tr>
 							<td width="50%" align="left">
-								<img src="{$eimageSrc01}" width="130" height="80" >
+								<img src="{$eimageSrc01}" width="130" height="80" style="magin:20px 50px;">
 EOD;
             if ($employee02_signature != '' || isset($sign_datas['staff_id02_url']) && $sign_datas['staff_id02_url'] != '') {
                 $html .= <<<EOD
-								<img src="{$eimageSrc02}" width="130" height="80" >
+								<img src="{$eimageSrc02}" width="130" height="80" style="magin:20px 50px;">
 EOD;
             }
             if ($employee03_signature != '' || isset($sign_datas['staff_id03_url']) && $sign_datas['staff_id03_url'] != '') {
                 $html .= <<<EOD
-								<img src="{$eimageSrc03}" width="130" height="80" >
+								<img src="{$eimageSrc03}" width="130" height="80" style="magin:20px 50px;">
 EOD;
             }
             $html .= <<<EOD
 							</td>
 							<td width="50%" align="left">
-                            <img src="{$cimageSrc}" width="130" height="80" >
+                            <img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
 EOD;
-                            if ($cimageSrc_add != '') {
-                                $html .= <<<EOD
-                                <img src="{$cimageSrc_add}" width="130" height="80" >
+            if ($cimageSrc_add != '') {
+                $html .= <<<EOD
+                                <img src="{$cimageSrc_add}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
 EOD;
-                            }           
+            }
             $html .= <<<EOD
                             </td>
                         </tr>
@@ -1453,7 +1462,7 @@ EOD;
          * ##########################################################
          * */
 
-            $html .= <<<EOD
+        $html .= <<<EOD
             </table>
             <img src="$company_img">
             </body>
@@ -1461,7 +1470,6 @@ EOD;
         if (@file_exists(dirname(__FILE__).'/lang/chi.php')) {
             require_once(dirname(__FILE__).'/lang/chi.php');
         }
-//        var_dump($html);exit();
         $pdf->SetPrintHeader(false);
         $pdf->SetPrintFooter(false);
         $pdf->AddPage();
@@ -1481,7 +1489,7 @@ EOD;
         }else{
             $pdf->Output($filename, 'D');
         }
-	}
+    }
     public function showField($name) {
         $a = explode(',',$this->fields);
         return empty($this->fields) || in_array($name, $a);
