@@ -72,10 +72,10 @@ return array(
         ),
 		'db2'=>array(
             'class'=>'CDbConnection',
-            'connectionString' => 'mysql:host=localhost;dbname=db_lbs_xcx',
+            'connectionString' => 'mysql:host=59.37.134.206;dbname=lbs_xcx',
             'emulatePrepare' => true,
-            'username' => 'root',
-            'password' => 'root',
+            'username' => 'lbs_xcx',
+            'password' => 'A3hWiMeDtEwBcFKY',
             'charset' => 'utf8',
             'tablePrefix'=>''
         ),
