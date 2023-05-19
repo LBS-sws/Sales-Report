@@ -43,6 +43,7 @@ class ReportjobController extends Controller
 		);
 	}
 	public function actionLook(){
+		
 		$id = $_GET['index'];
 		$item = Yii::app()->db->createCommand('SELECT pics FROM lbs_invoice WHERE jobid="'.$id.'" ')->queryRow();
 		$pics = $item['pics'];
