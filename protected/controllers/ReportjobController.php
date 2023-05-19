@@ -42,18 +42,12 @@ class ReportjobController extends Controller
 			),
 		);
 	}
-	// 查看发票
 	public function actionLook(){
-		// ReportjobController.php
 		$id = $_GET['index'];
-//		echo $id;
-		$item = Yii::app()->db2->createCommand('SELECT pics FROM lbs_invoice WHERE jobid="'.$id.'" ')->queryRow();
-//		print_r($item);
+		$item = Yii::app()->db->createCommand('SELECT pics FROM lbs_invoice WHERE jobid="'.$id.'" ')->queryRow();
 		$pics = $item['pics'];
 		if($pics){
-
 			$picarr = explode(",", $pics);
-//			print_r($picarr);
 			foreach($picarr as $key=>$val){
 				echo '<img src="'.$val.'"/>.<br/>';
 			}
