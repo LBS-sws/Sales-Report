@@ -181,6 +181,7 @@ class ReportjobList extends CListPageModel
 			// }else{
 			// 	$records[$key]['pics'] = '';
 			// }
+			
 		}
 		$list = array();
 		$this->attr = array();
