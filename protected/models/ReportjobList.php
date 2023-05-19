@@ -204,6 +204,7 @@ class ReportjobList extends CListPageModel
                     'StartTime'=>$FinishDate_s.' '.$record['StartTime'],
                     'FinishTime'=>$record['FinishDate'].' '.$record['FinishTime'],
 					'Pics'=>$record['pics']
+					
 				);
 			}
 		}
