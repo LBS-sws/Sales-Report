@@ -26,7 +26,7 @@ class PestTypeFrom extends CFormModel
     public $created_at;
     public $updated_at;
     public $deleted_at;
-
+    public $city_allow = "CN";
     /**
     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
     `city` varchar(6) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '城市',
@@ -58,10 +58,10 @@ class PestTypeFrom extends CFormModel
         );
     }
     function retrieveData($index) {
-        $city_allow = Yii::app()->user->city_allow();
+//        $city_allow = 'CN';//Yii::app()->user->city_allow();
         $tab_suffix = Yii::app()->params['table_envSuffix'];
         $rows = Yii::app()->db->createCommand()->select("*")
-            ->from('lbs_pest_type')->where("id=:id and city in($city_allow)",array(":id"=>$index))->queryAll();
+            ->from('lbs_pest_type')->where("id=:id and city = '".$this->city_allow."'",array(":id"=>$index))->queryAll();
         if (count($rows) > 0) {
             foreach ($rows as $row) {
                 $this->id = $row['id'];
@@ -116,7 +116,7 @@ class PestTypeFrom extends CFormModel
         if (strpos($sql,':id')!==false)
             $command->bindParam(':id',$this->id,PDO::PARAM_INT);
         if (strpos($sql,':city')!==false)
-            $command->bindParam(':city',Yii::app()->user->city(),PDO::PARAM_STR);
+            $command->bindParam(':city',$this->city_allow,PDO::PARAM_STR);
         if (strpos($sql,':type_name')!==false)
             $command->bindParam(':type_name',$this->type_name,PDO::PARAM_STR);
 //        if (strpos($sql,':delete_flag')!==false)

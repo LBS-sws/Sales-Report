@@ -6,10 +6,10 @@
  * Date: 2023/04/14
  * Time: 10:45
  */
-class PestdictController extends Controller
+class PestDictController extends Controller
 {
     public $function_id = 'PE02';
-
+    private $city_allow = "CN";
     public function filters()
     {
         return array(
@@ -25,12 +25,12 @@ class PestdictController extends Controller
     {
         return array(
             array('allow',
-                'actions' => array('new', 'edit', 'delete', 'save'),
-                'expression' => array('PestdictController', 'allowReadWrite'),
+               'actions' => array('new', 'edit', 'delete', 'save'),
+               'expression' => array('PestDictController', 'allowReadWrite'),
             ),
             array('allow',
-                'actions' => array('index', 'view','api'),
-                'expression' => array('PestdictController', 'allowReadOnly'),
+               'actions' => array('index', 'view','api'),
+               'expression' => array('PestDictController', 'allowReadOnly'),
             ),
             array('allow',
                 'actions' => array('api'),
@@ -90,7 +90,7 @@ class PestdictController extends Controller
     {
         $model = new PestDictFrom('new');
         $city = Yii::app()->user->city();
-        $sql = "select id as type_id,type_name from lbs_pest_type where  city = \"$city\"";
+        $sql = "select id as type_id,type_name from lbs_pest_type where  city = \"$this->city_allow\"";
         $rows = Yii::app()->db->createCommand($sql)->queryAll();
         $pest_type_list = array();
         foreach ($rows as $row) {
@@ -108,8 +108,8 @@ class PestdictController extends Controller
                 $model->saveData();
                 $model->scenario = 'edit';
                 Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Save Done'));
-                $city = Yii::app()->user->city();
-                $sql = "select id as type_id,type_name from lbs_pest_type where  city = \"$city\"";
+//                $city = Yii::app()->user->city();
+                $sql = "select id as type_id,type_name from lbs_pest_type where  city = \"$this->city_allow\"";
                 $rows = Yii::app()->db->createCommand($sql)->queryAll();
                 $pest_type_list = array();
                 foreach ($rows as $row) {
@@ -120,7 +120,7 @@ class PestdictController extends Controller
                 $message = CHtml::errorSummary($model);
                 Dialog::message(Yii::t('dialog', 'Validation Message'), $message);
                 $city = Yii::app()->user->city();
-                $sql = "select id as type_id,type_name from lbs_pest_type where  city = \"$city\"";
+                $sql = "select id as type_id,type_name from lbs_pest_type where  city = \"$this->city_allow\"";
                 $rows = Yii::app()->db->createCommand($sql)->queryAll();
                 $pest_type_list = array();
                 foreach ($rows as $row) {
@@ -150,7 +150,7 @@ class PestdictController extends Controller
             throw new CHttpException(404, 'The requested page does not exist.');
         } else {
             $city = Yii::app()->user->city();
-            $sql = "select id as type_id,type_name from lbs_pest_type where  city = \"$city\"";
+            $sql = "select id as type_id,type_name from lbs_pest_type where  city = \"$this->city_allow\"";
             $rows = Yii::app()->db->createCommand($sql)->queryAll();
             $pest_type_list = array();
             foreach ($rows as $row) {

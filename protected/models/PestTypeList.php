@@ -26,6 +26,7 @@ class PestTypeList extends CListPageModel
     public $updated_at;
     public $deleted_at;
 
+    public $city_allow = "CN";
     /**
     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
     `city` varchar(6) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '城市',
@@ -52,7 +53,7 @@ class PestTypeList extends CListPageModel
 
     public function retrieveDataByPage($pageNum=1)
     {
-        $city_allow = Yii::app()->user->city_allow();
+//        $city_allow = Yii::app()->user->city_allow();
         $tab_suffix = Yii::app()->params['table_envSuffix'];
         $se_suffix = Yii::app()->params['envSuffix'];
         $sql1 = "select m.*,b.name city_name from lbs_pest_type as m left join security".$se_suffix.".sec_city as b on m.city=b.code";
@@ -92,7 +93,7 @@ class PestTypeList extends CListPageModel
         $sql = $sql2.$clause;
         $this->totalRow = Yii::app()->db->createCommand($sql)->queryScalar();
 
-        $ct_where = " where m.city in(".$city_allow.")";
+        $ct_where = " where m.city = '".$this->city_allow."'";
         $sql = $sql1.$ct_where.$clause.$order;
         $sql = $this->sqlWithPageCriteria($sql, $this->pageNum);
         $records = Yii::app()->db->createCommand($sql)->queryAll();
@@ -118,9 +119,9 @@ class PestTypeList extends CListPageModel
         return true;
     }
     function retrieveData($index) {
-        $city_allow = Yii::app()->user->city_allow();
+//        $city_allow = Yii::app()->user->city_allow();
         $rows = Yii::app()->db->createCommand()->select("*")
-            ->from('lbs_pest_type')->where("id=:id and city in($city_allow)",array(":id"=>$index))->queryAll();
+            ->from('lbs_pest_type')->where("id=:id and city = '".$this->city_allow."'",array(":id"=>$index))->queryAll();
         if (count($rows) > 0) {
             foreach ($rows as $row) {
                 $this->id = $row['id'];

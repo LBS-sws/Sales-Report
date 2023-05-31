@@ -25,12 +25,12 @@ class PestTypeController extends Controller
     {
         return array(
             array('allow',
-                'actions' => array('new', 'edit', 'delete', 'save'),
-                'expression' => array('PestTypeController', 'allowReadWrite'),
+               'actions' => array('new', 'edit', 'delete', 'save'),
+               'expression' => array('PestTypeController', 'allowReadWrite'),
             ),
             array('allow',
-                'actions' => array('index', 'view'),
-                'expression' => array('PestTypeController', 'allowReadOnly'),
+               'actions' => array('index', 'view'),
+               'expression' => array('PestTypeController', 'allowReadOnly'),
             ),
             array('deny',  // deny all users
                 'users' => array('*'),

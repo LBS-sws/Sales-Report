@@ -84,10 +84,13 @@ class PestDictFrom extends CFormModel
             foreach ($rows as $row) {
                 $this->id = $row['id'];
                 $this->type_id = $row['type_id'];
+                $this->city_name = $row['city_name'];
+                $this->type_name = $row['type_name'];
                 $this->insect_name = $row['insect_name'];
                 $this->analysis_result = $row['analysis_result'];
                 $this->suggestion = $row['suggestion'];
                 $this->measure = $row['measure'];
+                $this->delete_flag = $row['delete_flag']?'否':'是';
                 $this->created_at = $row['created_at'];
                 $this->updated_at = $row['updated_at'];
                 $this->deleted_at = $row['deleted_at'];
@@ -123,20 +126,20 @@ class PestDictFrom extends CFormModel
 						:city,:type_id,:insect_name,:analysis_result,:suggestion,:measure,:created_at)";
                 break;
             case 'edit':
-                $sql = "update lbs_pest_dict set type_id=:type_id,insect_name=:insect_name,analysis_result=:analysis_result,suggestion =:suggestion,measure=:measure,updated_at=:updated_at
+                $sql = "update lbs_pest_dict set type_id=:type_id,city=:city,insect_name=:insect_name,analysis_result=:analysis_result,suggestion =:suggestion,measure=:measure,updated_at=:updated_at
     where id = :id";
                 break;
         }
         $this->created_at = date('Y-m-d H:i:s');
         $this->updated_at = date('Y-m-d H:i:s');
-//        var_dump($this->type_name);exit();
         $command=$connection->createCommand($sql);
         if (strpos($sql,':id')!==false)
             $command->bindParam(':id',$this->id,PDO::PARAM_INT);
         if (strpos($sql,':city')!==false)
-            $command->bindParam(':city',Yii::app()->user->city(),PDO::PARAM_STR);
+            $city = Yii::app()->user->city();
+            $command->bindParam(':city',$city,PDO::PARAM_STR);
         if (strpos($sql,':type_id')!==false)
-            $command->bindParam(':type_id',intval($this->type_id),PDO::PARAM_INT);
+            $command->bindParam(':type_id',$this->type_id,PDO::PARAM_INT);
         if (strpos($sql,':insect_name')!==false)
             $command->bindParam(':insect_name',$this->insect_name,PDO::PARAM_STR);
         if (strpos($sql,':analysis_result')!==false)
