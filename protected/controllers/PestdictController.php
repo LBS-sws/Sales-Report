@@ -25,12 +25,12 @@ class PestDictController extends Controller
     {
         return array(
             array('allow',
-               'actions' => array('new', 'edit', 'delete', 'save'),
-               'expression' => array('PestDictController', 'allowReadWrite'),
+                'actions' => array('new', 'edit', 'delete', 'save'),
+                'expression' => array('PestDictController', 'allowReadWrite'),
             ),
             array('allow',
-               'actions' => array('index', 'view','api'),
-               'expression' => array('PestDictController', 'allowReadOnly'),
+                'actions' => array('index', 'view','api'),
+                'expression' => array('PestDictController', 'allowReadOnly'),
             ),
             array('allow',
                 'actions' => array('api'),
@@ -61,7 +61,7 @@ class PestDictController extends Controller
         $data = $_POST;
         if (isset($_POST['authkey']) && $data['authkey'] == $authkey ) {
             $city = $_POST['data'];
-            $sql = "select type_name,analysis_result,lpd.city,insect_name,measure,suggestion,type_id from lbs_pest_dict as lpd  join  lbs_pest_type as lpt on lpt.id = lpd.type_id  where  lpd.city = \"$city\"";
+            $sql = "select type_name as insect_name,analysis_result,lpd.city,measure,suggestion,type_id from lbs_pest_dict as lpd  join  lbs_pest_type as lpt on lpt.id = lpd.type_id  where  lpd.city = \"$city\"";
             $rows = Yii::app()->db->createCommand($sql)->queryAll();
             return exit(json_encode($rows));
         }else{
