@@ -90,7 +90,7 @@ class PestDictFrom extends CFormModel
                 $this->analysis_result = $row['analysis_result'];
                 $this->suggestion = $row['suggestion'];
                 $this->measure = $row['measure'];
-                $this->delete_flag = $row['delete_flag']?'否':'是';
+//                $this->delete_flag = $row['delete_flag']?'否':'是';
                 $this->created_at = $row['created_at'];
                 $this->updated_at = $row['updated_at'];
                 $this->deleted_at = $row['deleted_at'];
