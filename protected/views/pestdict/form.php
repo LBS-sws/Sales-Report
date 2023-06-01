@@ -65,12 +65,12 @@ $this->pageTitle=Yii::app()->name . ' - Credits for pestdict';
                 </div>
             </div>
             <div class="form-group">
-                <?php echo $form->labelEx($model,'insect_name',array('class'=>"col-sm-2 control-label")); ?>
-                <div class="col-sm-3">
-                    <?php echo $form->textField($model, 'insect_name',
-                        array('size'=>40,'maxlength'=>250,"id"=>"insect_name",'readonly'=>false)
-                    ); ?>
-                </div>
+<!--                --><?php //echo $form->labelEx($model,'insect_name',array('class'=>"col-sm-2 control-label")); ?>
+<!--                <div class="col-sm-3">-->
+<!--                    --><?php //echo $form->textField($model, 'insect_name',
+//                        array('size'=>40,'maxlength'=>250,"id"=>"insect_name",'readonly'=>false)
+//                    ); ?>
+<!--                </div>-->
                 <?php echo $form->labelEx($model,'analysis_result',array('class'=>"col-sm-2 control-label")); ?>
                 <div class="col-sm-3">
                     <?php
@@ -80,8 +80,7 @@ $this->pageTitle=Yii::app()->name . ' - Credits for pestdict';
                     ));
                     ?>
                 </div>
-            </div>
-            <div class="form-group">
+
                 <?php echo $form->labelEx($model,'suggestion',array('class'=>"col-sm-2 control-label")); ?>
                 <div class="col-sm-3">
 
@@ -92,10 +91,10 @@ $this->pageTitle=Yii::app()->name . ' - Credits for pestdict';
                     ));
                     ?>
                 </div>
-
+            </div>
+            <div class="form-group">
                 <?php echo $form->labelEx($model,'measure',array('class'=>"col-sm-2 control-label")); ?>
                 <div class="col-sm-3">
-
                     <?php
                     echo $form->textArea($model, 'measure', array(
                         'rows' => 6,
@@ -104,7 +103,6 @@ $this->pageTitle=Yii::app()->name . ' - Credits for pestdict';
                     ?>
                 </div>
             </div>
-
         </div>
 </section>
 
