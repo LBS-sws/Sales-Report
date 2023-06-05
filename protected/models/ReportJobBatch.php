@@ -584,6 +584,7 @@ EOD;
             // conversion_flag = 1 图片未旋转 需要先下载
             if($img_data['conversion_flag'] == 1){
                 if ($cimageSrc != '' && $img_data['customer_signature_url'] != 'undefined') {
+                    $file = @file_get_contents($cimageSrc);
                     $cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
                     $cimageSrc = $path . "/" . $cimageName;
                     file_put_contents($cimageSrc, $file);
@@ -688,7 +689,7 @@ EOD;
 		ob_clean();
 		$pdf->Output($reportfile, 'F');
 	}
-	
+
 	public static function array_to_object($arr) {
         if (gettype($arr) != 'array') {
             return;
