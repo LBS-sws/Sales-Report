@@ -615,7 +615,7 @@ EOD;
 //            没有查询到图片
             $cimageSrc = '';
             $cimageSrc_add = '';
-            $customer_grade = $autograph['customer_grade']??'';
+            $customer_grade = isset($autograph['customer_grade'])?$autograph['customer_grade']:'';
         }
         if ($res_de['code'] == 0) {
             $sign_datas = $autograph_new['data'];
@@ -670,6 +670,7 @@ EOD;
 			<img src="$company_img">
 			</body>
 EOD;
+
 		if (@file_exists(dirname(__FILE__) . '/lang/chi.php')) {
 			require_once(dirname(__FILE__) . '/lang/chi.php');
 		}
