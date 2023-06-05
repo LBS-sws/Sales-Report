@@ -11,7 +11,7 @@ class ReportJobBatch {
 		$total = Yii::app()->db->createCommand($sql)->queryScalar();
 		return $total;
 	}
-	
+
 	public static function downloadJobReport() {
 		$model = new ReportjobList;
 		$session = Yii::app()->session;
@@ -20,7 +20,7 @@ class ReportJobBatch {
 			$model->setCriteria($criteria);
 		}
 		$sql = $model->getDataSQL();
-		
+
 		$file_list = array();
 		$data = Yii::app()->db->createCommand($sql)->queryAll();
 //        $job_ids = [];
@@ -78,7 +78,7 @@ class ReportJobBatch {
 		unlink($zipname);
 */
 	}
-	
+
 	public static function generateJobReport($data, $city, $reportfile) {
 		$data['Staffall'] = $data['Staff01Name'] . ($data['Staff02Name'] ? ',' . $data['Staff02Name'] : '') . ($data['Staff03Name'] ? ',' . $data['Staff03Name'] : '');
 
@@ -159,7 +159,7 @@ class ReportJobBatch {
 			foreach ($basic_equipments as $i => $type) {
 				$sql_check_datas = "select * from lbs_service_equipments where job_type=1 and job_id=" . $data['JobID'] . " and equipment_type_id=" . $type['equipment_type_id'] . " and equipment_area is not null and equipment_area!='' and check_datas is not null and check_datas!='' order by id asc";
 				$check_datas = Yii::app()->db->createCommand($sql_check_datas)->queryAll();
-				
+
 				$equipmenthz_count = count($check_datas);
 				$equipmenthz_datas[$i]['title'] = $type['name'] . "(" . $equipmenthz_count . "/" . $type['counter'] . ")";
 
@@ -225,7 +225,7 @@ class ReportJobBatch {
 
 
 
-         
+
 		 //查询服务板块
 		$sql_service_sections = "select * from lbs_service_reportsections where city='" . $city . "' and service_type=" . $service_type;
 		$service_sections_q = Yii::app()->db->createCommand($sql_service_sections)->queryRow();
@@ -240,7 +240,7 @@ class ReportJobBatch {
 		$baseUrl_imgs = Yii::app()->params['baseUrl_imgs'];
 		$company_img = $baseUrl_imgs . "pdf/company/" . $city . ".jpg";
 		$logo_img = $baseUrl_imgs . "pdf/logo.png";
-		
+
 		include_once Yii::app()->basePath . '/extensions/tcpdf/tcpdf.php';//引入库
 		include_once Yii::app()->basePath . '/extensions/tcpdf/config/tcpdf_config.php';//引入库
 		$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -276,11 +276,10 @@ class ReportJobBatch {
                 border: solid 1px #eeeeee;
                 text-align: center;
             }
-            
             p{
                 font-size: 18px;
                 line-height:10px;
-            } 
+            }
             </style>
             <body>
             <table class="myTable" cellpadding="5">
@@ -384,7 +383,7 @@ EOD;
 				}
 			}
 		}
-		
+
 		if (count($material) > 0) {
 			if (($service_sections != '' && in_array('2', $service_sections)) || $service_sections == '') {
 				$html .= <<<EOD
@@ -421,7 +420,7 @@ EOD;
 				}
 			}
 		}
-        
+
 		if(count($risk)>0){
 			if(($service_sections!='' && in_array('4',$service_sections)) || $service_sections==''){
 				$html .= <<<EOD
@@ -478,7 +477,7 @@ EOD;
 				}
 			}
 		}
-        
+
 		if (count($equipment) > 0) {
 			if (($service_sections != '' && in_array('3', $service_sections)) || $service_sections == '') {
 				//设备巡查
@@ -577,14 +576,14 @@ EOD;
             $eimageSrc02 = !empty($img_data['staff_id02_url']) ? $utils->sign_url . $img_data['staff_id02_url'] : '';
             $eimageSrc03 = !empty($img_data['staff_id03_url']) ? $utils->sign_url . $img_data['staff_id03_url'] : '';
             $cimageSrc = !empty($img_data['customer_signature_url']) ? $utils->sign_url . $img_data['customer_signature_url'] : '';
-            $customer_grade = !empty($img_data['customer_grade']) ? $img_data['customer_grade'] : '';
+			$cimageSrc_add = !empty($img_data['customer_signature_url_add']) ? $utils->sign_url . $img_data['customer_signature_url_add'] : '';
+			$customer_grade = !empty($img_data['customer_grade']) ? $img_data['customer_grade'] : '';
             $employee02_signature = '';
             $employee03_signature = '';
 
             // conversion_flag = 1 图片未旋转 需要先下载
             if($img_data['conversion_flag'] == 1){
                 if ($cimageSrc != '' && $img_data['customer_signature_url'] != 'undefined') {
-                    $file = @file_get_contents($cimageSrc);
                     $cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
                     $cimageSrc = $path . "/" . $cimageName;
                     file_put_contents($cimageSrc, $file);
@@ -593,37 +592,29 @@ EOD;
                 } else {
                     $cimageSrc = '';
                 }
+
+				if ($cimageSrc_add != '' && $img_data['customer_signature_url_add'] != 'undefined') {
+					$file = @file_get_contents($cimageSrc_add);
+					$cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
+					$cimageSrc_add = $path . "/" . $cimageName;
+					file_put_contents($cimageSrc_add, $file);
+					$degrees = 90;      //旋转角度
+					$utils->pic_rotating($degrees, $cimageSrc_add);
+				} else {
+					$cimageSrc_add = '';
+				}
+
             }
 
         } else {
 //            没有查询到图片
-            $eimageName01 = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
-            $eimageName02 = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
-            $eimageName03 = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
-
-            $employee01_signature = str_replace("data:image/jpg;base64,", "", $autograph['employee01_signature']);
-            $employee02_signature = str_replace("data:image/jpg;base64,", "", $autograph['employee02_signature']);
-            $employee03_signature = str_replace("data:image/jpg;base64,", "", $autograph['employee03_signature']);
-            //图片路径
-            $eimageSrc01 = $path . "/" . $eimageName01;
-            if ($employee01_signature != '') file_put_contents($eimageSrc01, base64_decode($employee01_signature));
-            $eimageSrc02 = $path . "/" . $eimageName02;
-            if ($employee02_signature != '') file_put_contents($eimageSrc02, base64_decode($employee02_signature));
-            $eimageSrc03 = $path . "/" . $eimageName03;
-            if ($employee03_signature != '') file_put_contents($eimageSrc03, base64_decode($employee03_signature));
-
-            if ($autograph['customer_signature'] != '' && $autograph['customer_signature'] != 'undefined') {
-                $cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
-                $cimageSrc = $path . "/" . $cimageName;
-                $customer_signature = str_replace("data:image/png;base64,", "", $autograph['customer_signature']);
-                file_put_contents($cimageSrc, base64_decode($customer_signature));
-                $degrees = 90;      //旋转角度
-                $url = $cimageSrc;  //图片存放位置
-                $utils->pic_rotating($degrees, $url);
-            } else {
-                $cimageSrc = '';
-            }
-            $customer_grade = $autograph['customer_grade'];
+            $eimageSrc01 = '';
+            $eimageSrc02 = '';
+            $eimageSrc03 = '';
+//            没有查询到图片
+            $cimageSrc = '';
+            $cimageSrc_add = '';
+            $customer_grade = $autograph['customer_grade']??'';
         }
         if ($res_de['code'] == 0) {
             $sign_datas = $autograph_new['data'];
@@ -643,25 +634,28 @@ EOD;
                         </tr>
                         <tr>
 							<td width="50%" align="left">
-								<img src="{$eimageSrc01}" width="130" height="80" >
+								<img src="{$eimageSrc01}" width="130" height="80" style="magin:20px 50px;">
 EOD;
             if ($employee02_signature != '' || isset($sign_datas['staff_id02_url']) && $sign_datas['staff_id02_url'] != '') {
                 $html .= <<<EOD
-								<img src="{$eimageSrc02}" width="130" height="80" >
+								<img src="{$eimageSrc02}" width="130" height="80" style="magin:20px 50px;">
 EOD;
             }
             if ($employee03_signature != '' || isset($sign_datas['staff_id03_url']) && $sign_datas['staff_id03_url'] != '') {
                 $html .= <<<EOD
-								<img src="{$eimageSrc03}" width="130" height="80" >
+								<img src="{$eimageSrc03}" width="130" height="80" style="magin:20px 50px;">
 EOD;
             }
             $html .= <<<EOD
 							</td>
-							<td width="50%" align="left">
-							    <img src="{$cimageSrc}" width="130" height="80" >
-							</td>
+							<td width="50%" align="left"><img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)"></td>
                         </tr>
 EOD;
+			if ($cimageSrc_add != '') {
+				$html .= <<<EOD
+                            <img src="{$cimageSrc_add}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
+EOD;
+			}
         }
 
 
