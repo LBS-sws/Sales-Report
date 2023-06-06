@@ -584,7 +584,9 @@ EOD;
             // conversion_flag = 1 图片未旋转 需要先下载
             if($img_data['conversion_flag'] == 1){
                 if ($cimageSrc != '' && $img_data['customer_signature_url'] != 'undefined') {
-                    $file = @file_get_contents($cimageSrc);
+					$option=array('ssl'=>array('verify_peer' => false,'verify_peer_name' => false));
+					$file = @file_get_contents($cimageSrc,false,stream_context_create($option));
+//                    $file = @file_get_contents($cimageSrc);
                     $cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
                     $cimageSrc = $path . "/" . $cimageName;
                     file_put_contents($cimageSrc, $file);
@@ -635,29 +637,30 @@ EOD;
                         </tr>
                         <tr>
 							<td width="50%" align="left">
-								<img src="{$eimageSrc01}" width="130" height="80" style="magin:20px 50px;">
+								<img src="{$eimageSrc01}" width="130" height="80" style="margin:20px 50px;">
 EOD;
             if ($employee02_signature != '' || isset($sign_datas['staff_id02_url']) && $sign_datas['staff_id02_url'] != '') {
                 $html .= <<<EOD
-								<img src="{$eimageSrc02}" width="130" height="80" style="magin:20px 50px;">
+								<img src="{$eimageSrc02}" width="130" height="80" style="margin:20px 50px;">
 EOD;
             }
             if ($employee03_signature != '' || isset($sign_datas['staff_id03_url']) && $sign_datas['staff_id03_url'] != '') {
                 $html .= <<<EOD
-								<img src="{$eimageSrc03}" width="130" height="80" style="magin:20px 50px;">
+								<img src="{$eimageSrc03}" width="130" height="80" style="margin:20px 50px;">
 EOD;
             }
             $html .= <<<EOD
 							</td>
-							<td width="50%" align="left"><img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)"></td>
-                        </tr>
+							<td width="50%" align="left">
+							<img src="{$cimageSrc}" width="130" height="80" style="margin:20px 50px;)">
+							
 EOD;
-			if ($cimageSrc_add != '') {
-				$html .= <<<EOD
-                            <img src="{$cimageSrc_add}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
-EOD;
-			}
         }
+		if ($cimageSrc_add != '') {
+			$html .= <<<EOD
+                            <img src="{$cimageSrc_add}" width="130" height="80" style="margin:20px 50px;">
+EOD;
+		}
 
 
         /**
