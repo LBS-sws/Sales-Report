@@ -44,13 +44,10 @@ class ReportjobController extends Controller
 	}
 	// 查看发票
 	public function actionLook(){
-		$id = isset($_GET['index']);
+		// $id = isset($_GET['index']);
+		$id = Yii::app()->params['index'];
 		echo $id;
 		$item = Yii::app()->db->createCommand('SELECT pics FROM lbs_invoice WHERE jobid="'.$id.'" ')->queryRow();
-		
-		// $sql = "select code,code_old from hr$suffix.hr_employee where id=$id";
-		// $row = Yii::app()->db->createCommand($sql)->queryRow();
-		
 		print_r($item);
 		$pics = $item['pics'];
 		if($pics){
