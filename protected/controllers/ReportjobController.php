@@ -45,7 +45,7 @@ class ReportjobController extends Controller
 	// 查看发票
 	public function actionLook(){
 		$id = isset($_GET['index']);
-		$item = Yii::app()->db2->createCommand('SELECT pics FROM lbs_invoice WHERE jobid="'.$id.'" ')->queryRow();
+		$item = Yii::app()->db->createCommand('SELECT pics FROM lbs_invoice WHERE jobid="'.$id.'" ')->queryRow();
 		$pics = $item['pics'];
 		if($pics){
 			$picarr = explode(",", $pics);
