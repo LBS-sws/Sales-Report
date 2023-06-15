@@ -47,15 +47,16 @@ class ReportjobController extends Controller
 		// $id = isset($_GET['index']);
 		$id = Yii::app()->params['index'];
 		echo $id;
-		$item = Yii::app()->db->createCommand('SELECT pics FROM lbs_invoice WHERE jobid="'.$id.'" ')->queryRow();
-		print_r($item);
-		$pics = $item['pics'];
-		if($pics){
-			$picarr = explode(",", $pics);
-			foreach($picarr as $key=>$val){
-				echo '<img src="'.$val.'"/>.<br/>';
-			}
-		}
+		exit;
+		// $item = Yii::app()->db->createCommand('SELECT pics FROM lbs_invoice WHERE jobid="'.$id.'" ')->queryRow();
+		// print_r($item);
+		// $pics = $item['pics'];
+		// if($pics){
+		// 	$picarr = explode(",", $pics);
+		// 	foreach($picarr as $key=>$val){
+		// 		echo '<img src="'.$val.'"/>.<br/>';
+		// 	}
+		// }
 	}
 	public function actionIndex($pageNum=0,$fid='',$fileName='')
 	{
