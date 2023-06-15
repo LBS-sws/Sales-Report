@@ -29,7 +29,8 @@
 //                echo '<a href="'.Yii::app()->createUrl('reportjob/look',array('id'=>$this->record['JobID'])).'" target="_blank" style="font-size: 14px; color: #fff; background:#8e98a2; padding: 5px 7.5px; border-radius: 5px; ">发票签收</a>';
 //            }
         ?>
-		<a style="display: none;">0</a>
+		<a style="display: none;">...</a>
+
         <?php
         if($this->record['Pics']) {
 
