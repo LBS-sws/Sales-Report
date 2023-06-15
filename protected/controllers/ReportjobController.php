@@ -44,19 +44,18 @@ class ReportjobController extends Controller
 	}
 	// 查看发票
 	public function actionLook(){
-		// $id = isset($_GET['index']);
-		$id = Yii::app()->params['index'];
-		echo $id;
-		exit;
-		// $item = Yii::app()->db->createCommand('SELECT pics FROM lbs_invoice WHERE jobid="'.$id.'" ')->queryRow();
-		// print_r($item);
-		// $pics = $item['pics'];
-		// if($pics){
-		// 	$picarr = explode(",", $pics);
-		// 	foreach($picarr as $key=>$val){
-		// 		echo '<img src="'.$val.'"/>.<br/>';
-		// 	}
-		// }
+		$id = $_GET['index'];
+		
+				//echo $id;
+				 $item = Yii::app()->db->createCommand('SELECT pics FROM lbs_invoice WHERE jobid="'.$id.'" ')->queryRow();
+		//		 print_r($item);
+				 $pics = $item['pics'];
+				 if($pics){
+				 	$picarr = explode(",", $pics);
+				 	foreach($picarr as $key=>$val){
+				 		echo '<img src="'.$val.'"/>.<br/>';
+				 	}
+				 }
 	}
 	public function actionIndex($pageNum=0,$fid='',$fileName='')
 	{
