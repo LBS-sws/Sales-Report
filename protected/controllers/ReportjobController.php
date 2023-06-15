@@ -46,6 +46,7 @@ class ReportjobController extends Controller
 	public function actionLook(){
 		$id = isset($_GET['index']);
 		$item = Yii::app()->db->createCommand('SELECT pics FROM lbs_invoice WHERE jobid="'.$id.'" ')->queryRow();
+		print_r($item);
 		$pics = $item['pics'];
 		if($pics){
 			$picarr = explode(",", $pics);
