@@ -1,12 +1,12 @@
-<tr class='clickable-row' data-href='<?php echo $this->getLink('RQ01', 'reportjob/edit', 'reportjob/view', array('index'=>$this->record['JobID']));?>'>
-<!--    <td class="che"> <input value="--><?php //echo $this->record['JobID']; ?><!--"  type="checkbox" name="Reportjob[attr][]" ></td>-->
+<tr class="clickable-row" data-href="<?php echo $this->getLink('RQ01', 'reportjob/edit', 'reportjob/view', array('index'=>$this->record['JobID']));?>">
+    <!--    <td class="che"> <input value="--><?php //echo $this->record['JobID']; ?><!--"  type="checkbox" name="Reportjob[attr][]" ></td>-->
     <?php if (!Yii::app()->user->isSingleCity()) : ?>
         <td><?php echo $this->record['City']; ?></td>
     <?php endif ?>
-	<td><?php echo $this->record['JobDate']; ?></td>
-	<td><?php echo $this->record['CustomerID']; ?></td>
-	<td><?php echo $this->record['CustomerName']; ?></td>
-	<td><?php echo $this->record['ServiceType']; ?></td>
+    <td><?php echo $this->record['JobDate']; ?></td>
+    <td><?php echo $this->record['CustomerID']; ?></td>
+    <td><?php echo $this->record['CustomerName']; ?></td>
+    <td><?php echo $this->record['ServiceType']; ?></td>
     <td><?php echo $this->record['Staff01']; ?></td>
     <td><?php echo $this->record['StartTime']; ?></td>
     <td><?php echo $this->record['FinishTime']; ?></td>
@@ -24,11 +24,10 @@
         echo TbHtml::Button('<span class="fa fa-envelope"></span> '.Yii::t('reportjob','Email'), array('onclick'=>$cmd,'size' => TbHtml::BUTTON_SIZE_SMALL));
         ?>
 
-		<a style="display: none;">...</a>
+        <a style="display: none;">...</a>
 
         <?php
         if($this->record['Pics']) {
-
             $dlnk = Yii::app()->createUrl('reportjob/look', array('index' => $this->record['JobID']));
             echo TbHtml::Button('<span class="fa fa-yc"></span> ' . "发票", array('submit' => $dlnk, 'size' => TbHtml::BUTTON_SIZE_SMALL));
         }
@@ -38,11 +37,29 @@
             $dlnk = Yii::app()->createUrl('reportjob/checklog', array('index' => $this->record['JobID']));
             $buttonOptions = array(
                 'class' => 'custom-button-class',
-                'style' => 'background-color: blue; color: white;',
+                'style' => 'background-color: #00a65a; color: white;',
                 'target' => '_blank', // 在新窗口打开链接
             );
-            echo TbHtml::link('<span class="fa fa-angellist"></span> ' . "检查记录表",$dlnk, $buttonOptions);
+            echo TbHtml::link('<span class="fa fa-angellist"></span> ' . "检查记录表", $dlnk, $buttonOptions);
         }
         ?>
     </td>
 </tr>
+<script>
+    // 获取所有具有clickable-row类的行元素
+    const clickableRows = document.querySelectorAll('.clickable-row');
+    // 为每一行添加点击事件处理程序
+    clickableRows.forEach(function(row) {
+        row.addEventListener('click', function(e) {
+            // 确保点击行的目标元素不是按钮
+            if (!e.target.closest('button')) {
+                // 获取行的data-href属性值
+                const href = this.getAttribute('data-href');
+                if (href) {
+                    // 在当前窗口打开链接
+                    window.location.href = href;
+                }
+            }
+        });
+    });
+</script>
