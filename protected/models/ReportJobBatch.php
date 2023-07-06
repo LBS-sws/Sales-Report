@@ -80,6 +80,9 @@ class ReportJobBatch {
 	}
 
 	public static function generateJobReport($data, $city, $reportfile) {
+		if($data['JobID']=='2457940'){
+			var_dump($data);die();
+		}
 		$data['Staffall'] = $data['Staff01Name'] . ($data['Staff02Name'] ? ',' . $data['Staff02Name'] : '') . ($data['Staff03Name'] ? ',' . $data['Staff03Name'] : '');
 
 		$data['task_type'] = $data['FirstJob'] == 1 ? "首次服务" : "常规服务";
