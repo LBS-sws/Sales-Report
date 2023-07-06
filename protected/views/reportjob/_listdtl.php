@@ -40,10 +40,10 @@
             $buttonOptions = array(
                 'submit' => $dlnk,
                 'size' => TbHtml::BUTTON_SIZE_SMALL,
-                'htmlOptions' => array(
-//                'class' => 'custom-button-class', // 添加自定义CSS类
-                    'style' => 'background-color: blue; color: white;', // 添加自定义样式
-                ),
+//                'htmlOptions' => array(
+////                'class' => 'custom-button-class', // 添加自定义CSS类
+//                    'style' => 'background-color: blue; color: white;', // 添加自定义样式
+//                ),
             );
             echo TbHtml::Button('<span class="fa fa-yc"></span> ' . "检查记录表", $buttonOptions);
         }
