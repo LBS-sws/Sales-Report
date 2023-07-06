@@ -30,7 +30,7 @@ $this->pageTitle=Yii::app()->name . ' - Reportjob';
         <?php echo TbHtml::button('<span class="fa fa-download"></span> '.Yii::t('reportjob','Download in Batch'), array('id'=>'btnBatchDownload'));?>
 	</div>
 	</div></div>
-	<?php 
+	<?php
 /*
 		$search = array(
 						'JobDate',
@@ -92,6 +92,25 @@ if ( (isset($fid) && !empty($fid)) && (isset($fileName) && !empty($fileName)) ) 
 	$js = "$(location).attr('href','$file_url');";
 	Yii::app()->clientScript->registerScript('redirection',$js,CClientScript::POS_READY);
 }
+echo "
+<script>
+    // 获取所有具有clickable-row类的行元素
+    const clickableRows = document.querySelectorAll('.clickable-row');
+    // 为每一行添加点击事件处理程序
+    clickableRows.forEach(function(row) {
+        row.addEventListener('click', function(e) {
+            // 确保点击行的目标元素不是按钮
+            if (!e.target.closest('button')) {
+                // 获取行的data-href属性值
+                const href = this.getAttribute('data-href');
+                if (href) {
+                    // 在当前窗口打开链接
+                    window.location.href = href;
+                }
+            }
+        });
+    });
+</script>"
 ?>
 
 
