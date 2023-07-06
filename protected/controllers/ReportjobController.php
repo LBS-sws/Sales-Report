@@ -57,15 +57,19 @@ class ReportjobController extends Controller
 
 
     public function actionChecklog(){
-            $job_id = $_GET['index'] ? $_GET['index'] : '';
+        $job_id = $_GET['index'] ? $_GET['index'] : '';
         include_once Yii::app()->basePath . '/common/Utils.php';//引入类文件
         $utils = new Utils();
 //        $params_str = http_build_query($params);
         $res = $utils->httpCurl($utils->sign_url.'/index.php/api/CheckLog/index?job_id='.$job_id);
         $res_de = json_decode($res, true);
         if (isset($res_de) && $res_de['code'] == 0) {
-            echo '<script>window.open("' . $res_de['data'] . '", "_blank");</script>';
-            $this->redirect(Yii::app()->createUrl('reportjob/index'));
+//            echo '<script>window.open("' . $res_de['data'] . '", "_blank");</script>';
+            // 在新窗口中打开链接
+            echo '<script>window.open("' . $res_de['data'] . '")</script>';
+            // 返回上一页
+            echo '<script>history.go(-1)</script>';
+//            $this->redirect(Yii::app()->createUrl('reportjob/index'));
         }else{
             Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog',$res_de['msg']));
         }
