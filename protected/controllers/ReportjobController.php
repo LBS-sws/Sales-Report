@@ -64,15 +64,11 @@ class ReportjobController extends Controller
         $res = $utils->httpCurl($utils->sign_url.'/index.php/api/CheckLog/index?job_id='.$job_id);
         $res_de = json_decode($res, true);
         if (isset($res_de) && $res_de['code'] == 0) {
-            echo '<script>window.open("' . $res_de['data'] . '", "_blank");</script>';
+            Dialog::message(Yii::t('dialog','success'), Yii::t('dialog','下载中···'));
+            echo '<script>window.open("' . $res_de['data'] . '");</script>';
+//            $this->redirect(Yii::app()->createUrl('reportjob/index'));
         }else{
-            $rtn = <<<EOF
-<table class="table table-bordered">
-	<tr><td>{$res_de['msg']}</td></tr>
-</table>
-<br>
-EOF;
-            echo $rtn;
+            Dialog::message(Yii::t('dialog','error'), Yii::t('dialog',$res_de['msg']));
         }
 
     }
