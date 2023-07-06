@@ -479,83 +479,159 @@ EOD;
 			}
 		}
 
-		if (count($equipment) > 0) {
-			if (($service_sections != '' && in_array('3', $service_sections)) || $service_sections == '') {
-				//设备巡查
-				$total = count($equipment);
-				$html .= <<<EOD
-						<tr class="myTitle">
-							<th  width="100%" align="left">设备巡查</th>
-						</tr>
-EOD;
-				for ($e = 0; $e < count($equipment); $e++) {
-					$titlex = json_encode($equipment[$e]['title'], JSON_UNESCAPED_UNICODE);
-					$titlex = str_replace("\/", '/', trim($titlex, '"'));
-					if (count($equipment[$e]) > 1) {
-						$total01 = count($equipment[$e]['table_title']);
-						$html .= <<<EOD
-						<tr>
-							<th width="100%" align="left">{$titlex}</th>
-						</tr>
-						<tr>
-EOD;
-						$targs = (31 / ($total01 - 4)) . "%";
-						$table_titlex = $equipment[$e]['table_title'];
-						foreach ($table_titlex as $ti => $record) {
-							if ($ti == 0) {
-								$wi01 = '8%';
-							} else if ($ti == 1) {
-								$wi01 = "11%";
-							} else if ($ti > 1 && $ti < count($table_titlex) - 2) {
-								$wi01 = $targs;
-							} else if ((($ti + 1) == count($table_titlex)) || (($ti + 2) == count($table_titlex))) {
-								$wi01 = "25%";
-							}
-							$html .= <<<EOD
-							<td width="{$wi01}">{$record}</td>
-EOD;
-						}
-						$html .= <<<EOD
-						</tr>
-EOD;
-						$contentx = $equipment[$e]['content'];
-						foreach ($contentx as $c => $record1) {
-							$html .= <<<EOD
-						<tr>
-EOD;
-							for ($cd = 0; $cd < count($record1); $cd++) {
-								if ($cd == 0) {
-									$wi02 = '8%';
-								} else if ($cd == 1) {
-									$wi02 = "11%";
-								} else if ($cd > 1 && $cd < count($record1) - 2) {
-									$wi02 = $targs;
-								} else if ((($cd + 1) == count($record1)) || (($cd + 2) == count($record1))) {
-									$wi02 = "25%";
-								}
+// 		if (count($equipment) > 0) {
+// 			if (($service_sections != '' && in_array('3', $service_sections)) || $service_sections == '') {
+// 				//设备巡查
+// 				$total = count($equipment);
+// 				$html .= <<<EOD
+// 						<tr class="myTitle">
+// 							<th  width="100%" align="left">设备巡查</th>
+// 						</tr>
+// EOD;
+// 				for ($e = 0; $e < count($equipment); $e++) {
+// 					$titlex = json_encode($equipment[$e]['title'], JSON_UNESCAPED_UNICODE);
+// 					$titlex = str_replace("\/", '/', trim($titlex, '"'));
+// 					if (count($equipment[$e]) > 1) {
+// 						$total01 = count($equipment[$e]['table_title']);
+// 						$html .= <<<EOD
+// 						<tr>
+// 							<th width="100%" align="left">{$titlex}</th>
+// 						</tr>
+// 						<tr>
+// EOD;
+// 						$targs = (31 / ($total01 - 4)) . "%";
+// 						$table_titlex = $equipment[$e]['table_title'];
+// 						foreach ($table_titlex as $ti => $record) {
+// 							if ($ti == 0) {
+// 								$wi01 = '8%';
+// 							} else if ($ti == 1) {
+// 								$wi01 = "11%";
+// 							} else if ($ti > 1 && $ti < count($table_titlex) - 2) {
+// 								$wi01 = $targs;
+// 							} else if ((($ti + 1) == count($table_titlex)) || (($ti + 2) == count($table_titlex))) {
+// 								$wi01 = "25%";
+// 							}
+// 							$html .= <<<EOD
+// 							<td width="{$wi01}">{$record}</td>
+// EOD;
+// 						}
+// 						$html .= <<<EOD
+// 						</tr>
+// EOD;
+// 						$contentx = $equipment[$e]['content'];
+// 						foreach ($contentx as $c => $record1) {
+// 							$html .= <<<EOD
+// 						<tr>
+// EOD;
+// 							for ($cd = 0; $cd < count($record1); $cd++) {
+// 								if ($cd == 0) {
+// 									$wi02 = '8%';
+// 								} else if ($cd == 1) {
+// 									$wi02 = "11%";
+// 								} else if ($cd > 1 && $cd < count($record1) - 2) {
+// 									$wi02 = $targs;
+// 								} else if ((($cd + 1) == count($record1)) || (($cd + 2) == count($record1))) {
+// 									$wi02 = "25%";
+// 								}
 
-								$html .= <<<EOD
-							<td width="{$wi02}">$record1[$cd]</td>
+// 								$html .= <<<EOD
+// 							<td width="{$wi02}">$record1[$cd]</td>
+// EOD;
+// 							}
+// 							$html .= <<<EOD
+// 						</tr>
+// EOD;
+// 						}
+// 					} else {
+// 							$html .= <<<EOD
+// 						<tr>
+// 							<th width="100%" align="left">{$titlex}</th>
+// 						</tr>
+// 						<tr>
+// 							<td width="100%">设备正常，无处理数据！</td>
+// 						</tr>
+// EOD;
+// 					}
+// 				}
+// 			}
+// 		}
+if(count($equipment)>0){
+	if(($service_sections!='' && in_array('3',$service_sections)) || $service_sections==''){
+		//设备巡查
+		$total = count($equipment);
+		$html .= <<<EOD
+					<tr class="myTitle">
+						<th  width="100%" align="left">设备巡查</th>
+					</tr>
 EOD;
-							}
-							$html .= <<<EOD
-						</tr>
+		for ($e=0; $e < count($equipment); $e++) {
+			$titlex = json_encode($equipment[$e]['title'], JSON_UNESCAPED_UNICODE);
+			$titlex = str_replace("\/",'/',trim($titlex,'"'));
+			if(count($equipment[$e])>1){
+				$total01 = count($equipment[$e]['table_title']);
+				$html .= <<<EOD
+					<tr>
+						<th width="100%" align="left">$titlex</th>
+					</tr>
+					<tr>
 EOD;
+				$targs = (31/($total01-4))."%";
+				$table_titlex = $equipment[$e]['table_title'];
+				foreach ($table_titlex as $ti=>$record) {
+					if ($ti==0) {
+						$wi01 = '8%';
+					}else if ($ti==1) {
+						$wi01 = "11%";
+					}else if($ti>1 && $ti<count($table_titlex)-2){
+						$wi01 = $targs;
+					}else if ((($ti+1)==count($table_titlex)) || (($ti+2)==count($table_titlex))) {
+						$wi01 = "25%";
+					}
+					$html .= <<<EOD
+								<td width="{$wi01}">$record</td>
+EOD;
+				}
+				$html .= <<<EOD
+							</tr>
+EOD;
+
+				$contentx= $equipment[$e]['content'];
+				foreach ($contentx as $c=>$record1) {
+					$html .= <<<EOD
+							<tr>
+EOD;
+					for ($cd=0; $cd < count($record1); $cd++) {
+						if ($cd==0) {
+							$wi02 = '8%';
+						}else if ($cd==1) {
+							$wi02 = "11%";
+						}else if($cd>1 && $cd<count($record1)-2){
+							$wi02 = $targs;
+						}else if ((($cd+1)==count($record1)) || (($cd+2)==count($record1))) {
+							$wi02 = "25%";
 						}
-					} else {
-							$html .= <<<EOD
-						<tr>
-							<th width="100%" align="left">{$titlex}</th>
-						</tr>
-						<tr>
-							<td width="100%">设备正常，无处理数据！</td>
-						</tr>
+
+						$html .= <<<EOD
+									<td width="{$wi02}">$record1[$cd]</td>
 EOD;
 					}
+					$html .= <<<EOD
+							</tr>
+EOD;
+
 				}
+			}else{
+				$html .= <<<EOD
+							<tr>
+								<th width="100%" align="left">$titlex</th>
+							</tr>
+							<tr>
+							<td width="100%">设备正常，无处理数据！</td>
+							</tr>
+EOD;
 			}
 		}
-
+	}}
 		//签名点评
         /**
          * ###########################################################
@@ -684,20 +760,20 @@ EOD;
 		$pdf->SetPrintFooter(false);
 		$pdf->AddPage();
 
-		if($data['JobID']=='2457940'){
-			var_dump($basic);
-			var_dump($photo);
-			var_dump($briefing);
-			var_dump($material);
-			var_dump($risk);
-			var_dump($equipment);
+		// if($data['JobID']=='2457940'){
+		// 	var_dump($basic);
+		// 	var_dump($photo);
+		// 	var_dump($briefing);
+		// 	var_dump($material);
+		// 	var_dump($risk);
+		// 	var_dump($equipment);
 
-			var_dump($eimageSrc01);
-			var_dump($cimageSrc);
-			var_dump($cimageSrc_add);
-			var_dump($html);
-			die();
-		}
+		// 	var_dump($eimageSrc01);
+		// 	var_dump($cimageSrc);
+		// 	var_dump($cimageSrc_add);
+		// 	var_dump($html);
+		// 	die();
+		// }
 		$pdf->WriteHTML($html, 1);
 		//Close and output PDF document
 
