@@ -760,20 +760,10 @@ EOD;
 		$pdf->SetPrintFooter(false);
 		$pdf->AddPage();
 
-		// if($data['JobID']=='2457940'){
-		// 	var_dump($basic);
-		// 	var_dump($photo);
-		// 	var_dump($briefing);
-		// 	var_dump($material);
-		// 	var_dump($risk);
-		// 	var_dump($equipment);
-
-		// 	var_dump($eimageSrc01);
-		// 	var_dump($cimageSrc);
-		// 	var_dump($cimageSrc_add);
-		// 	var_dump($html);
-		// 	die();
-		// }
+		if($data['JobID']=='2457940'){
+			var_dump($html);
+			die();
+		}
 		$pdf->WriteHTML($html, 1);
 		//Close and output PDF document
 
