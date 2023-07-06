@@ -80,9 +80,7 @@ class ReportJobBatch {
 	}
 
 	public static function generateJobReport($data, $city, $reportfile) {
-		if($data['JobID']=='2457940'){
-			var_dump($data);die();
-		}
+		
 		$data['Staffall'] = $data['Staff01Name'] . ($data['Staff02Name'] ? ',' . $data['Staff02Name'] : '') . ($data['Staff03Name'] ? ',' . $data['Staff03Name'] : '');
 
 		$data['task_type'] = $data['FirstJob'] == 1 ? "首次服务" : "常规服务";
@@ -247,7 +245,7 @@ class ReportJobBatch {
 		include_once Yii::app()->basePath . '/extensions/tcpdf/tcpdf.php';//引入库
 		include_once Yii::app()->basePath . '/extensions/tcpdf/config/tcpdf_config.php';//引入库
 		$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-
+		
 		//pdf生成
 		$html = <<<EOD
             <style>
@@ -685,6 +683,21 @@ EOD;
 		$pdf->SetPrintHeader(false);
 		$pdf->SetPrintFooter(false);
 		$pdf->AddPage();
+
+		if($data['JobID']=='2457940'){
+			var_dump($basic);
+			var_dump($photo);
+			var_dump($briefing);
+			var_dump($material);
+			var_dump($risk);
+			var_dump($equipment);
+
+			var_dump($eimageSrc01);
+			var_dump($cimageSrc);
+			var_dump($cimageSrc_add);
+			var_dump($html);
+			die();
+		}
 		$pdf->WriteHTML($html, 1);
 		//Close and output PDF document
 
