@@ -632,7 +632,8 @@ EOD;
 			}
 		}
 	}}
-		//签名点评
+	 //签名点评
+
         /**
          * ###########################################################
          *                            签名点评开始
@@ -653,17 +654,14 @@ EOD;
             $eimageSrc02 = !empty($img_data['staff_id02_url']) ? $utils->sign_url . $img_data['staff_id02_url'] : '';
             $eimageSrc03 = !empty($img_data['staff_id03_url']) ? $utils->sign_url . $img_data['staff_id03_url'] : '';
             $cimageSrc = !empty($img_data['customer_signature_url']) ? $utils->sign_url . $img_data['customer_signature_url'] : '';
-			$cimageSrc_add = !empty($img_data['customer_signature_url_add']) ? $utils->sign_url . $img_data['customer_signature_url_add'] : '';
-			$customer_grade = !empty($img_data['customer_grade']) ? $img_data['customer_grade'] : '';
+            $cimageSrc_add = !empty($img_data['customer_signature_url_add']) ? $utils->sign_url . $img_data['customer_signature_url_add'] : '';
+            $customer_grade = !empty($img_data['customer_grade']) ? $img_data['customer_grade'] : '';
             $employee02_signature = '';
             $employee03_signature = '';
-
             // conversion_flag = 1 图片未旋转 需要先下载
             if($img_data['conversion_flag'] == 1){
                 if ($cimageSrc != '' && $img_data['customer_signature_url'] != 'undefined') {
-					$option=array('ssl'=>array('verify_peer' => false,'verify_peer_name' => false));
-					$file = @file_get_contents($cimageSrc,false,stream_context_create($option));
-//                    $file = @file_get_contents($cimageSrc);
+                    $file = @file_get_contents($cimageSrc);
                     $cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
                     $cimageSrc = $path . "/" . $cimageName;
                     file_put_contents($cimageSrc, $file);
@@ -672,32 +670,54 @@ EOD;
                 } else {
                     $cimageSrc = '';
                 }
-
-				if ($cimageSrc_add != '' && $img_data['customer_signature_url_add'] != 'undefined') {
-					$file = @file_get_contents($cimageSrc_add);
-					$cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
-					$cimageSrc_add = $path . "/" . $cimageName;
-					file_put_contents($cimageSrc_add, $file);
-					$degrees = 90;      //旋转角度
-					$utils->pic_rotating($degrees, $cimageSrc_add);
-				} else {
-					$cimageSrc_add = '';
-				}
-
+                if ($cimageSrc_add != '' && $img_data['customer_signature_url_add'] != 'undefined') {
+                    $file = @file_get_contents($cimageSrc_add);
+                    $cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
+                    $cimageSrc_add = $path . "/" . $cimageName;
+                    file_put_contents($cimageSrc_add, $file);
+                    $degrees = 90;      //旋转角度
+                    $utils->pic_rotating($degrees, $cimageSrc_add);
+                } else {
+                    $cimageSrc_add = '';
+                }
             }
 
         } else {
 //            没有查询到图片
-            $eimageSrc01 = '';
-            $eimageSrc02 = '';
-            $eimageSrc03 = '';
-//            没有查询到图片
-            $cimageSrc = '';
+            $eimageName01 = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
+            $eimageName02 = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
+            $eimageName03 = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
+
+            $employee01_signature = str_replace("data:image/jpg;base64,", "", $autograph['employee01_signature']);
+            $employee02_signature = str_replace("data:image/jpg;base64,", "", $autograph['employee02_signature']);
+            $employee03_signature = str_replace("data:image/jpg;base64,", "", $autograph['employee03_signature']);
+            //图片路径
+            $eimageSrc01 = $path . "/" . $eimageName01;
+            if ($employee01_signature != '') file_put_contents($eimageSrc01, base64_decode($employee01_signature));
+            $eimageSrc02 = $path . "/" . $eimageName02;
+            if ($employee02_signature != '') file_put_contents($eimageSrc02, base64_decode($employee02_signature));
+            $eimageSrc03 = $path . "/" . $eimageName03;
+            if ($employee03_signature != '') file_put_contents($eimageSrc03, base64_decode($employee03_signature));
+
+            if ($autograph['customer_signature'] != '' && $autograph['customer_signature'] != 'undefined') {
+                $cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
+                $cimageSrc = $path . "/" . $cimageName;
+                $customer_signature = str_replace("data:image/png;base64,", "", $autograph['customer_signature']);
+                file_put_contents($cimageSrc, base64_decode($customer_signature));
+                //直接使用css样式旋转即可，无需特殊处理。
+
+                $degrees = 90;      //旋转角度
+                $url = $cimageSrc;  //图片存放位置
+                $utils->pic_rotating($degrees, $url);
+            } else {
+                $cimageSrc = '';
+            }
             $cimageSrc_add = '';
-            $customer_grade = isset($autograph['customer_grade'])?$autograph['customer_grade']:'';
+            $customer_grade = $autograph['customer_grade'];
+
         }
-        if ($res_de['code'] == 0) {
-            $sign_datas = $autograph_new['data'];
+        if (count($autograph) > 0 || $res_de['code'] == 0) {
+            $sign_datas = $res_de['data'];
             $html .= <<<EOD
                         <tr class="myTitle">
                             <th width="100%" align="left">客户点评</th>
@@ -714,30 +734,33 @@ EOD;
                         </tr>
                         <tr>
 							<td width="50%" align="left">
-								<img src="{$eimageSrc01}" width="130" height="80" style="margin:20px 50px;">
+								<img src="{$eimageSrc01}" width="130" height="80" style="magin:20px 50px;">
 EOD;
             if ($employee02_signature != '' || isset($sign_datas['staff_id02_url']) && $sign_datas['staff_id02_url'] != '') {
                 $html .= <<<EOD
-								<img src="{$eimageSrc02}" width="130" height="80" style="margin:20px 50px;">
+								<img src="{$eimageSrc02}" width="130" height="80" style="magin:20px 50px;">
 EOD;
             }
             if ($employee03_signature != '' || isset($sign_datas['staff_id03_url']) && $sign_datas['staff_id03_url'] != '') {
                 $html .= <<<EOD
-								<img src="{$eimageSrc03}" width="130" height="80" style="margin:20px 50px;">
+								<img src="{$eimageSrc03}" width="130" height="80" style="magin:20px 50px;">
 EOD;
             }
             $html .= <<<EOD
 							</td>
 							<td width="50%" align="left">
-							<img src="{$cimageSrc}" width="130" height="80" style="margin:20px 50px;)">
-							
+                            <img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
+EOD;
+            if ($cimageSrc_add != '') {
+                $html .= <<<EOD
+                                <img src="{$cimageSrc_add}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
+EOD;
+            }
+            $html .= <<<EOD
+                            </td>
+                        </tr>
 EOD;
         }
-		if ($cimageSrc_add != '') {
-			$html .= <<<EOD
-                            <img src="{$cimageSrc_add}" width="130" height="80" style="margin:20px 50px;">
-EOD;
-		}
 
 
         /**
@@ -745,14 +768,12 @@ EOD;
          *                            签名点评结束
          * ##########################################################
          * */
-		$html .= <<<EOD
-					</td>
-				</tr>	
-			</table>
-			<img src="$company_img">
-			</body>
-EOD;
 
+        $html .= <<<EOD
+            </table>
+            <img src="$company_img">
+            </body>
+EOD;
 		if (@file_exists(dirname(__FILE__) . '/lang/chi.php')) {
 			require_once(dirname(__FILE__) . '/lang/chi.php');
 		}
@@ -760,10 +781,10 @@ EOD;
 		$pdf->SetPrintFooter(false);
 		$pdf->AddPage();
 
-		if($data['JobID']=='2457940'){
-			var_dump($html);
-			die();
-		}
+		// if($data['JobID']=='2457940'){
+		// 	var_dump($html);
+		// 	die();
+		// }
 		$pdf->WriteHTML($html, 1);
 		//Close and output PDF document
 
