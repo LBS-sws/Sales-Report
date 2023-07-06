@@ -33,19 +33,15 @@
             echo TbHtml::Button('<span class="fa fa-yc"></span> ' . "发票", array('submit' => $dlnk, 'size' => TbHtml::BUTTON_SIZE_SMALL));
         }
         ?>
-
         <?php
         if($this->record['CustomerType'] == 203) {
             $dlnk = Yii::app()->createUrl('reportjob/checklog', array('index' => $this->record['JobID']));
             $buttonOptions = array(
-                'submit' => $dlnk,
-                'size' => TbHtml::BUTTON_SIZE_SMALL,
-//                'htmlOptions' => array(
-////                'class' => 'custom-button-class', // 添加自定义CSS类
-//                    'style' => 'background-color: blue; color: white;', // 添加自定义样式
-//                ),
+                'class' => 'custom-button-class',
+                'style' => 'background-color: blue; color: white;',
+                'target' => '_blank', // 在新窗口打开链接
             );
-            echo TbHtml::Button('<span class="fa fa-yc"></span> ' . "检查记录表", $buttonOptions);
+            echo TbHtml::link('<span class="fa fa-angellist"></span> ' . "检查记录表",$dlnk, $buttonOptions);
         }
         ?>
     </td>

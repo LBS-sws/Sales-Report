@@ -64,11 +64,12 @@ class ReportjobController extends Controller
         $res = $utils->httpCurl($utils->sign_url.'/index.php/api/CheckLog/index?job_id='.$job_id);
         $res_de = json_decode($res, true);
         if (isset($res_de) && $res_de['code'] == 0) {
-//            echo '<script>window.open("' . $res_de['data'] . '", "_blank");</script>';
             // 在新窗口中打开链接
+            echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>检查记录表</title><style>body{font-family:Arial,sans-serif;background-color:#f2f2f2;}.container{width:400px;margin:100px auto;background-color:#fff;border:1px solid #15f16b;border-radius:5px;padding:20px;text-align:center;}</style></head><body><div class="container"><h1>LBS提示</h1><p>正在加载检查记录表，请稍候...</p></div></body></html>
+';
             echo '<script>window.open("' . $res_de['data'] . '")</script>';
             // 返回上一页
-            echo '<script>history.go(-1)</script>';
+//            echo '<script>history.go(-1)</script>';
 //            $this->redirect(Yii::app()->createUrl('reportjob/index'));
         }else{
             Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog',$res_de['msg']));
