@@ -9,7 +9,7 @@ class ReportjobList extends CListPageModel
 	 */
 	public function attributeLabels()
 	{
-		return array(	
+		return array(
 			'number'=>Yii::t('invoice','Number'),
 			'dates'=>Yii::t('invoice','Date'),
 			'customer_account'=>Yii::t('invoice','Customer Account'),
@@ -39,7 +39,7 @@ class ReportjobList extends CListPageModel
 		if (!Yii::app()->user->isSingleCity()) $search['City'] = 'b.name';
 		return $search;
 	}
-	
+
 	protected function getSQL($type) {
         $se_suffix = Yii::app()->params['envSuffix'];
         $tab_suffix = Yii::app()->params['table_envSuffix'];
@@ -93,11 +93,11 @@ class ReportjobList extends CListPageModel
 	public function getDataSQL() {
 		return $this->getSQL(1);
 	}
-	
+
 	public function getCountSQL() {
 		return $this->getSQL(2);
 	}
-	
+
 	public function retrieveDataByPage($pageNum=1)
 	{
         $se_suffix = Yii::app()->params['envSuffix'];
@@ -111,9 +111,9 @@ class ReportjobList extends CListPageModel
             $lainch_date = '2022-02-10';
         }
 
-		$sql1 = "select *,b.name city_name,b.code  from joborder as j left join officecity as o on j.City=o.City  left join enums as e on e.EnumID=o.Office left join service as s on s.ServiceType=j.ServiceType left join staff as t on t.StaffID=j.Staff01 left join security".$se_suffix.".sec_city as b on e.Text=b.code where e.EnumType=8 and j.Status=3 and e.Text in ($city) and j.JobDate>='".$lainch_date."'
+		$sql1 = "select *,cc.CustomerType,b.name city_name,b.code  from joborder as j left join customercompany cc ON cc.CustomerID = j.CustomerID left join officecity as o on j.City=o.City  left join enums as e on e.EnumID=o.Office left join service as s on s.ServiceType=j.ServiceType left join staff as t on t.StaffID=j.Staff01 left join security".$se_suffix.".sec_city as b on e.Text=b.code where e.EnumType=8 and j.Status=3 and e.Text in ($city) and j.JobDate>='".$lainch_date."'
 			";
-		$sql2 = "select count(JobID) from joborder as j left join officecity as o on j.City=o.City  left join enums as e on e.EnumID=o.Office left join service as s on s.ServiceType=j.ServiceType left join staff as t on t.StaffID=j.Staff01 left join security".$se_suffix.".sec_city as b on e.Text=b.code where e.EnumType=8 and j.Status=3 and e.Text in ($city) and j.JobDate>='".$lainch_date."'
+		$sql2 = "select count(JobID) from joborder as j left join customercompany cc ON cc.CustomerID = j.CustomerID  left join officecity as o on j.City=o.City  left join enums as e on e.EnumID=o.Office left join service as s on s.ServiceType=j.ServiceType left join staff as t on t.StaffID=j.Staff01 left join security".$se_suffix.".sec_city as b on e.Text=b.code where e.EnumType=8 and j.Status=3 and e.Text in ($city) and j.JobDate>='".$lainch_date."'
 			";
 		$clause = "";
         $columns = $this->searchColumns();
@@ -175,13 +175,12 @@ class ReportjobList extends CListPageModel
 //		print_r($sql);
 		foreach($records as $key=>$val){
 			$command1 = Yii::app()->db->createCommand('SELECT pics FROM lbs_invoice WHERE jobid="'.$val['JobID'].'" ')->queryRow();
-
 			if($command1){
 				$records[$key]['pics'] = $command1['pics'];
 			}else{
 				$records[$key]['pics'] = '';
 			}
-			
+
 		}
 		$list = array();
 		$this->attr = array();
@@ -204,7 +203,7 @@ class ReportjobList extends CListPageModel
                     'StartTime'=>$FinishDate_s.' '.$record['StartTime'],
                     'FinishTime'=>$record['FinishDate'].' '.$record['FinishTime'],
 					'Pics'=>$record['pics']	// 发票预览字段
-					
+
 				);
 			}
 		}

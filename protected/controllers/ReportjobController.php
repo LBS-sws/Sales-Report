@@ -8,7 +8,7 @@ class ReportjobController extends Controller
 	{
 		return array(
 			'enforceRegisteredStation',
-			'enforceSessionExpiration', 
+			'enforceSessionExpiration',
 			'enforceNoConcurrentLogin',
 			'accessControl', // perform access control for CRUD operations
 			'postOnly + delete', // we only allow deletion via POST request
@@ -23,17 +23,17 @@ class ReportjobController extends Controller
 	public function accessRules()
 	{
 		return array(
-/*		
+/*
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
 				'actions'=>array('index','new','edit','delete','save'),
 				'users'=>array('@'),
 			),
 */
-			array('allow', 
-				'actions'=>array('new','edit','delete','save','add','look','down','AllDelete','delcache','batch','batchcreate','batchdown','emaildetail','resentemail','downloadinbatch','downloadzip'),
+			array('allow',
+				'actions'=>array('new','edit','delete','checklog','save','add','look','down','AllDelete','delcache','batch','batchcreate','batchdown','emaildetail','resentemail','downloadinbatch','downloadzip'),
 				'expression'=>array('ReportjobController','allowReadWrite'),
 			),
-			array('allow', 
+			array('allow',
 				'actions'=>array('index','view'),
 				'expression'=>array('ReportjobController','allowReadOnly'),
 			),
@@ -45,18 +45,40 @@ class ReportjobController extends Controller
 	// 查看发票
 	public function actionLook(){
 		$id = $_GET['index'];
-		
-				//echo $id;
-				 $item = Yii::app()->db->createCommand('SELECT pics FROM lbs_invoice WHERE jobid="'.$id.'" ')->queryRow();
-		//		 print_r($item);
-				 $pics = $item['pics'];
-				 if($pics){
-				 	$picarr = explode(",", $pics);
-				 	foreach($picarr as $key=>$val){
-				 		echo '<img src="'.$val.'"/>.<br/>';
-				 	}
-				 }
+         $item = Yii::app()->db->createCommand('SELECT pics FROM lbs_invoice WHERE jobid="'.$id.'" ')->queryRow();
+         $pics = $item['pics'];
+         if($pics){
+            $picarr = explode(",", $pics);
+            foreach($picarr as $key=>$val){
+                echo '<img src="'.$val.'"/>.<br/>';
+            }
+         }
 	}
+
+
+    public function actionChecklog(){
+        $params = [
+            'job_id' => $_GET['index']?$_GET['index']:'',
+        ];
+        include_once Yii::app()->basePath . '/common/Utils.php';//引入类文件
+        $utils = new Utils();
+        $params_str = http_build_query($params);
+        $res = $utils->httpCurl($utils->sign_url.'/index.php/api/CheckLog/index'.$params_str);
+        $res_de = json_decode($res, true);
+        if (isset($res_de) && $res_de['code'] == 0) {
+            echo '<script>window.open("' . $res_de['data'] . '", "_blank");</script>';
+        }else{
+            $rtn = <<<EOF
+<table class="table table-bordered">
+	<tr><td>{$res_de['msg']}</td></tr>
+</table>
+<br>
+EOF;
+            echo $rtn;
+        }
+
+    }
+
 	public function actionIndex($pageNum=0,$fid='',$fileName='')
 	{
 		$model = new ReportjobList;
@@ -111,7 +133,7 @@ class ReportjobController extends Controller
 			$this->render('form',array('model'=>$model,));
 		}
 	}
-	
+
 	public function actionNew()
 	{
 		$model = new ReportjobForm('new');
@@ -126,7 +148,7 @@ class ReportjobController extends Controller
 			$this->render('form',array('model'=>$model,));
 		}
 	}
-	
+
 	public function actionDelete()
 	{
 		$model = new ReportjobForm('delete');
@@ -206,7 +228,7 @@ class ReportjobController extends Controller
             $this->redirect(Yii::app()->createUrl('reportjob/batch'));
         }
     }
-	
+
 	public function actionEmaildetail($jobid) {
 		$rtn = '';
 		$data = ReportEmail::getData($jobid, 1);
@@ -238,18 +260,18 @@ EOF;
 EOF;
 		echo $rtn;
 	}
-	
+
 	public function actionResentemail($job_id) {
 		$data = ReportEmail::addData($job_id, 1);
 		if ($data['code']==0) {
             Dialog::message(Yii::t('dialog','Information'), '成功. 电邮待重发.');
 		} else {
             Dialog::message(Yii::t('dialog','Warning'), '电邮未能重发.');
-		}	
+		}
 		$this->redirect(Yii::app()->createUrl('reportjob/index'));
 	}
 
-	public function actionDownloadinbatch() 
+	public function actionDownloadinbatch()
 	{
 		$count = ReportJobBatch::countJobReport();
 		if ($count == 0) {
@@ -274,11 +296,11 @@ EOF;
 		unlink($zipname);
 		Yii::app()->end();
 	}
-	
+
 	public static function allowReadWrite() {
 		return Yii::app()->user->validRWFunction('RQ01');
 	}
-	
+
 	public static function allowReadOnly() {
 		return Yii::app()->user->validFunction('RQ01');
 	}
