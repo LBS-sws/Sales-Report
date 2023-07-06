@@ -35,12 +35,7 @@
         <?php
         if($this->record['CustomerType'] == 203) {
             $dlnk = Yii::app()->createUrl('reportjob/checklog', array('index' => $this->record['JobID']));
-            $buttonOptions = array(
-                'class' => 'custom-button-class',
-                'style' => 'background-color: #00a65a; color: white;',
-                'target' => '_blank', // 在新窗口打开链接
-            );
-            echo TbHtml::link('<span class="fa fa-angellist"></span> ' . "检查记录表", $dlnk, $buttonOptions);
+            echo TbHtml::Button('<span class="fa fa-angellist"></span> ' . "检查记录表", array('submit' => $dlnk, 'size' => TbHtml::BUTTON_SIZE_SMALL, 'target' => '_blank'));
         }
         ?>
     </td>
