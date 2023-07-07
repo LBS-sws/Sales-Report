@@ -207,7 +207,6 @@ class ReportJobBatch {
         $utils = new Utils();
         $params_str = http_build_query($params);
         $res = $utils->httpCurl($utils->url.$params_str);
-		var_dump($res);exit();
         $res_de = json_decode($res, true);
         if (isset($res_de) && $res_de['code'] == 0) {
             $autograph_new = $res_de;
@@ -717,7 +716,10 @@ EOD;
             $customer_grade = $autograph['customer_grade'];
 
         }
-        if (count($autograph) > 0 || $res_de['code'] == 0) {
+		/**
+		 * 下边无需判断 $autograph count($autograph) > 0 ||
+		 * */
+        if ($res_de['code'] == 0) {
             $sign_datas = $res_de['data'];
             $html .= <<<EOD
                         <tr class="myTitle">
