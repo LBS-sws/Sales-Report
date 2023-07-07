@@ -80,7 +80,7 @@ class ReportJobBatch {
 	}
 
 	public static function generateJobReport($data, $city, $reportfile) {
-		
+
 		$data['Staffall'] = $data['Staff01Name'] . ($data['Staff02Name'] ? ',' . $data['Staff02Name'] : '') . ($data['Staff03Name'] ? ',' . $data['Staff03Name'] : '');
 
 		$data['task_type'] = $data['FirstJob'] == 1 ? "首次服务" : "常规服务";
@@ -245,7 +245,7 @@ class ReportJobBatch {
 		include_once Yii::app()->basePath . '/extensions/tcpdf/tcpdf.php';//引入库
 		include_once Yii::app()->basePath . '/extensions/tcpdf/config/tcpdf_config.php';//引入库
 		$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-		
+
 		//pdf生成
 		$html = <<<EOD
             <style>
@@ -716,6 +716,9 @@ EOD;
             $customer_grade = $autograph['customer_grade'];
 
         }
+		var_dump($autograph);
+		var_dump($res_de);
+		exit();
         if (count($autograph) > 0 || $res_de['code'] == 0) {
             $sign_datas = $res_de['data'];
             $html .= <<<EOD
