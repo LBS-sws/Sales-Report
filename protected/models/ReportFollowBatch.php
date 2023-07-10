@@ -396,25 +396,27 @@ EOD;
 						<tr>
 							<td width="16%">风险图片</td>
 EOD;
-                    $site_photos = explode(',', $riskx['site_photos']);
-                    for ($sp = 0; $sp < count($site_photos); $sp++) {
-                        $spa = $baseUrl_imgs . str_replace("\/", '/', trim($site_photos[$sp], '"'));
-                        if (!General::isWebImageValid($spa)) $spa = '/images/spacer.gif';
-                        $html .= <<<EOD
+                    if (isset($riskx['site_photos']) && $riskx['site_photos'] != '') {
+                        $site_photos = explode(',', $riskx['site_photos']);
+                        for ($sp = 0; $sp < count($site_photos); $sp++) {
+                            $spa = $baseUrl_imgs . str_replace("\/", '/', trim($site_photos[$sp], '"'));
+                            if (!General::isWebImageValid($spa)) $spa = '/images/spacer.gif';
+                            $html .= <<<EOD
 							<td width="21%" align="center">
 								<img src="${spa}" width="80" height="100" style="padding:20px 50px;">
 							</td>
 EOD;
-                    }
-                    $sy_unm = 4 - count($site_photos);
-                    for ($j = 0; $j < $sy_unm; $j++) {
-                        $html .= <<<EOD
+                        }
+                        $sy_unm = 4 - count($site_photos);
+                        for ($j = 0; $j < $sy_unm; $j++) {
+                            $html .= <<<EOD
                             <td width="21%" align="center"></td>
 EOD;
-                    }
-                    $html .= <<<EOD
+                        }
+                        $html .= <<<EOD
                         </tr>  
 EOD;
+                    }
                 }
             }
         }

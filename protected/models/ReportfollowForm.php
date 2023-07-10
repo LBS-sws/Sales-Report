@@ -259,7 +259,7 @@ class ReportfollowForm extends CFormModel
                      *                            签名更改结束
                      * ##########################################################
                      * */
-                    
+
 
                     //查询服务板块
                     $sql_service_sections = "select * from lbs_service_reportsections where city='".$city."' and service_type=".$service_type;
@@ -471,7 +471,7 @@ EOD;
 EOD;
                             for ($r=0; $r < count($risk); $r++) {
                                 $riskx = $this->array_to_object($risk[$r]);
-                                $c_t =  date('Y-m-d',strtotime($riskx->creat_time));
+                                $c_t = date('Y-m-d', strtotime($riskx->creat_time));
 
                                 $html .= <<<EOD
                         <tr>
@@ -486,25 +486,27 @@ EOD;
                         <tr>
                         <td width="16%">风险图片</td>
 EOD;
-                    $site_photos = explode(',',$riskx->site_photos);
-                                for ($sp=0; $sp < count($site_photos); $sp++) {
-                                    $spa = $baseUrl_imgs.str_replace("\/",'/',trim($site_photos[$sp],'"'));
-									if (!General::isWebImageValid($spa)) $spa = '/images/spacer.gif';
-                                    $html .= <<<EOD
+                                if (isset($riskx->site_photos) && $riskx->site_photos != '') {
+                                    $site_photos = explode(',', $riskx->site_photos);
+                                    for ($sp = 0; $sp < count($site_photos); $sp++) {
+                                        $spa = $baseUrl_imgs . str_replace("\/", '/', trim($site_photos[$sp], '"'));
+                                        if (!General::isWebImageValid($spa)) $spa = '/images/spacer.gif';
+                                        $html .= <<<EOD
                         <td width="21%" align="center">
                             <img src="${spa}" width="80" height="100" style="padding:20px 50px;">
                         </td>
 EOD;
-                    }
-                    $sy_unm = 4-count($site_photos);
-                        for($j=0;$j<$sy_unm;$j++){
-                            $html .= <<<EOD
+                                    }
+                                    $sy_unm = 4 - count($site_photos);
+                                    for ($j = 0; $j < $sy_unm; $j++) {
+                                        $html .= <<<EOD
                             <td width="21%" align="center"></td>
 EOD;
-                        }
-                    $html .= <<<EOD
+                                    }
+                                    $html .= <<<EOD
                         </tr>  
 EOD;
+                                }
                             }
                         }}
 
@@ -709,7 +711,7 @@ EOD;
                             $html .= <<<EOD
                             <img src="{$cimageSrc_add}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
 EOD;
-                        }           
+                        }
         $html .= <<<EOD
                         </td>
                     </tr>
@@ -722,9 +724,9 @@ EOD;
                      *                            签名点评结束
                      * ##########################################################
                      * */
-                    
-                    
-                    
+
+
+
                     $html .= <<<EOD
             </table>
             <img src="$company_img">
@@ -1379,5 +1381,5 @@ EOD;
             $pdf->Output($filename, 'D');
         }
 	}
-   
+
 }
