@@ -413,10 +413,11 @@ EOD;
                             <td width="21%" align="center"></td>
 EOD;
                         }
+                    }
                         $html .= <<<EOD
                         </tr>  
 EOD;
-                    }
+
                 }
             }
         }

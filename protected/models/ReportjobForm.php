@@ -559,10 +559,11 @@ EOD;
                             <td width="21%" align="center"></td>
 EOD;
                                     }
+                                }
                                     $html .= <<<EOD
                         </tr>  
 EOD;
-                                }
+
                             }
                         }}
                     if (count($equipment) > 0) {
@@ -1246,10 +1247,10 @@ EOD;
                             <td width="21%" align="center"></td>
 EOD;
                         }
+                    }
                         $html .= <<<EOD
                         </tr>  
 EOD;
-                    }
                 }
             }}
         if(count($equipment)>0){
