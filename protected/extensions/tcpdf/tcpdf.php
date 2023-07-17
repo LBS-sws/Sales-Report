@@ -2970,7 +2970,7 @@ class TCPDF {
 
 	/**
 	 * Whether to allow local file path in image html tags, when prefixed with file://
-	 * 
+	 *
 	 * @param bool $allowLocalFiles true, when local files should be allowed. Otherwise false.
 	 * @public
 	 * @since 6.4
@@ -7345,6 +7345,8 @@ class TCPDF {
 		if (($parsed === false) AND function_exists('imagecreatefrompng')) {
 			try {
 				// generate images
+//				$img = imagecreatefrompng($file);
+                $img = @imagecreatefrompng($file);
 				$imgalpha = imagecreate($wpx, $hpx);
 				// generate gray scale palette (0 -> 255)
 				for ($c = 0; $c < 256; ++$c) {
