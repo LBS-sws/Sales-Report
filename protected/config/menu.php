@@ -150,4 +150,16 @@ return array(
         ),
     ),
 ),
+
+    //数据分析词设置
+    '聊天客服'=>array(
+        'access'=>'CT',
+        'icon'=>'fa fa-volume-up',
+        'items'=>array(
+            '聊天列表'=>array(
+                'access'=>'CT01',
+                'url'=>'/chat/index',
+            ),
+        )
+    ),
 );

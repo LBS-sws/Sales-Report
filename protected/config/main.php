@@ -128,5 +128,6 @@ return array(
         'appcolor'=>'skin-purple-light',
         'showRank'=>'on',
         'baseUrl_imgs'=>'https://xcx.lbsapps.cn/',//  正式版：https://xcx.lbsapps.cn/ 测试版：https://operation.lbsapps.cn/
+        'wss'=>'wss://operation.lbsapps.cn/wss',
     ),
 );
