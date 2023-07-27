@@ -81,13 +81,15 @@ return array(
 	'Number Code'=>'设置编号',
 
 	
-
+'Analyse Settings'=>'分析报告管理',
 	'Analyse Settings'=>'分析报告管理',
 	'Analyse Report'=>'分析报告列表',
 	'Pest Type'=>'虫害类型',
 	'delete_flag'=>'是否删除',
 	'Pest Dict'=>'虫害字典管理',
 	'pestdict Form'=>'虫害类型表单',
-	'city_name' => '地区'
+	'city_name' => '地区',
+
+	'Chat'=>'客户消息',
 );
 ?>

@@ -152,11 +152,11 @@ return array(
 ),
 
     //数据分析词设置
-    '聊天客服'=>array(
+    'Chat'=>array( //聊天客服
         'access'=>'CT',
         'icon'=>'fa fa-volume-up',
         'items'=>array(
-            '聊天列表'=>array(
+            'Chat List'=>array( //聊天列表
                 'access'=>'CT01',
                 'url'=>'/chat/index',
             ),
