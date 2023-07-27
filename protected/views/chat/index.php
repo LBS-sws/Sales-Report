@@ -240,7 +240,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
         <div class="chat-sidebar-cust">
             <h4>访客列表</h4>
             <div class="chat-search-container">
-                <el-input v-model="searchQuery" placeholder="输入客户名称"></el-input>
+                <el-input v-model="searchQuery" placeholder="输入客户名称" clearable></el-input>
                 <el-button type="primary" @click="getCustomerList">查询</el-button>
             </div>
             <div v-if="loadingCustomerList" class="loading">客户列表加载中...</div> <!-- Add this line -->
@@ -313,7 +313,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
                         </el-col>
                     </el-row>
                 </el-popover>
-                <input v-model="newMessage" placeholder="请输入你要回复的内容..." @keydown.enter="sendMessage">
+                <input v-model="newMessage" placeholder="请输入你要回复的内容..." @keydown.enter="sendMessage" clearable>
                 <el-button type="primary" @click="sendMessage">发送</el-button>
             </div>
         </div>
