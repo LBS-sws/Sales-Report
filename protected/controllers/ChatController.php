@@ -47,7 +47,7 @@ class ChatController extends Controller
     public function actionIndex($pageNum = 0)
     {
         $city = Yii::app()->user->city();
-        $this->render('index', array('city' => $city,'wss' => Yii::app()->params['wss'], 'api_url' => Yii::app()->params['baseUrl_imgs']));
+        $this->render('index', array('city' => $city,'wss' => 'wss://operation.lbsapps.cn/wss', 'api_url' => Yii::app()->params['baseUrl_imgs']));
     }
     public static function allowReadWrite()
     {
