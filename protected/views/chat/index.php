@@ -248,7 +248,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
             <el-menu class="chat-left-customer" :default-active="String(activeVisitor)" @select="selectVisitor">
                 <el-menu-item v-if="visitors.length === 0">暂无数据</el-menu-item>
                 <el-menu-item v-for="visitor in visitors" :key="visitor.id" :index="String(visitor.customer_id)" @click="selectVisitor(visitor.customer_id)">
-                    {{ visitor.customer_id }}
+                    {{ visitor.customer_name }}
                     <span v-if="newMessageCount[visitor.customer_id]" class="chat-badge">{{ newMessageCount[visitor.customer_id] }}</span>
                 </el-menu-item>
             </el-menu>
