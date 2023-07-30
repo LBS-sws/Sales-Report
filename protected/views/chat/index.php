@@ -408,7 +408,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
             connectWebSocket() {
 
                 let params = {
-                    'city_id': this.city,
+                    'city_id': this.city_id,
                     'is_staff': 1,
                 }
                 let newData = JSON.stringify(params);
@@ -615,7 +615,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
                 axios.get(url, {
                     params: {
                         date: date,
-                        city: 'ZY',
+                        city: this.city_id,
                         page: loadMore ? this.historyCurrentPage : 1,
                         list_rows: loadMore ? this.historyPageSize : this.pageSize,
                         customer_id: this.activeVisitor,
