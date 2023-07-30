@@ -202,9 +202,14 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
+
         .chat-badge {
             background-color: red;
             color: white;
@@ -213,6 +218,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
             font-size: 12px;
             margin-left: 5px;
         }
+
         .chat-search-container {
             display: flex;
             align-items: center;
@@ -221,12 +227,14 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
         .chat-search-container input {
             margin-right: 10px;
         }
+
         .chat-load-more-container {
             display: flex;
             justify-content: center;
             margin-top: 20px;
         }
-        .chat-left-customer{
+
+        .chat-left-customer {
             margin-top: 20px;
         }
     </style>
@@ -247,9 +255,11 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
 
             <el-menu class="chat-left-customer" :default-active="String(activeVisitor)" @select="selectVisitor">
                 <el-menu-item v-if="visitors.length === 0">暂无数据</el-menu-item>
-                <el-menu-item v-for="visitor in visitors" :key="visitor.id" :index="String(visitor.customer_id)" @click="selectVisitor(visitor.customer_id)">
+                <el-menu-item v-for="visitor in visitors" :key="visitor.id" :index="String(visitor.customer_id)"
+                              @click="selectVisitor(visitor.customer_id)">
                     {{ visitor.customer_name }}
-                    <span v-if="newMessageCount[visitor.customer_id]" class="chat-badge">{{ newMessageCount[visitor.customer_id] }}</span>
+                    <span v-if="newMessageCount[visitor.customer_id]"
+                          class="chat-badge">{{ newMessageCount[visitor.customer_id] }}</span>
                 </el-menu-item>
             </el-menu>
             <el-pagination
@@ -269,7 +279,9 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
                     <h3 v-else>请选择客户以回复消息</h3>
                 </div>
                 <div class="chat-calendar">
-                    选择日期：<el-date-picker v-model="selectedDate" type="date" placeholder="选择日期"  format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
+                    选择日期：
+                    <el-date-picker v-model="selectedDate" type="date" placeholder="选择日期" format="yyyy-MM-dd"
+                                    value-format="yyyy-MM-dd"></el-date-picker>
                     <el-button type="primary" @click="getHistoryMessage()">查询</el-button>
                 </div>
             </div>
@@ -280,12 +292,14 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
 
                         <div v-if="activeVisitor && !loadingMessages" class="chat-load-more-container">
                             <div class="centered-text">
-                                <el-link  v-if="!noMoreMessages" type="primary" @click="loadMoreMessages">加载更多消息</el-link>
-                                <el-link  v-else type="primary" @click="noMessages">到底啦~</el-link>
+                                <el-link v-if="!noMoreMessages" type="primary" @click="loadMoreMessages">加载更多消息
+                                </el-link>
+                                <el-link v-else type="primary" @click="noMessages">到底啦~</el-link>
                             </div>
                         </div>
 
-                        <div v-for="(message, index) in messagesByCustomerId[activeVisitor]" :key="`${activeVisitor}-${message.id}-${index}`" class="chat-message">
+                        <div v-for="(message, index) in messagesByCustomerId[activeVisitor]"
+                             :key="`${activeVisitor}-${message.id}-${index}`" class="chat-message">
                             <div class="chat-message-container"
                                  :class="{'chat-sender-container': message.is_staff, 'chat-receiver-container': !message.is_staff}">
                                 <div class="chat-content"
@@ -323,328 +337,334 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
 <script src="./../../js/vue.js"></script>
 <script src="./../../js/element.js"></script>
 
-<script src="<?php echo $api_url;?>static/axios_dist_axios.min.js"></script>
+<script src="<?php echo $api_url; ?>static/axios_dist_axios.min.js"></script>
 
 <script>
-  new Vue({
-    el: '#app',
-    data: {
-      activeVisitor: null,
-      newMessageCount: {},
-      visitors: [],
-      messagesByCustomerId: {},
-      selectedDate: '',
-      messages: [],
-      showEmojiSelector: false,
-      emojis: ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈', '👿', '👹', '👺', '🤡', '💩', '👻', '💀', '☠️', '👽', '👾', '🤖', '🎃', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾'],
+    new Vue({
+        el: '#app',
+        data: {
+            activeVisitor: null,
+            newMessageCount: {},
+            visitors: [],
+            messagesByCustomerId: {},
+            selectedDate: '',
+            messages: [],
+            showEmojiSelector: false,
+            emojis: ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈', '👿', '👹', '👺', '🤡', '💩', '👻', '💀', '☠️', '👽', '👾', '🤖', '🎃', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾'],
 
-      newMessage: '',
-      loading: false,
-      loadingCust: false,
-      loadingMessages: false, // Add this line
-      websocket: null,
-      websocketUrl: "<?php echo $wss;?>",
-      heartbeatInterval: 3000,
-      reconnectInterval: 3000,
-      currentPage: 1,
-      pageSize: 15,
-      historyCurrentPage: 1,
-      historyPageSize: 15,
-      searchQuery: '',
-      city_id:"<?php echo $city;?>",
-      apiUri:"<?php echo $api_url;?>",
-      loadingCustomerList: false,
-      noMoreMessages: false,
-    },
-    created() {
-      this.loading = true;
-      this.loadingCust = true;
-      // this.connectWebSocket();
-      this.selectedDate = this.getDate();
-      this.getCustomerList();
-      this.connectWebSocket();
-    },
-    mounted() {
-      // const messagesContainer = this.$refs.messagesContainer;
-      // messagesContainer.addEventListener('scroll', this.handleScroll);
-    },
-    methods: {
-      noMessages(){
-        this.$message({
-          message: '😃到底了，还点呢~',
-          type: 'warning'
-        });
-        return;
-      },
-      appendEmoji(emoji) {
-        this.newMessage += emoji;
-      },
-      startHeartbeat() {
-        this.heartbeatTimer = setInterval(() => {
-          if (this.websocket.readyState === WebSocket.OPEN) {
-            this.websocket.send(JSON.stringify({"state": 1, "type": "heartbeat"}));
-          }
-        }, this.heartbeatInterval);
-      },
-
-      stopHeartbeat() {
-        clearInterval(this.heartbeatTimer);
-      },
-
-      connectWebSocket() {
-        this.websocket = new WebSocket(this.websocketUrl + "?city_id="+this.city_id+"&is_staff=1");
-
-        this.websocket.onopen = () => {
-          console.log('WebSocket connection established');
-          // Start the heartbeat interval
-          this.startHeartbeat();
-        };
-
-        this.websocket.onmessage = (event) => {
-          console.log('Received message:', event.data);
-          const message = JSON.parse(event.data);
-          this.handleReceivedMessage(message);
-        };
-
-        this.websocket.onclose = event => {
-          console.log('WebSocket connection closed');
-          this.stopHeartbeat();
-          // Automatically attempt to reconnect
-          setTimeout(() => this.connectWebSocket(), this.reconnectInterval);
-        };
-
-        this.websocket.onerror = event => {
-          console.error('WebSocket error:', event);
-          this.websocket.close();
-        };
-      },
-
-      handleReceivedMessage(message) {
-        const { customer_id, content, is_staff } = message;
-        if (customer_id && content) {
-          const newMessage = {
-            id: Number(new Date()),
-            content,
-            is_staff,
-            city: this.city_id,
-            timestamp: new Date().toLocaleTimeString([], {
-              hour: '2-digit',
-              minute: '2-digit',
-            }),
-            customer_id
-          };
-
-          if (!this.messagesByCustomerId[customer_id]) {
-            this.$set(this.messagesByCustomerId, customer_id, []);
-          }
-          this.messagesByCustomerId[customer_id].push(newMessage);
-
-          // Update new message count
-          if (!this.newMessageCount[customer_id]) {
-            this.$set(this.newMessageCount, customer_id, 0);
-          }
-          this.newMessageCount[customer_id]++;
-
-          // If the active visitor is the same as the customer_id, scroll to the bottom of the messages container
-          if (this.activeVisitor === customer_id) {
-            this.$nextTick(() => {
-              this.scrollToBottom();
-            });
-          }
-        }
-      },
-
-
-      // handleScroll(event) {
-      //     const messagesContainer = event.target;
-      //     if (messagesContainer.scrollTop === 0 && this.historyCurrentPage < this.historyLastPage) {
-      //         this.loadMoreMessages();
-      //     }
-      // },
-      getDate() {
-        var now = new Date();
-        var year = now.getFullYear(); //得到年份
-        var month = now.getMonth(); //得到月份
-        var date = now.getDate(); //得到日期
-        var hour = " 00:00:00"; //默认时分秒 如果传给后台的格式为年月日时分秒，就需要加这个，如若不需要，此行可忽略
-        month = month + 1;
-        month = month.toString().padStart(2, "0");
-        date = date.toString().padStart(2, "0");
-        var defaultDate = `${year}-${month}-${date}`;//
-        return defaultDate;
-      },
-      getCustomerList() {
-        // this.loadingCust = true;
-        axios.get(this.apiUri + 'customer/custinfo/getList', {
-          params: {
-            city: this.city_id,
-            page: this.currentPage,
-            list_rows: this.pageSize,
-            query: this.searchQuery // 搜索
-
-          }
-        })
-                .then(response => {
-                  this.visitors = response.data.data.data;
-                  this.totalVisitors = response.data.data.total;
-                  this.currentPage = response.data.data.current_page;
-                  this.lastPage = response.data.data.last_page;
-                  this.loadingCustomerList = false; // Set loading state to false
-                  this.loading = false
-                })
-                .catch(error => {
-                  console.error(error);
-                  this.loadingCustomerList = false; // Set loading state to false
-                  this.loading = false
+            newMessage: '',
+            loading: false,
+            loadingCust: false,
+            loadingMessages: false, // Add this line
+            websocket: null,
+            websocketUrl: "<?php echo $wss;?>",
+            heartbeatInterval: 3000,
+            reconnectInterval: 3000,
+            currentPage: 1,
+            pageSize: 15,
+            historyCurrentPage: 1,
+            historyPageSize: 15,
+            searchQuery: '',
+            city_id: "<?php echo $city;?>",
+            apiUri: "<?php echo $api_url;?>",
+            loadingCustomerList: false,
+            noMoreMessages: false,
+        },
+        created() {
+            this.loading = true;
+            this.loadingCust = true;
+            // this.connectWebSocket();
+            this.selectedDate = this.getDate();
+            this.getCustomerList();
+            this.connectWebSocket();
+        },
+        mounted() {
+            // const messagesContainer = this.$refs.messagesContainer;
+            // messagesContainer.addEventListener('scroll', this.handleScroll);
+        },
+        methods: {
+            noMessages() {
+                this.$message({
+                    message: '😃到底了，还点呢~',
+                    type: 'warning'
                 });
-      },
-      handlePageChange(page) {
-        this.currentPage = page;
-        this.getCustomerList();
-      },
-      removeNewMessageCount(customer_id) {
-        this.$set(this.newMessageCount, customer_id, 0);
-      },
-      selectVisitor(customer_id) {
+                return;
+            },
+            appendEmoji(emoji) {
+                this.newMessage += emoji;
+            },
+            startHeartbeat() {
+                this.heartbeatTimer = setInterval(() => {
+                    if (this.websocket.readyState === WebSocket.OPEN) {
+                        this.websocket.send(JSON.stringify({"state": 1, "type": "heartbeat"}));
+                    }
+                }, this.heartbeatInterval);
+            },
 
-        console.log(customer_id)
-        this.activeVisitor = customer_id
-        this.historyCurrentPage = 1
-        this.removeNewMessageCount(customer_id);
-        // Set the cookie with the customer_id as the key
-        document.cookie = `customer_id=${customer_id}`;
-        this.getHistoryMessage()
-        this.$nextTick(() => {
-          this.scrollToBottom();
-        });
-      },
+            stopHeartbeat() {
+                clearInterval(this.heartbeatTimer);
+            },
 
-      sendMessage() {
+            connectWebSocket() {
 
-        var rand_id = Number(new Date()) ;
-        if (this.activeVisitor) {
-          if (this.newMessage.trim() !== '') {
-            const message = {
-              id:rand_id,
-              content: this.newMessage,
-              is_staff: 1,
-              city_id: this.city_id,
-              timestamp: new Date().toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-              }),
-              customer_id: this.activeVisitor
-            };
-            // 存储 customer_id list
-            if (!this.messagesByCustomerId[this.activeVisitor]) {
-              this.messagesByCustomerId[this.activeVisitor] = [];
-            }
-            this.messagesByCustomerId[this.activeVisitor].push(message);
-            console.log(this.messagesByCustomerId)
-            this.websocket.send(JSON.stringify(message));
+                let params = {
+                    'city_id': this.city,
+                    'is_staff': 1,
+                }
+                let newData = JSON.stringify(params);
+                this.websocket = new WebSocket(this.websocketUrl + `?${encodeURIComponent(newData)}`);
 
-            this.newMessage = '';
-            this.$nextTick(() => {
-              this.scrollToBottom();
-            });
-            this.$message({
-              message: '消息已发送',
-              type: 'success'
-            });
+                this.websocket.onopen = () => {
+                    console.log('WebSocket connection established');
+                    // Start the heartbeat interval
+                    this.startHeartbeat();
+                };
 
-          } else {
-            this.$message({
-              message: '请输入要发送的消息内容',
-              type: 'error'
-            });
-          }
-        } else {
-          this.$message({
-            message: '请先选择一个客户',
-            type: 'error'
-          });
-        }
-      },
-      loadMoreMessages() {
-        const messagesContainer = this.$refs.messagesContainer;
-        const scrollPosition = messagesContainer.scrollHeight - messagesContainer.scrollTop;
+                this.websocket.onmessage = (event) => {
+                    console.log('Received message:', event.data);
+                    const message = JSON.parse(event.data);
+                    this.handleReceivedMessage(message);
+                };
 
-        this.loadingMessages = true;
-        this.historyCurrentPage++;
-        this.getHistoryMessage(true);
+                this.websocket.onclose = event => {
+                    console.log('WebSocket connection closed');
+                    this.stopHeartbeat();
+                    // Automatically attempt to reconnect
+                    setTimeout(() => this.connectWebSocket(), this.reconnectInterval);
+                };
 
-        // Restore scroll position after loading more messages
-        this.$nextTick(() => {
-          messagesContainer.scrollTop = messagesContainer.scrollHeight - scrollPosition;
-        });
-      },
-      getHistoryMessage(loadMore = false) {
-        if (this.activeVisitor == null || this.activeVisitor == '') {
-          this.$message({
-            message: '请先选择一个客户',
-            type: 'error'
-          });
-          return;
-        }
+                this.websocket.onerror = event => {
+                    console.error('WebSocket error:', event);
+                    this.websocket.close();
+                };
+            },
 
-        let date = this.selectedDate;
-        let url = this.apiUri + "customer/Records";
-        this.loadingCust = true;
-        this.loading = true; // Show loading animation
+            handleReceivedMessage(message) {
+                const {customer_id, content, is_staff} = message;
+                if (customer_id && content) {
+                    const newMessage = {
+                        id: Number(new Date()),
+                        content,
+                        is_staff,
+                        city: this.city_id,
+                        timestamp: new Date().toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                        }),
+                        customer_id
+                    };
 
-        axios.get(url, {
-          params: {
-            date: date,
-            city: 'ZY',
-            page: loadMore ? this.historyCurrentPage : 1,
-            list_rows: loadMore ? this.historyPageSize : this.pageSize,
-            customer_id: this.activeVisitor,
-          }
-        })
-                .then(response => {
-                  this.loading = false; // Hide loading animation
-                  const loadedMessages = response.data.data.data;
+                    if (!this.messagesByCustomerId[customer_id]) {
+                        this.$set(this.messagesByCustomerId, customer_id, []);
+                    }
+                    this.messagesByCustomerId[customer_id].push(newMessage);
 
-                  // Create a new array with reversed order
-                  const reversedMessages = loadedMessages.slice().reverse();
+                    // Update new message count
+                    if (!this.newMessageCount[customer_id]) {
+                        this.$set(this.newMessageCount, customer_id, 0);
+                    }
+                    this.newMessageCount[customer_id]++;
 
-                  if (!this.messagesByCustomerId[this.activeVisitor]) {
-                    this.messagesByCustomerId[this.activeVisitor] = [];
-                  }
+                    // If the active visitor is the same as the customer_id, scroll to the bottom of the messages container
+                    if (this.activeVisitor === customer_id) {
+                        this.$nextTick(() => {
+                            this.scrollToBottom();
+                        });
+                    }
+                }
+            },
 
-                  // Concatenate the reversed messages to the existing messages array
-                  if (loadMore) {
-                    // Prepend the loaded messages to the existing messages array
-                    this.messagesByCustomerId[this.activeVisitor] = reversedMessages.concat(this.messagesByCustomerId[this.activeVisitor]);
-                  } else {
-                    // Replace the existing messages array with the loaded messages
-                    this.messagesByCustomerId[this.activeVisitor] = reversedMessages;
-                  }
-                  this.noMoreMessages = reversedMessages.length === 0;
 
-                  this.historyCurrentPage = response.data.data.current_page;
-                  this.historyLastPage = response.data.data.last_page;
-                  this.loadingCust = false;
-                  this.loadingMessages = false; // Hide loading spinner
+            // handleScroll(event) {
+            //     const messagesContainer = event.target;
+            //     if (messagesContainer.scrollTop === 0 && this.historyCurrentPage < this.historyLastPage) {
+            //         this.loadMoreMessages();
+            //     }
+            // },
+            getDate() {
+                var now = new Date();
+                var year = now.getFullYear(); //得到年份
+                var month = now.getMonth(); //得到月份
+                var date = now.getDate(); //得到日期
+                var hour = " 00:00:00"; //默认时分秒 如果传给后台的格式为年月日时分秒，就需要加这个，如若不需要，此行可忽略
+                month = month + 1;
+                month = month.toString().padStart(2, "0");
+                date = date.toString().padStart(2, "0");
+                var defaultDate = `${year}-${month}-${date}`;//
+                return defaultDate;
+            },
+            getCustomerList() {
+                // this.loadingCust = true;
+                axios.get(this.apiUri + 'customer/custinfo/getList', {
+                    params: {
+                        city: this.city_id,
+                        page: this.currentPage,
+                        list_rows: this.pageSize,
+                        query: this.searchQuery // 搜索
 
-                  // Scroll to the bottom of the messages container
-                  // this.$nextTick(() => {
-                  //     const messagesContainer = this.$refs.messagesContainer;
-                  //     messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                  // });
+                    }
                 })
-                .catch(error => {
-                  console.error(error);
-                  this.loading = false; // Hide loading animation
-                  this.loadingCust = false;
+                    .then(response => {
+                        this.visitors = response.data.data.data;
+                        this.totalVisitors = response.data.data.total;
+                        this.currentPage = response.data.data.current_page;
+                        this.lastPage = response.data.data.last_page;
+                        this.loadingCustomerList = false; // Set loading state to false
+                        this.loading = false
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        this.loadingCustomerList = false; // Set loading state to false
+                        this.loading = false
+                    });
+            },
+            handlePageChange(page) {
+                this.currentPage = page;
+                this.getCustomerList();
+            },
+            removeNewMessageCount(customer_id) {
+                this.$set(this.newMessageCount, customer_id, 0);
+            },
+            selectVisitor(customer_id) {
+
+                console.log(customer_id)
+                this.activeVisitor = customer_id
+                this.historyCurrentPage = 1
+                this.removeNewMessageCount(customer_id);
+                // Set the cookie with the customer_id as the key
+                document.cookie = `customer_id=${customer_id}`;
+                this.getHistoryMessage()
+                this.$nextTick(() => {
+                    this.scrollToBottom();
                 });
-      },
-      scrollToBottom() {
-        const messagesContainer = this.$refs.messagesContainer;
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      },
-    }
-  })
+            },
+
+            sendMessage() {
+
+                var rand_id = Number(new Date());
+                if (this.activeVisitor) {
+                    if (this.newMessage.trim() !== '') {
+                        const message = {
+                            id: rand_id,
+                            content: this.newMessage,
+                            is_staff: 1,
+                            city_id: this.city_id,
+                            timestamp: new Date().toLocaleTimeString([], {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                            }),
+                            customer_id: this.activeVisitor
+                        };
+                        // 存储 customer_id list
+                        if (!this.messagesByCustomerId[this.activeVisitor]) {
+                            this.messagesByCustomerId[this.activeVisitor] = [];
+                        }
+                        this.messagesByCustomerId[this.activeVisitor].push(message);
+                        console.log(this.messagesByCustomerId)
+                        this.websocket.send(JSON.stringify(message));
+
+                        this.newMessage = '';
+                        this.$nextTick(() => {
+                            this.scrollToBottom();
+                        });
+                        this.$message({
+                            message: '消息已发送',
+                            type: 'success'
+                        });
+
+                    } else {
+                        this.$message({
+                            message: '请输入要发送的消息内容',
+                            type: 'error'
+                        });
+                    }
+                } else {
+                    this.$message({
+                        message: '请先选择一个客户',
+                        type: 'error'
+                    });
+                }
+            },
+            loadMoreMessages() {
+                const messagesContainer = this.$refs.messagesContainer;
+                const scrollPosition = messagesContainer.scrollHeight - messagesContainer.scrollTop;
+
+                this.loadingMessages = true;
+                this.historyCurrentPage++;
+                this.getHistoryMessage(true);
+
+                // Restore scroll position after loading more messages
+                this.$nextTick(() => {
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight - scrollPosition;
+                });
+            },
+            getHistoryMessage(loadMore = false) {
+                if (this.activeVisitor == null || this.activeVisitor == '') {
+                    this.$message({
+                        message: '请先选择一个客户',
+                        type: 'error'
+                    });
+                    return;
+                }
+
+                let date = this.selectedDate;
+                let url = this.apiUri + "customer/Records";
+                this.loadingCust = true;
+                this.loading = true; // Show loading animation
+
+                axios.get(url, {
+                    params: {
+                        date: date,
+                        city: 'ZY',
+                        page: loadMore ? this.historyCurrentPage : 1,
+                        list_rows: loadMore ? this.historyPageSize : this.pageSize,
+                        customer_id: this.activeVisitor,
+                    }
+                })
+                    .then(response => {
+                        this.loading = false; // Hide loading animation
+                        const loadedMessages = response.data.data.data;
+
+                        // Create a new array with reversed order
+                        const reversedMessages = loadedMessages.slice().reverse();
+
+                        if (!this.messagesByCustomerId[this.activeVisitor]) {
+                            this.messagesByCustomerId[this.activeVisitor] = [];
+                        }
+
+                        // Concatenate the reversed messages to the existing messages array
+                        if (loadMore) {
+                            // Prepend the loaded messages to the existing messages array
+                            this.messagesByCustomerId[this.activeVisitor] = reversedMessages.concat(this.messagesByCustomerId[this.activeVisitor]);
+                        } else {
+                            // Replace the existing messages array with the loaded messages
+                            this.messagesByCustomerId[this.activeVisitor] = reversedMessages;
+                        }
+                        this.noMoreMessages = reversedMessages.length === 0;
+
+                        this.historyCurrentPage = response.data.data.current_page;
+                        this.historyLastPage = response.data.data.last_page;
+                        this.loadingCust = false;
+                        this.loadingMessages = false; // Hide loading spinner
+
+                        // Scroll to the bottom of the messages container
+                        // this.$nextTick(() => {
+                        //     const messagesContainer = this.$refs.messagesContainer;
+                        //     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                        // });
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        this.loading = false; // Hide loading animation
+                        this.loadingCust = false;
+                    });
+            },
+            scrollToBottom() {
+                const messagesContainer = this.$refs.messagesContainer;
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            },
+        }
+    })
 </script>
 </body>
 </html>
