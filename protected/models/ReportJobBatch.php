@@ -286,11 +286,10 @@ class ReportJobBatch {
             <table class="myTable" cellpadding="5">
                 <tr style="border: none;border-top: none;border-right:none;border-left:none;">
                     <td width="25%" style="float:left;border: none;border-top: none;">
-                        <img src="{$logo_img}" width="60" height="70">
+                        <img src="$logo_img" width="60" height="70">
                     </td>
                     <td  align="center" width="50%" style="float:left;border: none;border-top: none;">
-                        <p>史伟莎环保科技有限公司</p>
-                        <p style="font-size: 14px;line-height:1px;">服务现场管理报告</p>
+                        <p style="font-size: 20px;line-height:15px;">史伟莎服务现场管理报告</p>
                     </td>
                 </tr>
                 <tr class="myTitle">
