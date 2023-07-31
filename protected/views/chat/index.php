@@ -514,15 +514,14 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
                     .then(response => {
 
                         this.visitors = response.data.data.data.map(visitor => {
-                            // Set the initial value of newMessageCount for each customer to 0 if it doesn't exist
-                            if (!this.newMessageCount[visitor.customer_id]) {
-                                this.$set(this.newMessageCount, visitor.customer_id, 0);
-                            }
+                            const customer_id = visitor.customer_id;
+                            const unread_count = this.newMessageCount[customer_id] || 0;
                             return {
                                 ...visitor,
-                                unread_count: visitor.unread_count || 0
+                                unread_count: unread_count
                             };
                         });
+
 
 
                         this.visitors = response.data.data.data;
