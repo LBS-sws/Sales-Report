@@ -318,7 +318,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
             </div>
             <div class="chat-input-container">
                 <el-popover placement="top" trigger="click" v-model="showEmojiSelector">
-        <span slot="reference">
+        <span slot="reference" >
             😁
         </span>
                     <el-row class="chat-emoji-selector-row">
@@ -337,7 +337,9 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
 <script src="./../../js/vue.js"></script>
 <script src="./../../js/element.js"></script>
 
-<script src="<?php echo $api_url; ?>static/axios_dist_axios.min.js"></script>
+<script src="<?php if (isset($api_url)) {
+    echo $api_url;
+} ?>static/axios_dist_axios.min.js"></script>
 
 <script>
     new Vue({
@@ -357,7 +359,9 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
             loadingCust: false,
             loadingMessages: false, // Add this line
             websocket: null,
-            websocketUrl: "<?php echo $wss;?>",
+            websocketUrl: "<?php if (isset($wss)) {
+                echo $wss;
+            }?>",
             heartbeatInterval: 3000,
             reconnectInterval: 3000,
             currentPage: 1,
@@ -365,7 +369,9 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
             historyCurrentPage: 1,
             historyPageSize: 15,
             searchQuery: '',
-            city_id: "<?php echo $city;?>",
+            city_id: "<?php if (isset($city)) {
+                echo $city;
+            }?>",
             apiUri: "<?php echo $api_url;?>",
             loadingCustomerList: false,
             noMoreMessages: false,
@@ -467,6 +473,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
 
                     // If the active visitor is the same as the customer_id, scroll to the bottom of the messages container
                     if (this.activeVisitor === customer_id) {
+                        this.$set(this.newMessageCount, customer_id, 0);
                         this.$nextTick(() => {
                             this.scrollToBottom();
                         });
@@ -505,6 +512,19 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
                     }
                 })
                     .then(response => {
+
+                        this.visitors = response.data.data.data.map(visitor => {
+                            // Set the initial value of newMessageCount for each customer to 0 if it doesn't exist
+                            if (!this.newMessageCount[visitor.customer_id]) {
+                                this.$set(this.newMessageCount, visitor.customer_id, 0);
+                            }
+                            return {
+                                ...visitor,
+                                unread_count: visitor.unread_count || 0
+                            };
+                        });
+
+
                         this.visitors = response.data.data.data;
                         this.totalVisitors = response.data.data.total;
                         this.currentPage = response.data.data.current_page;
