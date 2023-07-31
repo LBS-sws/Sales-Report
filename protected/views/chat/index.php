@@ -337,7 +337,9 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
 <script src="./../../js/vue.js"></script>
 <script src="./../../js/element.js"></script>
 
-<script src="<?php echo $api_url; ?>static/axios_dist_axios.min.js"></script>
+<script src="<?php if (isset($api_url)) {
+    echo $api_url;
+} ?>static/axios_dist_axios.min.js"></script>
 
 <script>
     new Vue({
@@ -357,7 +359,9 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
             loadingCust: false,
             loadingMessages: false, // Add this line
             websocket: null,
-            websocketUrl: "<?php echo $wss;?>",
+            websocketUrl: "<?php if (isset($wss)) {
+                echo $wss;
+            }?>",
             heartbeatInterval: 3000,
             reconnectInterval: 3000,
             currentPage: 1,
@@ -365,7 +369,9 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
             historyCurrentPage: 1,
             historyPageSize: 15,
             searchQuery: '',
-            city_id: "<?php echo $city;?>",
+            city_id: "<?php if (isset($city)) {
+                echo $city;
+            }?>",
             apiUri: "<?php echo $api_url;?>",
             loadingCustomerList: false,
             noMoreMessages: false,
@@ -440,7 +446,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
             },
 
             handleReceivedMessage(message) {
-                const { customer_id, content, is_staff } = message;
+                const {customer_id, content, is_staff} = message;
                 if (customer_id && content) {
                     const newMessage = {
                         id: Number(new Date()),
@@ -453,6 +459,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
                         }),
                         customer_id
                     };
+                    this.notifyMe("您有新的消息",content)
 
                     if (!this.messagesByCustomerId[customer_id]) {
                         this.$set(this.messagesByCustomerId, customer_id, []);
@@ -467,19 +474,34 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
 
                     // If the active visitor is the same as the customer_id, scroll to the bottom of the messages container
                     if (this.activeVisitor === customer_id) {
+                        this.$set(this.newMessageCount, customer_id, 0);
                         this.$nextTick(() => {
                             this.scrollToBottom();
                         });
                     }
                 }
+            },
 
-                // Update unread message count for the customer
-                if (this.newMessageCount[customer_id]) {
-                    this.newMessageCount[customer_id]++;
-                } else {
-                    this.$set(this.newMessageCount, customer_id, 1);
+            notifyMe(notification_title, body) {
+                if (Notification.permission !== "granted")
+                    Notification.requestPermission();
+                else {
+                    //notification_title，通知标题
+                    var notification = new Notification(notification_title, {
+                        //显示通知的图标
+                        //icon: '',
+                        //通知的内容
+                        body: body,
+                    });
+
+                    notification.onclick = function () {
+                        parent.focus();
+                        window.focus(); //just in case, older browsers
+                        this.close();
+                    };
                 }
-            }
+            },
+
 
 
             // handleScroll(event) {
@@ -543,6 +565,32 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
                 this.removeNewMessageCount(customer_id);
                 // Set the cookie with the customer_id as the key
                 document.cookie = `customer_id=${customer_id}`;
+                this.getHistoryMessage();
+                this.$nextTick(() => {
+                    this.scrollToBottom();
+                });
+
+
+                // Set the currentStaffId
+                // this.currentStaffId = 'admin';
+
+                // Send customer_id and currentStaffId to the backend
+                axios.get(this.apiUri + 'customer/custinfo/changeStatus', {
+                    params: {
+                        customer_id: customer_id,
+                        staff_id: 'admin'
+                    }
+                })
+                    .then(response => {
+                        if(response.data.code == 0){
+                            console.log(customer_id+"消息标记为已读")
+                        }
+                        // Handle the response from the backend if needed
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+
                 this.getHistoryMessage();
                 this.$nextTick(() => {
                     this.scrollToBottom();
