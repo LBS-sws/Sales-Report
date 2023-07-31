@@ -318,7 +318,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
             </div>
             <div class="chat-input-container">
                 <el-popover placement="top" trigger="click" v-model="showEmojiSelector">
-        <span slot="reference" >
+        <span slot="reference">
             😁
         </span>
                     <el-row class="chat-emoji-selector-row">
@@ -337,9 +337,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
 <script src="./../../js/vue.js"></script>
 <script src="./../../js/element.js"></script>
 
-<script src="<?php if (isset($api_url)) {
-    echo $api_url;
-} ?>static/axios_dist_axios.min.js"></script>
+<script src="<?php echo $api_url; ?>static/axios_dist_axios.min.js"></script>
 
 <script>
     new Vue({
@@ -359,9 +357,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
             loadingCust: false,
             loadingMessages: false, // Add this line
             websocket: null,
-            websocketUrl: "<?php if (isset($wss)) {
-                echo $wss;
-            }?>",
+            websocketUrl: "<?php echo $wss;?>",
             heartbeatInterval: 3000,
             reconnectInterval: 3000,
             currentPage: 1,
@@ -369,9 +365,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
             historyCurrentPage: 1,
             historyPageSize: 15,
             searchQuery: '',
-            city_id: "<?php if (isset($city)) {
-                echo $city;
-            }?>",
+            city_id: "<?php echo $city;?>",
             apiUri: "<?php echo $api_url;?>",
             loadingCustomerList: false,
             noMoreMessages: false,
@@ -446,7 +440,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
             },
 
             handleReceivedMessage(message) {
-                const {customer_id, content, is_staff} = message;
+                const { customer_id, content, is_staff } = message;
                 if (customer_id && content) {
                     const newMessage = {
                         id: Number(new Date()),
@@ -473,13 +467,19 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
 
                     // If the active visitor is the same as the customer_id, scroll to the bottom of the messages container
                     if (this.activeVisitor === customer_id) {
-                        this.$set(this.newMessageCount, customer_id, 0);
                         this.$nextTick(() => {
                             this.scrollToBottom();
                         });
                     }
                 }
-            },
+
+                // Update unread message count for the customer
+                if (this.newMessageCount[customer_id]) {
+                    this.newMessageCount[customer_id]++;
+                } else {
+                    this.$set(this.newMessageCount, customer_id, 1);
+                }
+            }
 
 
             // handleScroll(event) {
@@ -501,40 +501,33 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
                 return defaultDate;
             },
             getCustomerList() {
-                // this.loadingCust = true;
                 axios.get(this.apiUri + 'customer/custinfo/getList', {
                     params: {
                         city: this.city_id,
                         page: this.currentPage,
                         list_rows: this.pageSize,
                         query: this.searchQuery // 搜索
-
                     }
                 })
                     .then(response => {
-
-                        this.visitors = response.data.data.data.map(visitor => {
-                            const customer_id = visitor.customer_id;
-                            const unread_count = this.newMessageCount[customer_id] || 0;
-                            return {
-                                ...visitor,
-                                unread_count: unread_count
-                            };
-                        });
-
-
-
                         this.visitors = response.data.data.data;
                         this.totalVisitors = response.data.data.total;
                         this.currentPage = response.data.data.current_page;
                         this.lastPage = response.data.data.last_page;
                         this.loadingCustomerList = false; // Set loading state to false
-                        this.loading = false
+                        this.loading = false;
+
+                        // Update unread message count for each visitor
+                        this.visitors.forEach(visitor => {
+                            const visitorId = visitor.customer_id;
+                            const unreadCount = visitor.unread_count;
+                            this.$set(this.newMessageCount, visitorId, unreadCount);
+                        });
                     })
                     .catch(error => {
                         console.error(error);
                         this.loadingCustomerList = false; // Set loading state to false
-                        this.loading = false
+                        this.loading = false;
                     });
             },
             handlePageChange(page) {
@@ -545,17 +538,20 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
                 this.$set(this.newMessageCount, customer_id, 0);
             },
             selectVisitor(customer_id) {
-
-                console.log(customer_id)
-                this.activeVisitor = customer_id
-                this.historyCurrentPage = 1
+                this.activeVisitor = customer_id;
+                this.historyCurrentPage = 1;
                 this.removeNewMessageCount(customer_id);
                 // Set the cookie with the customer_id as the key
                 document.cookie = `customer_id=${customer_id}`;
-                this.getHistoryMessage()
+                this.getHistoryMessage();
                 this.$nextTick(() => {
                     this.scrollToBottom();
                 });
+
+                // Hide message count for the selected visitor
+                if (this.newMessageCount[customer_id]) {
+                    this.newMessageCount[customer_id] = 0;
+                }
             },
 
             sendMessage() {
