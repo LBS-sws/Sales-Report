@@ -373,6 +373,9 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
                 echo $city;
             }?>",
             apiUri: "<?php echo $api_url;?>",
+            staff_id : "<?php if (isset($uid)) {
+                echo $uid;
+            } ?>",
             loadingCustomerList: false,
             noMoreMessages: false,
         },
@@ -416,6 +419,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
                 let params = {
                     'city_id': this.city_id,
                     'is_staff': 1,
+                    'staff_id': this.staff_id
                 }
                 let newData = JSON.stringify(params);
                 this.websocket = new WebSocket(this.websocketUrl + `?${encodeURIComponent(newData)}`);
@@ -459,7 +463,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
                         }),
                         customer_id
                     };
-                    this.notifyMe("您有新的消息",content)
+                    this.notifyMe("消息来自：",customer_id)
 
                     if (!this.messagesByCustomerId[customer_id]) {
                         this.$set(this.messagesByCustomerId, customer_id, []);
@@ -575,22 +579,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
                 // this.currentStaffId = 'admin';
 
                 // Send customer_id and currentStaffId to the backend
-                axios.get(this.apiUri + 'customer/custinfo/changeStatus', {
-                    params: {
-                        customer_id: customer_id,
-                        staff_id: 'admin'
-                    }
-                })
-                    .then(response => {
-                        if(response.data.code == 0){
-                            console.log(customer_id+"消息标记为已读")
-                        }
-                        // Handle the response from the backend if needed
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-
+                this.readMessageStatus()
                 this.getHistoryMessage();
                 this.$nextTick(() => {
                     this.scrollToBottom();
@@ -601,9 +590,25 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
                     this.newMessageCount[customer_id] = 0;
                 }
             },
+            readMessageStatus(){
+                axios.get(this.apiUri + 'customer/custinfo/changeStatus', {
+                    params: {
+                        customer_id: customer_id,
+                        staff_id: this.staff_id
+                    }
+                })
+                .then(response => {
+                    if(response.data.code == 0){
+                        console.log(customer_id+"消息标记为已读")
+                    }
+                    // Handle the response from the backend if needed
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            }
 
             sendMessage() {
-
                 var rand_id = Number(new Date());
                 if (this.activeVisitor) {
                     if (this.newMessage.trim() !== '') {
@@ -616,6 +621,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
                                 hour: '2-digit',
                                 minute: '2-digit',
                             }),
+                            staff_id: this.staff_id
                             customer_id: this.activeVisitor
                         };
                         // 存储 customer_id list
@@ -634,7 +640,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
                             message: '消息已发送',
                             type: 'success'
                         });
-
+                        this.readMessageStatus()
                     } else {
                         this.$message({
                             message: '请输入要发送的消息内容',
