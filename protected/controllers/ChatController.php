@@ -45,7 +45,7 @@ class ChatController extends Controller
     public function actionIndex($pageNum = 0)
     {
         $city = Yii::app()->user->city();
-        $wss = "wss://operation.lbsapps.cn/wss";
+        $wss = "wss://xcx.lbsapps.cn/wss";
         $uid = Yii::app()->user->id;
         $api_url = Yii::app()->params['baseUrl_imgs'];
         $this->render('index', array('city' => $city, 'wss' => $wss, 'uid' => $uid, 'api_url' => $api_url));
