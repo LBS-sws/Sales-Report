@@ -593,13 +593,13 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
             readMessageStatus(){
                 axios.get(this.apiUri + 'customer/custinfo/changeStatus', {
                     params: {
-                        customer_id: customer_id,
+                        customer_id: this.activeVisitor,
                         staff_id: this.staff_id
                     }
                 })
                 .then(response => {
                     if(response.data.code == 0){
-                        console.log(customer_id+"消息标记为已读")
+                        console.log(this.activeVisitor+"消息标记为已读")
                     }
                     // Handle the response from the backend if needed
                 })
@@ -621,7 +621,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
                                 hour: '2-digit',
                                 minute: '2-digit',
                             }),
-                            staff_id: this.staff_id
+                            staff_id: this.staff_id,
                             customer_id: this.activeVisitor
                         };
                         // 存储 customer_id list
