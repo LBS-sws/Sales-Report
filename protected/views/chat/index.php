@@ -606,7 +606,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
                 .catch(error => {
                     console.error(error);
                 });
-            }
+            },
 
             sendMessage() {
                 var rand_id = Number(new Date());
