@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * Created by PhpStorm.
  * User: Administrator
@@ -47,11 +45,12 @@ class ChatController extends Controller
     public function actionIndex($pageNum = 0)
     {
         $city = Yii::app()->user->city();
-        $wss = Yii::app()->params['wss'];
+        $wss = "wss://operation.lbsapps.cn/wss";
         $uid = Yii::app()->user->id;
         $api_url = Yii::app()->params['baseUrl_imgs'];
-        $this->render('index', array('city' => $city,'wss' => $wss, 'uid' => $uid, 'api_url' => $api_url));
+        $this->render('index', array('city' => $city, 'wss' => $wss, 'uid' => $uid, 'api_url' => $api_url));
     }
+
     public static function allowReadWrite()
     {
         return Yii::app()->user->validRWFunction('CT01');
@@ -62,3 +61,4 @@ class ChatController extends Controller
         return Yii::app()->user->validFunction('CT01');
     }
 }
+
