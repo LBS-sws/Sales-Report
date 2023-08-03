@@ -305,7 +305,10 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
                                 <div class="chat-content"
                                      :class="{'chat-sender-message': message.is_staff, 'chat-receiver-message': !message.is_staff}">
                                     <div>{{ message.content }}</div>
-                                    <div class="chat-timestamp">{{ message.timestamp }} {{message.staff_id}}</div>
+                                    <div class="chat-timestamp">{{ message.timestamp }}
+                                        <i v-if="message.is_staff === 1">发送者：{{ message.staff_id }}
+                                        </i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
