@@ -305,7 +305,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
                                 <div class="chat-content"
                                      :class="{'chat-sender-message': message.is_staff, 'chat-receiver-message': !message.is_staff}">
                                     <div>{{ message.content }}</div>
-                                    <div class="chat-timestamp">{{ message.timestamp }}</div>
+                                    <div class="chat-timestamp">{{ message.timestamp }} {{message.staff_id}}</div>
                                 </div>
                             </div>
                         </div>
@@ -450,12 +450,13 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
             },
 
             handleReceivedMessage(message) {
-                const {customer_id, content, is_staff} = message;
+                const {customer_id, content, is_staff,staff_id} = message;
                 if (customer_id && content) {
                     const newMessage = {
                         id: Number(new Date()),
                         content,
                         is_staff,
+                        staff_id,
                         city: this.city_id,
                         timestamp: new Date().toLocaleTimeString([], {
                             hour: '2-digit',
@@ -463,7 +464,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
                         }),
                         customer_id
                     };
-                    this.notifyMe("消息来自：",customer_id)
+                    this.notifyMe("收到新消息：" + customer_id,content)
 
                     if (!this.messagesByCustomerId[customer_id]) {
                         this.$set(this.messagesByCustomerId, customer_id, []);
@@ -714,13 +715,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
                         this.historyCurrentPage = response.data.data.current_page;
                         this.historyLastPage = response.data.data.last_page;
                         this.loadingCust = false;
-                        this.loadingMessages = false; // Hide loading spinner
-
-                        // Scroll to the bottom of the messages container
-                        // this.$nextTick(() => {
-                        //     const messagesContainer = this.$refs.messagesContainer;
-                        //     messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                        // });
+                        this.loadingMessages = false;
                     })
                     .catch(error => {
                         console.error(error);
