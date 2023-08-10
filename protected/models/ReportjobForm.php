@@ -1027,6 +1027,7 @@ EOD;
         include_once Yii::app()->basePath . '/extensions/tcpdf/tcpdf.php';//引入库
         include_once Yii::app()->basePath . '/extensions/tcpdf/config/tcpdf_config.php';//引入库
         $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf->SetFont('cid0cs', '', 14);
         //pdf生成
         $html = <<<EOD
             <style>
