@@ -1418,47 +1418,76 @@ EOD;
         if (count($autograph) > 0 || $res_de['code'] == 0) {
             $sign_datas = $res_de['data'];
             $html .= <<<EOD
-                        <tr class="myTitle">
-                            <th width="100%" align="left">客户点评</th>
-                        </tr>
-                        <tr>
-							<td width="100%" align="left">{$customer_grade}星(1~5)</td>
-                        </tr>
-                        <tr class="myTitle">
-                            <th  width="100%" align="left">报告签名</th>
-                        </tr>                                         
-                        <tr>
-							<td width="50%" align="left">服务人员签字</td>
-							<td width="50%" align="left">客户签字</td>
-                        </tr>
-                        <tr>
-							<td width="50%" align="left">
-								<img src="{$eimageSrc01}" width="130" height="80" style="magin:20px 50px;">
+        <tr class="myTitle">
+            <th width="100%" align="left">客户点评</th>
+        </tr>
+        <tr>
+            <td width="100%" align="left">{$customer_grade}星(1~5)</td>
+        </tr>
+        <tr class="myTitle">
+            <th  width="100%" align="left">报告签名</th>
+        </tr>                                         
+        <tr>
+            <td width="50%" align="left">服务人员签字</td>
+            <td width="50%" align="left">客户签字</td>
+        </tr>
 EOD;
+
+            // 检查员工签名是否存在
+            $employeeSignaturesExist = false;
             if ($employee02_signature != '' || isset($sign_datas['staff_id02_url']) && $sign_datas['staff_id02_url'] != '') {
-                $html .= <<<EOD
-								<img src="{$eimageSrc02}" width="130" height="80" style="magin:20px 50px;">
-EOD;
+                $employeeSignaturesExist = true;
             }
             if ($employee03_signature != '' || isset($sign_datas['staff_id03_url']) && $sign_datas['staff_id03_url'] != '') {
+                $employeeSignaturesExist = true;
+            }
+
+            // 检查客户签名是否存在
+            $customerSignaturesExist = false;
+            if ($cimageSrc != '' || $cimageSrc_add != '') {
+                $customerSignaturesExist = true;
+            }
+
+            // 如果存在图片，则添加图片
+            if ($employeeSignaturesExist || $customerSignaturesExist) {
                 $html .= <<<EOD
-								<img src="{$eimageSrc03}" width="130" height="80" style="magin:20px 50px;">
+            <tr>
+                <td width="50%" align="left">
+EOD;
+                if ($employeeSignaturesExist) {
+                    $html .= <<<EOD
+                    <img src="{$eimageSrc01}" width="130" height="80" style="magin:20px 50px;">
+EOD;
+                    if ($employee02_signature != '' || isset($sign_datas['staff_id02_url']) && $sign_datas['staff_id02_url'] != '') {
+                        $html .= <<<EOD
+                    <img src="{$eimageSrc02}" width="130" height="80" style="magin:20px 50px;">
+EOD;
+                    }
+                    if ($employee03_signature != '' || isset($sign_datas['staff_id03_url']) && $sign_datas['staff_id03_url'] != '') {
+                        $html .= <<<EOD
+                    <img src="{$eimageSrc03}" width="130" height="80" style="magin:20px 50px;">
+EOD;
+                    }
+                }
+                $html .= <<<EOD
+                </td>
+                <td width="50%" align="left">
+EOD;
+                if ($customerSignaturesExist) {
+                    $html .= <<<EOD
+                    <img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
+EOD;
+                    if ($cimageSrc_add != '') {
+                        $html .= <<<EOD
+                    <img src="{$cimageSrc_add}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
+EOD;
+                    }
+                }
+                $html .= <<<EOD
+                </td>
+            </tr>
 EOD;
             }
-            $html .= <<<EOD
-							</td>
-							<td width="50%" align="left">
-                            <img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
-EOD;
-            if ($cimageSrc_add != '') {
-                $html .= <<<EOD
-                                <img src="{$cimageSrc_add}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
-EOD;
-            }
-            $html .= <<<EOD
-                            </td>
-                        </tr>
-EOD;
         }
 
 

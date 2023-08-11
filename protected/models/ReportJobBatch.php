@@ -657,10 +657,8 @@ EOD;
             $cimageSrc = !empty($img_data['customer_signature_url']) ? $utils->sign_url . $img_data['customer_signature_url'] : '';
             $cimageSrc_add = !empty($img_data['customer_signature_url_add']) ? $utils->sign_url . $img_data['customer_signature_url_add'] : '';
             $customer_grade = !empty($img_data['customer_grade']) ? $img_data['customer_grade'] : '';
-            $employee02_signature = '';
-            $employee03_signature = '';
             // conversion_flag = 1 图片未旋转 需要先下载
-            if($img_data['conversion_flag'] == 1){
+            if(isset($img_data['conversion_flag']) && $img_data['conversion_flag'] == 1){
                 if ($cimageSrc != '' && $img_data['customer_signature_url'] != 'undefined') {
                     $file = @file_get_contents($cimageSrc);
                     $cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
@@ -668,8 +666,6 @@ EOD;
                     file_put_contents($cimageSrc, $file);
                     $degrees = 90;      //旋转角度
                     $utils->pic_rotating($degrees, $cimageSrc);
-                } else {
-                    $cimageSrc = '';
                 }
                 if ($cimageSrc_add != '' && $img_data['customer_signature_url_add'] != 'undefined') {
                     $file = @file_get_contents($cimageSrc_add);
@@ -678,8 +674,6 @@ EOD;
                     file_put_contents($cimageSrc_add, $file);
                     $degrees = 90;      //旋转角度
                     $utils->pic_rotating($degrees, $cimageSrc_add);
-                } else {
-                    $cimageSrc_add = '';
                 }
             }
         } else {
@@ -689,8 +683,9 @@ EOD;
 			$eimageSrc03 = '';
 			$cimageSrc = '';
 			$cimageSrc_add = '';
-			$customer_grade = isset($autograph['customer_grade'])?$autograph['customer_grade']:'';
         }
+		$customer_grade = isset($autograph['customer_grade'])?$autograph['customer_grade']:'';
+
 		/**
 		 * 下边无需判断 $autograph count($autograph) > 0 ||
 		 * */
@@ -714,12 +709,12 @@ EOD;
 							<td width="50%" align="left">
 								<img src="{$eimageSrc01}" width="130" height="80" style="magin:20px 50px;">
 EOD;
-            if ($employee02_signature != '' || isset($sign_datas['staff_id02_url']) && $sign_datas['staff_id02_url'] != '') {
+            if (isset($sign_datas['staff_id02_url']) && $sign_datas['staff_id02_url'] != '') {
                 $html .= <<<EOD
 								<img src="{$eimageSrc02}" width="130" height="80" style="magin:20px 50px;">
 EOD;
             }
-            if ($employee03_signature != '' || isset($sign_datas['staff_id03_url']) && $sign_datas['staff_id03_url'] != '') {
+            if (isset($sign_datas['staff_id03_url']) && $sign_datas['staff_id03_url'] != '') {
                 $html .= <<<EOD
 								<img src="{$eimageSrc03}" width="130" height="80" style="magin:20px 50px;">
 EOD;
