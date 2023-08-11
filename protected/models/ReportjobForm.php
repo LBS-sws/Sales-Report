@@ -1354,7 +1354,6 @@ EOD;
             $eimageSrc03 = !empty($img_data['staff_id03_url']) ? $utils->sign_url . $img_data['staff_id03_url'] : '';
             $cimageSrc = !empty($img_data['customer_signature_url']) ? $utils->sign_url . $img_data['customer_signature_url'] : '';
             $cimageSrc_add = !empty($img_data['customer_signature_url_add']) ? $utils->sign_url . $img_data['customer_signature_url_add'] : '';
-            $customer_grade = !empty($img_data['customer_grade']) ? $img_data['customer_grade'] : '';
             $employee02_signature = '';
             $employee03_signature = '';
             // conversion_flag = 1 图片未旋转 需要先下载
@@ -1415,8 +1414,7 @@ EOD;
             $customer_grade = $autograph['customer_grade'];
 
         }
-        if ($res_de['code'] == 0) {
-            $sign_datas = $res_de['data'];
+        $customer_grade = !empty($img_data['customer_grade']) ? $img_data['customer_grade'] : '暂无点评';
             $html .= <<<EOD
         <tr class="myTitle">
             <th width="100%" align="left">客户点评</th>
@@ -1432,7 +1430,8 @@ EOD;
             <td width="50%" align="left">客户签字</td>
         </tr>
 EOD;
-
+        if ($res_de['code'] == 0) {
+            $sign_datas = $res_de['data'];
             // 检查员工签名是否存在
             $employeeSignaturesExist = false;
             if ($employee02_signature != '' || isset($sign_datas['staff_id02_url']) && $sign_datas['staff_id02_url'] != '') {

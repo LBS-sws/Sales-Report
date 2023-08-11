@@ -684,13 +684,11 @@ EOD;
 			$cimageSrc = '';
 			$cimageSrc_add = '';
         }
-		$customer_grade = isset($autograph['customer_grade'])?$autograph['customer_grade']:'';
+		$customer_grade = isset($autograph['customer_grade'])?$autograph['customer_grade']:'暂无点评';
 
 		/**
 		 * 下边无需判断 $autograph count($autograph) > 0 ||
 		 * */
-		if ($res_de['code'] == 0) {
-			$sign_datas = $res_de['data'];
 			$html .= <<<EOD
         <tr class="myTitle">
             <th width="100%" align="left">客户点评</th>
@@ -706,7 +704,8 @@ EOD;
             <td width="50%" align="left">客户签字</td>
         </tr>
 EOD;
-
+		if ($res_de['code'] == 0) {
+			$sign_datas = $res_de['data'];
 			// 检查员工签名是否存在
 			$employeeSignaturesExist = false;
 			if (isset($sign_datas['staff_id02_url']) && $sign_datas['staff_id02_url'] != '') {
