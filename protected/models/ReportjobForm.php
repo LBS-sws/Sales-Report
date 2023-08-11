@@ -1415,7 +1415,7 @@ EOD;
             $customer_grade = $autograph['customer_grade'];
 
         }
-        if (count($autograph) > 0 || $res_de['code'] == 0) {
+        if ($res_de['code'] == 0) {
             $sign_datas = $res_de['data'];
             $html .= <<<EOD
         <tr class="myTitle">
@@ -1456,16 +1456,16 @@ EOD;
 EOD;
                 if ($employeeSignaturesExist) {
                     $html .= <<<EOD
-                    <img src="{$eimageSrc01}" width="130" height="80" style="magin:20px 50px;">
+                    <img src="$eimageSrc01" width="130" height="80" style="magin:20px 50px;">
 EOD;
                     if ($employee02_signature != '' || isset($sign_datas['staff_id02_url']) && $sign_datas['staff_id02_url'] != '') {
                         $html .= <<<EOD
-                    <img src="{$eimageSrc02}" width="130" height="80" style="magin:20px 50px;">
+                    <img src="$eimageSrc02" width="130" height="80" style="magin:20px 50px;">
 EOD;
                     }
                     if ($employee03_signature != '' || isset($sign_datas['staff_id03_url']) && $sign_datas['staff_id03_url'] != '') {
                         $html .= <<<EOD
-                    <img src="{$eimageSrc03}" width="130" height="80" style="magin:20px 50px;">
+                    <img src="$eimageSrc03" width="130" height="80" style="magin:20px 50px;">
 EOD;
                     }
                 }
@@ -1475,11 +1475,11 @@ EOD;
 EOD;
                 if ($customerSignaturesExist) {
                     $html .= <<<EOD
-                    <img src="{$cimageSrc}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
+                    <img src="$cimageSrc" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
 EOD;
                     if ($cimageSrc_add != '') {
                         $html .= <<<EOD
-                    <img src="{$cimageSrc_add}" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
+                    <img src="$cimageSrc_add" width="130" height="80" style="magin:20px 50px; transform:rotate(-90deg)">
 EOD;
                     }
                 }
