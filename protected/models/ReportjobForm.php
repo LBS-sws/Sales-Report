@@ -1414,7 +1414,7 @@ EOD;
             $customer_grade = $autograph['customer_grade'];
 
         }
-        $customer_grade = !empty($img_data['customer_grade']) ? $img_data['customer_grade'] : '暂无点评';
+        $customer_grade = !empty($img_data['customer_grade']) ? $img_data['customer_grade'] : '';
             $html .= <<<EOD
         <tr class="myTitle">
             <th width="100%" align="left">客户点评</th>
@@ -1434,10 +1434,16 @@ EOD;
             $sign_datas = $res_de['data'];
             // 检查员工签名是否存在
             $employeeSignaturesExist = false;
-            if ($employee02_signature != '' || isset($sign_datas['staff_id02_url']) && $sign_datas['staff_id02_url'] != '') {
+            if (isset($sign_datas['staff_id01_url']) && $sign_datas['staff_id01_url'] != '') {
                 $employeeSignaturesExist = true;
+                $eimageSrc01 = $utils->sign_url . $sign_datas['staff_id01_url'];
             }
-            if ($employee03_signature != '' || isset($sign_datas['staff_id03_url']) && $sign_datas['staff_id03_url'] != '') {
+            if (isset($sign_datas['staff_id02_url']) && $sign_datas['staff_id02_url'] != '') {
+                $employeeSignaturesExist = true;
+                $eimageSrc02 = $utils->sign_url . $sign_datas['staff_id02_url'];
+            }
+            if (isset($sign_datas['staff_id03_url']) && $sign_datas['staff_id03_url'] != '') {
+                $eimageSrc03 = $utils->sign_url . $sign_datas['staff_id03_url'];
                 $employeeSignaturesExist = true;
             }
 

@@ -684,7 +684,7 @@ EOD;
 			$cimageSrc = '';
 			$cimageSrc_add = '';
         }
-		$customer_grade = isset($autograph['customer_grade'])?$autograph['customer_grade']:'暂无点评';
+		$customer_grade = isset($autograph['customer_grade'])?$autograph['customer_grade']:'';
 
 		/**
 		 * 下边无需判断 $autograph count($autograph) > 0 ||
@@ -708,10 +708,16 @@ EOD;
 			$sign_datas = $res_de['data'];
 			// 检查员工签名是否存在
 			$employeeSignaturesExist = false;
+			if (isset($sign_datas['staff_id01_url']) && $sign_datas['staff_id01_url'] != '') {
+				$employeeSignaturesExist = true;
+				$eimageSrc01 = $utils->sign_url . $sign_datas['staff_id01_url'];
+			}
 			if (isset($sign_datas['staff_id02_url']) && $sign_datas['staff_id02_url'] != '') {
 				$employeeSignaturesExist = true;
+				$eimageSrc02 = $utils->sign_url . $sign_datas['staff_id02_url'];
 			}
 			if (isset($sign_datas['staff_id03_url']) && $sign_datas['staff_id03_url'] != '') {
+				$eimageSrc03 = $utils->sign_url . $sign_datas['staff_id03_url'];
 				$employeeSignaturesExist = true;
 			}
 
