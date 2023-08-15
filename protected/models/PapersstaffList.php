@@ -123,7 +123,7 @@ class PapersstaffList extends CListPageModel
                     'staffname'=>$record['name'],
                     'create_time'=>$record['create_time'],
                     'update_time'=>$record['update_time'],
-                    'city_name'=>$records['city_name']
+                    //'city_name'=>$records['city_name']
                 );
             }
         }
