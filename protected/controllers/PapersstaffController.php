@@ -40,8 +40,6 @@ class PapersstaffController extends Controller
     // 列表
     public function actionIndex($pageNum=0)
     {
-
-        print_r($_POST['PapersstaffList']);
         $model = new PapersstaffList();
         if (isset($_POST['PapersstaffList'])) {
             $model->attributes = $_POST['PapersstaffList'];
