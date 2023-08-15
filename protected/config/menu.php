@@ -119,6 +119,16 @@ return array(
             ),
         ),
     ),
+    'Papers query'=>array(
+        'access'=>'PQ',
+        'icon'=>'fa-edit',
+        'items'=>array(
+            'Papersstafflist'=>array(
+                'access'=>'PQ01',
+                'url'=>'/Papersstaff/index',
+            ),
+        ),
+    ),
     'WorkOrder'=>array(
         'access'=>'WO',
         'icon'=>'fa fa-industry',
