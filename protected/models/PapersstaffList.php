@@ -105,7 +105,7 @@ class PapersstaffList extends CListPageModel
         foreach ($records as $key=>$val){
 //            echo $val['code'];
             $city = $val['city'];
-            $sqlItem = "select * from security.sec_city where code='$city'";
+            $sqlItem = "select * from security".$se_suffix.".sec_city where code='$city'";
 //            echo $sqlItem;
             $item = Yii::app()->db->createCommand($sqlItem)->queryRow();
 //            print_r($item);
