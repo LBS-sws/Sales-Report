@@ -75,16 +75,15 @@ class PapersstaffForm extends CFormModel
     }
     protected function saveEmployeesignature(&$connection)
     {
-
-        print_r($this->staffid);
-        $StaffID = $this->staffid;
-
-        $sql_item = "select s.StaffID,s.StaffName,b.code,b.name city_name from staff as s left join officecity as o on o.City = s.City 
-left join enums as e on e.EnumID = o.Office left join securitydev.sec_city as b on e.Text=b.code where e.EnumType=8 AND s.StaffID = ".$StaffID;
-        $item = Yii::app()->db->createCommand($sql_item)->queryRow();
-        print_r($item); //  Array ( [StaffID] => 400668 [StaffName] => 许建荣 [City] => 23600 [city_name] => 成都 )
-
-//        exit;
+		$se_suffix = Yii::app()->params['envSuffix'];
+        
+		$StaffID = $this->staffid;
+		
+        $sql_item = "select s.StaffID,s.StaffName,b.code,b.name city_name from staff as s left join service".$se_suffix.".officecity as o on o.City = s.City 
+left join enums as e on e.EnumID = o.Office left join security".$se_suffix.".sec_city as b on e.Text=b.code where e.EnumType=8 AND s.StaffID = ".$StaffID;
+        
+		$item = Yii::app()->db->createCommand($sql_item)->queryRow();
+        
         $tab_suffix = Yii::app()->params['table_envSuffix'];
         $sql = '';
         switch ($this->scenario) {
@@ -92,9 +91,6 @@ left join enums as e on e.EnumID = o.Office left join securitydev.sec_city as b 
                 $sql = "delete from ".$tab_suffix."employee_signature where id = :id";
                 break;
             case 'new':
-//                $sql = "insert into ".$tab_suffix."employee_signature(
-//                        city,staffid, signature,creat_time) values (
-//						:city,:staffid, :signature,:creat_time)";
 
                 $name = $item['StaffName'];
                 $code = $item['StaffID'];
@@ -113,22 +109,10 @@ left join enums as e on e.EnumID = o.Office left join securitydev.sec_city as b 
 					where id = :id";
                 break;
         }
-//        echo $sql;exit;
-        //查询是否存在
-//        $sql1 = "select e.Text from staff  as s left join officecity as o on o.City = s.City left join enums as e on e.EnumID = o.Office where  e.EnumType=8 and s.StaffID ='".$this->staffid."'";
-//        $row = Yii::app()->db->createCommand($sql1)->queryRow();
-//        $city = $row['Text'];
+
         $command=$connection->createCommand($sql);
         if (strpos($sql,':id')!==false)
             $command->bindParam(':id',$this->id,PDO::PARAM_INT);
-//        if (strpos($sql,':city')!==false)
-//            $command->bindParam(':city',$this->city?$this->city:$city,PDO::PARAM_STR);
-//        if (strpos($sql,':staffid')!==false)
-//            $command->bindParam(':staffid',$this->staffid,PDO::PARAM_STR);
-//        if (strpos($sql,':signature')!==false)
-//            $command->bindParam(':signature',$this->signature,PDO::PARAM_STR);
-//        if (strpos($sql,':creat_time')!==false)
-//            $command->bindParam(':creat_time',date('Y-m-d H:i:s', time()),PDO::PARAM_STR);
         $command->execute();
 
         if ($this->scenario=='new')

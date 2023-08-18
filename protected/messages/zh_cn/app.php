@@ -80,6 +80,8 @@ return array(
 	'Equipment Number'=>'设备编号',
 	'Number Code'=>'设置编号',
 
+	'Papers query'=>'员工证件',
+	'Papersstafflist'=>'员工证件列表',
 	
 'Analyse Settings'=>'分析报告管理',
 	'Analyse Settings'=>'分析报告管理',

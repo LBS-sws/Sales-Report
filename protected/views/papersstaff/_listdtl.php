@@ -5,9 +5,11 @@
 <!--        <td class="name">--><?php //echo $this->record['city']; ?><!--</td>-->
 <!--    --><?php //endif ?>
 
-    <td class="city"><?php echo $this->record['city_name']; ?><?php echo $this->record['city']; ?></td>
+    <td class="city"><?php //echo $this->record['city_name']; ?><?php echo $this->record['city']; ?></td>
     <td class="code"><?php echo $this->record['code']; ?></td>
     <td class="staffname"><?php echo $this->record['staffname']; ?></td>
     <td class="create_time"><?php echo $this->record['create_time']; ?></td>
-    <td class="update_time"><?php echo $this->record['update_time']; ?></td>
+    <td class="update_time"><?php echo $this->record['update_time']; ?>
+    	<div style="display:none;"><?php echo $this->record['id'];?></div>
+    </td>
 </tr>

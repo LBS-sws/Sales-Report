@@ -90,8 +90,9 @@ class PapersstaffController extends Controller
             }
 //
         }
-
-        $this->render('form',array('model'=>$model,'employee_lists'=>$employee_lists));
+		$item['id'] = '';
+		$item['code'] = '';
+        $this->render('form',array('model'=>$model,'employee_lists'=>$employee_lists,'item'=>$item));
     }
     // 新增提交
     public function actionSave()
@@ -124,14 +125,12 @@ class PapersstaffController extends Controller
     }
     public function actionDelete()
     {
-        $model = new EmployeesignatureFrom('delete');
-        if (isset($_POST['EmployeesignatureFrom'])) {
-            $model->attributes = $_POST['EmployeesignatureFrom'];
-            $model->saveData();
-            Dialog::message(Yii::t('dialog','Information'), Yii::t('dialog','Record Deleted'));
-        }
-//		$this->actionIndex();
-        $this->redirect(Yii::app()->createUrl('employeesignature/index'));
+		$id = $_GET['id'];
+		
+        $sql = "DELETE FROM `papersstaff` WHERE `papersstaff`.`id` = 4;";
+		echo $sql;exit;
+            Yii::app()->db->createCommand($sql)->query();
+			
     }
     public function actionEdit($index)
     {
@@ -223,13 +222,16 @@ VALUES (NULL, '$papersstaff_id', '$code', '$name', '$startDate', '$endDate', '$i
     public function actionUpload(){
 
         $file = $_FILES["img"];
-        //图片目录
-        $dir = 'upload/papers';
-        if(!is_dir($dir)) {
-            mkdir(iconv("UTF-8", "GBK", $dir), 0777, true);
-        }
+		//print_r($_FILES["img"]);exit;
+		
+		$dir = dirname(__DIR__).'/upload/papers';
+		chmod($_FILES["img"]["tmp_name"],0755);
+		//chmod($_FILES["img"]["name"],0755);
         //图片上传地址
-        move_uploaded_file($file["tmp_name"],$dir."/" . $file["name"]);
+        // move_uploaded_file($file["tmp_name"],$dir."/" . $file["name"]);
+		move_uploaded_file($_FILES["img"]["tmp_name"],"/var/www/html/sv-uat/upload/papers/".$_FILES["img"]["name"]);
+		
+		
         //得到当前时间,如;20190911034728
         $date = date('Ymdhis');
         //得到上传文件的名字
@@ -240,9 +242,16 @@ VALUES (NULL, '$papersstaff_id', '$code', '$name', '$startDate', '$endDate', '$i
         $newPath = time() . '.' . $name[1];
         //临时文件夹,即以前的路径
         $oldPath = $file["tmp_name"];
-        rename($dir ."/". $fileName, $dir ."/". $newPath);
+		
+		//echo dirname(dirname(dirname(__FILE__)))."/upload/papers/".$fileName;
+		if(file_exists(dirname(dirname(dirname(__FILE__)))."/upload/papers/".$fileName)) {
+            //echo "yes";
+        }
+        
+		rename(dirname(dirname(dirname(__FILE__)))."/upload/papers/".$fileName, dirname(dirname(dirname(__FILE__)))."/upload/papers/".$newPath);
+		
         //这里可以写你的SQL语句,图片的地址是 "upload/".$newPath
-        $img_url = $dir."/".$newPath;
+        $img_url = "upload/papers/".$newPath;
 //        echo $img_url;
         $data['img'] = $img_url;
         echo json_encode($data);
