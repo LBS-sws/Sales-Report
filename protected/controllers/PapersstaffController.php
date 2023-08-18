@@ -228,9 +228,9 @@ VALUES (NULL, '$papersstaff_id', '$code', '$name', '$startDate', '$endDate', '$i
 		chmod($_FILES["img"]["tmp_name"],0755);
 		//chmod($_FILES["img"]["name"],0755);
         //图片上传地址
-        // move_uploaded_file($file["tmp_name"],$dir."/" . $file["name"]);
-		move_uploaded_file($_FILES["img"]["tmp_name"],"/var/www/html/sv-uat/upload/papers/".$_FILES["img"]["name"]);
-		
+
+//		move_uploaded_file($_FILES["img"]["tmp_name"],"/var/www/html/sv-uat/upload/papers/".$_FILES["img"]["name"]);
+        move_uploaded_file($_FILES["img"]["tmp_name"],$dir."/".$_FILES["img"]["name"]);
 		
         //得到当前时间,如;20190911034728
         $date = date('Ymdhis');
