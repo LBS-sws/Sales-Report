@@ -25,7 +25,7 @@ class PapersstaffController extends Controller
         return array(
             /* request */
             array('allow',
-                'actions'=>array('new','edit','delete','save','list','item','UpdateData','Upload'),
+                'actions'=>array('new','edit','delete','deletex','save','list','item','UpdateData','Upload'),
                 'expression'=>array('PapersstaffController','allowReadWrite'),
             ),
             array('allow',
@@ -73,42 +73,24 @@ class PapersstaffController extends Controller
         $rows = Yii::app()->db->createCommand($sql)->queryAll();
         $employee_lists = [];
 
-        // 模拟数据
-//        $rows = array(
-//            array('StaffID'=>400668,'StaffName'=>'许建荣','city_name'=>'成都'),
-//            array('StaffID'=>400746,'StaffName'=>'伊帆','city_name'=>'成都'),
-//            array('StaffID'=>400801,'StaffName'=>'谢松霖','city_name'=>'成都'),
-//        );
-
         foreach ($rows as $row) {
             $StaffID = $row['StaffID'];
             $sql = "select * from papersstaff where code= '$StaffID'";
-//            echo $sql;exit;
             $item = Yii::app()->db->createCommand($sql)->queryRow();
             if(!$item){
                 $employee_lists[$row['StaffID']] = $row['StaffName']."(".$row['city_name'].")";
             }
-//
         }
-		$item['id'] = '';
-		$item['code'] = '';
+        $item['id'] = '';
+        $item['code'] = '';
         $this->render('form',array('model'=>$model,'employee_lists'=>$employee_lists,'item'=>$item));
     }
     // 新增提交
     public function actionSave()
     {
-//        print_r($_POST);
-//        exit;
         if (isset($_POST['PapersstaffForm'])) {
             $model = new PapersstaffForm($_POST['PapersstaffForm']['scenario']);
             $model->attributes = $_POST['PapersstaffForm'];
-//            $file = CUploadedFile::getInstance($model,'signaturefile');
-//            if ($file) {
-//                $model->signature_file_type = $file->type;
-//                $content = file_get_contents($file->tempName);
-//                print_r($content);exit;
-//                $model->signature = "data:image/jpg;base64,".base64_encode($content);
-//            }
             if ($model->validate()) {
                 //新增
                 $model->saveData();
@@ -117,20 +99,32 @@ class PapersstaffController extends Controller
                 $this->redirect(Yii::app()->createUrl('papersstaff/edit',array('index'=>$model->id)));
             } else {
                 echo "0";
-//                $message = CHtml::errorSummary($model);
-//                Dialog::message(Yii::t('dialog','Validation Message'), $message);
-//                $this->redirect(Yii::app()->createUrl('papersstaffForm/edit',array('index'=>$model->id)));
+
             }
         }
     }
     public function actionDelete()
     {
-		$id = $_GET['id'];
-		
-        $sql = "DELETE FROM `papersstaff` WHERE `papersstaff`.`id` = 4;";
-		echo $sql;exit;
-            Yii::app()->db->createCommand($sql)->query();
-			
+        $se_suffix = Yii::app()->params['envSuffix'];
+
+        $id = $_GET['index'];
+        $item = Yii::app()->db->createCommand("select * from service".$se_suffix.".papersstaff where id=$id")->queryRow();
+
+        if ($item){
+            $p_id = $item['id'];
+            Yii::app()->db->createCommand("DELETE FROM service".$se_suffix.".papersstaff_info WHERE `papersstaff_id` = $p_id")->query();
+
+            Yii::app()->db->createCommand("DELETE FROM service".$se_suffix.".papersstaff WHERE `id` = $p_id")->query();
+        }
+        $this->redirect(Yii::app()->createUrl('papersstaff/index'));
+    }
+    public function actionDeletex(){
+        $se_suffix = Yii::app()->params['envSuffix'];
+        $id = $_GET['id'];
+        Yii::app()->db->createCommand("DELETE FROM service".$se_suffix.".papersstaff_info WHERE `id` = $id")->query();
+
+        $data['id'] = $id;
+        echo json_encode($data);
     }
     public function actionEdit($index)
     {
@@ -140,20 +134,14 @@ class PapersstaffController extends Controller
         if (!$model->retrieveData($index)) {
             throw new CHttpException(404,'The requested page does not exist.');
         } else {
-//            print_r($model);exit;
             //当前城市员工列表
             $se_suffix = Yii::app()->params['envSuffix'];
             $city_allow = Yii::app()->user->city_allow();
-//            $sql = "select s.StaffID,s.StaffName,b.name city_name from staff  as s left join officecity as o on o.City = s.City left join enums as e on e.EnumID = o.Office left join security".$se_suffix.".sec_city as b on e.Text=b.code where  e.EnumType=8 and s.Status in(1,2,5) and e.Text in(".$city_allow.")";
+
             $sql = "select * from papersstaff where id=".$index;
-
             $item = Yii::app()->db->createCommand($sql)->queryRow();
-//            print_r($rows);exit;
-            $employee_lists = [];
-//            foreach ($rows as $row) {
-//                $employee_lists[$row['StaffID']] = $row['StaffName']."(".$row['city_name'].")";
-//            }
 
+            $employee_lists = [];
             $this->render('form',array('model'=>$model,'employee_lists'=>$employee_lists,'item'=>$item));
         }
     }
@@ -165,7 +153,6 @@ class PapersstaffController extends Controller
 
         $data['data'] = $records;
         echo json_encode($data);
-//        print_r($records);
     }
     // 获取证件详情
     public function actionItem(){
@@ -179,7 +166,6 @@ class PapersstaffController extends Controller
         echo json_encode($data);
     }
     public function actionUpdateData(){
-//        print_r($_POST);exit;
 
         // add
         if(trim($_POST['id']) ==''){
@@ -220,42 +206,56 @@ VALUES (NULL, '$papersstaff_id', '$code', '$name', '$startDate', '$endDate', '$i
     }
     /* 上传图片 */
     public function actionUpload(){
+        $se_suffix = Yii::app()->params['envSuffix'];
 
         $file = $_FILES["img"];
-		//print_r($_FILES["img"]);exit;
-		
-		$dir = dirname(__DIR__).'/upload/papers';
-		chmod($_FILES["img"]["tmp_name"],0755);
-		//chmod($_FILES["img"]["name"],0755);
-        //图片上传地址
-
-//		move_uploaded_file($_FILES["img"]["tmp_name"],"/var/www/html/sv-uat/upload/papers/".$_FILES["img"]["name"]);
-        move_uploaded_file($_FILES["img"]["tmp_name"],$dir."/".$_FILES["img"]["name"]);
-		
-        //得到当前时间,如;20190911034728
         $date = date('Ymdhis');
-        //得到上传文件的名字
         $fileName = $file["name"];
-        //将文件名以'.'分割得到后缀名,得到一个数组
-        $name = explode('.', $fileName);
-        //得到一个新的文件为'20190911034728.jpg',即新的路径
+        $name = explode('.', $fileName); // 上传文件后缀
         $newPath = time() . '.' . $name[1];
-        //临时文件夹,即以前的路径
-        $oldPath = $file["tmp_name"];
-		
-		//echo dirname(dirname(dirname(__FILE__)))."/upload/papers/".$fileName;
-		if(file_exists(dirname(dirname(dirname(__FILE__)))."/upload/papers/".$fileName)) {
-            //echo "yes";
+        // 本地
+        if($se_suffix == 'dev'){
+
+            $dir = str_replace('\\','/',dirname(dirname(__DIR__)).'/upload/papers');    // D:\phpstudy_pro\WWW\10003\LBS\Sales-Report
+            if (!file_exists($dir)) {
+                mkdir($dir, 0777, true);
+                //echo "目录 $dir 创建成功！";
+            } else {
+                //echo "目录 $dir 已存在！";
+            }
+            move_uploaded_file($_FILES["img"]["tmp_name"],$dir."/".$_FILES["img"]["name"]);
+            rename($dir."/".$fileName, $dir."/".$newPath);
         }
-        
-		rename(dirname(dirname(dirname(__FILE__)))."/upload/papers/".$fileName, dirname(dirname(dirname(__FILE__)))."/upload/papers/".$newPath);
-		
-        //这里可以写你的SQL语句,图片的地址是 "upload/".$newPath
+        // 测试
+        if($se_suffix == 'uat'){
+            chmod($_FILES["img"]["tmp_name"],0755);
+            $dir = str_replace('\\','/',dirname(dirname(__DIR__)).'/upload/papers');
+            if (!file_exists($dir)) {
+                mkdir($dir,0776);
+                //echo "目录 $dir 创建成功！";
+            } else {
+                //echo "目录 $dir 已存在！";
+            }
+            move_uploaded_file($_FILES["img"]["tmp_name"],$dir."/".$_FILES["img"]["name"]);
+            rename($dir."/".$fileName, $dir."/".$newPath);
+        }
+        // 正式
+        if($se_suffix == ''){
+            chmod($_FILES["img"]["tmp_name"],0755);
+            $dir = str_replace('\\','/',dirname(dirname(__DIR__)).'/upload/papers');
+            if (!file_exists($dir)) {
+                mkdir($dir,0776);
+                //echo "目录 $dir 创建成功！";
+            } else {
+                //echo "目录 $dir 已存在！";
+            }
+            move_uploaded_file($_FILES["img"]["tmp_name"],$dir."/".$_FILES["img"]["name"]);
+            rename($dir."/".$fileName, $dir."/".$newPath);
+        }
+
         $img_url = "upload/papers/".$newPath;
-//        echo $img_url;
         $data['img'] = $img_url;
         echo json_encode($data);
-
     }
 
     public static function allowReadWrite() {

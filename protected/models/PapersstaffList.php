@@ -51,39 +51,24 @@ class PapersstaffList extends CListPageModel
         $se_suffix = Yii::app()->params['envSuffix'];
 
         $city_allow = Yii::app()->user->city_allow();
-//        $sql1 = "select m.*,b.name city_name,s.StaffName as staffname from ".$tab_suffix."employee_signature as m left join staff as s on m.staffid=s.StaffID left join security".$se_suffix.".sec_city as b on m.city=b.code
-//				";
-//        $sql2 = "select count(m.id)
-//				 from ".$tab_suffix."employee_signature as m left join staff as s on m.staffid=s.StaffID left join security".$se_suffix.".sec_city as b on m.city=b.code
-//				";
 
-        $sql1 = "select a.* from papersstaff a
-                where a.city IN ($city_allow) AND a.staff_status = 0
-			";
+        $sql1 = "select a.* from service".$se_suffix.".papersstaff as a left join security".$se_suffix.".sec_city as b on a.city = b.code where a.city IN ($city_allow) AND a.staff_status = 0 ";
 
-        $sql2 = "select count(a.id)
-				from papersstaff a
-				where a.city IN ($city_allow) AND a.staff_status = 0
-			";
-
+        $sql2 = "select count(a.id) from papersstaff a left join security".$se_suffix.".sec_city as b on a.city = b.code where a.city IN ($city_allow) AND a.staff_status = 0 ";
 
         $clause = "";
         if (!empty($this->searchField) && !empty($this->searchValue)) {
             $svalue = str_replace("'","\'",$this->searchValue);
             switch ($this->searchField) {
-                case 'name':
+                case 'staffname':
                     $clause .= General::getSqlConditionClause('a.name',$svalue);
                     break;
-                case 'code':
-                case 'city':
-                    $clause .= General::getSqlConditionClause('a.city',$svalue);
+                case 'staffid':
+                    $clause .= General::getSqlConditionClause('a.code',$svalue);
                     break;
-//                case 'staffid':
-//                    $clause .= General::getSqlConditionClause('m.staffid',$svalue);
-//                    break;
-//                case 'staffname':
-//                    $clause .= General::getSqlConditionClause('s.StaffName',$svalue);
-//                    break;
+                case 'city':
+                    $clause .= General::getSqlConditionClause('b.name',$svalue);
+                    break;
             }
         }
 
@@ -99,19 +84,20 @@ class PapersstaffList extends CListPageModel
         $this->totalRow = Yii::app()->db->createCommand($sql)->queryScalar();
 
         $sql = $sql1.$clause.$order;
+
         $sql = $this->sqlWithPageCriteria($sql, $this->pageNum);
         $records = Yii::app()->db->createCommand($sql)->queryAll();
 
         foreach ($records as $key=>$val){
-//            echo $val['code'];
+
             $city = $val['city'];
             $sqlItem = "select * from security".$se_suffix.".sec_city where code='$city'";
-//            echo $sqlItem;
+
             $item = Yii::app()->db->createCommand($sqlItem)->queryRow();
-//            print_r($item);
+
             $records[$key]['city_name'] = $item['name'];
         }
-//        print_r($records);
+
         $list = array();
         $this->attr = array();
         if (count($records) > 0) {

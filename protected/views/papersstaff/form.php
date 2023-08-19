@@ -188,6 +188,7 @@ $this->pageTitle=Yii::app()->name . ' - Credits for';
                         '<div class="col-sm-2"><input type="text" class="input-40 form-control" value="'+v.EndDate+'" readonly /> </div>' +
 
                         '<div class="edit"><span data-id="'+v.id+'">编辑</span></div>'+
+                        '<div class="dele"><span data-id="'+v.id+'">删除</span></div>'+
                         '</div>' +
                         '<div class="right-thumb">'+htmlxx+'</div>'+
                         '</div>'
@@ -231,6 +232,26 @@ $this->pageTitle=Yii::app()->name . ' - Credits for';
                                     '</div>'
                             });
                             $(".thumb_list").append(htmlx);
+
+                        },error:function(e){
+                            console.log(e.responseText);
+                        }
+                    });
+                })
+                $('.dele').on('click',function(){
+                    var thisBtn = $(this);
+
+                    var xid = thisBtn.find('span').attr('data-id')
+                    console.log(xid)
+                    $.ajax({
+                        url:"<?=Yii::app()->createUrl('papersstaff/deletex');?>",
+                        type:"get",
+                        dataType:"json",
+                        async: false,
+                        data:{id:xid},
+                        success:function(data){
+                            console.log(data.data)
+                            window.location.reload()
 
                         },error:function(e){
                             console.log(e.responseText);
@@ -419,5 +440,26 @@ $this->pageTitle=Yii::app()->name . ' - Credits for';
         margin: -15px 0 0 -1px;
         background: #eee;
     }
+    .edit{
+        width: 60px;
+        display: inline-block;
+        height: 34px;
 
+        border: 1px solid #bbb9b9;
+        text-align: center;
+        line-height: 34px;
+        border-radius: 5px;
+        color: #666;
+    }
+    .dele{
+        width: 60px;
+        display: inline-block;
+        height: 34px;
+        border: 1px solid #bbb9b9;
+        text-align: center;
+        line-height: 34px;
+        border-radius: 5px;
+        color: #666;
+        margin-left:10px;
+    }
 </style>

@@ -75,15 +75,15 @@ class PapersstaffForm extends CFormModel
     }
     protected function saveEmployeesignature(&$connection)
     {
-		$se_suffix = Yii::app()->params['envSuffix'];
-        
-		$StaffID = $this->staffid;
-		
+        $se_suffix = Yii::app()->params['envSuffix'];
+
+        $StaffID = $this->staffid;
+
         $sql_item = "select s.StaffID,s.StaffName,b.code,b.name city_name from staff as s left join service".$se_suffix.".officecity as o on o.City = s.City 
 left join enums as e on e.EnumID = o.Office left join security".$se_suffix.".sec_city as b on e.Text=b.code where e.EnumType=8 AND s.StaffID = ".$StaffID;
-        
-		$item = Yii::app()->db->createCommand($sql_item)->queryRow();
-        
+
+        $item = Yii::app()->db->createCommand($sql_item)->queryRow();
+
         $tab_suffix = Yii::app()->params['table_envSuffix'];
         $sql = '';
         switch ($this->scenario) {

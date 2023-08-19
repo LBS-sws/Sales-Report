@@ -41,15 +41,7 @@ echo $form->hiddenField($model,'orderType');
 ?>
 <?php $this->endWidget(); ?>
 
-
-<form class="form-horizontal MultiFile-intercepted" action="" method="post">
-    <!--    --><?php //$this->renderPartial('//materiallist/redeemApply',array(
-    //        'submit'=> Yii::app()->createUrl('materiallist/apply'),
-    //    ));
-    //    ?>
-</form>
 <?php
 $js = Script::genTableRowClick();
 Yii::app()->clientScript->registerScript('rowClick',$js,CClientScript::POS_READY);
 ?>
-
