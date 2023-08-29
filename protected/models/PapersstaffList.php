@@ -20,7 +20,7 @@ class PapersstaffList extends CListPageModel
     public $signature;
     public $signature_file_type;
     public $creat_time;
-
+    public $city_allow = "CN";
     // 列表对应字段
     public function attributeLabels()
     {
@@ -83,7 +83,9 @@ class PapersstaffList extends CListPageModel
         $sql = $sql2.$clause;
         $this->totalRow = Yii::app()->db->createCommand($sql)->queryScalar();
 
-        $sql = $sql1.$clause.$order;
+        $ct_where = " and a.city = '".$this->city_allow."'";
+
+        $sql = $sql1.$ct_where.$clause.$order;
 
         $sql = $this->sqlWithPageCriteria($sql, $this->pageNum);
         $records = Yii::app()->db->createCommand($sql)->queryAll();

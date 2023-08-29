@@ -40,13 +40,14 @@ class PapersstaffController extends Controller
     // 列表
     public function actionIndex($pageNum=0)
     {
+
         $model = new PapersstaffList();
         if (isset($_POST['PapersstaffList'])) {
             $model->attributes = $_POST['PapersstaffList'];
         } else {
             $session = Yii::app()->session;
-            if (isset($session['employeesignature_ss01']) && !empty($session['employeesignature_ss01'])) {
-                $materiallist = $session['employeesignature_ss01'];
+            if (isset($session['papersstaff_pq01']) && !empty($session['papersstaff_pq01'])) {
+                $materiallist = $session['papersstaff_pq01'];
                 $model->setCriteria($materiallist);
             }
         }
