@@ -19,6 +19,7 @@ class MaterialFrom extends CFormModel
     public $active_ingredient;
     public $ratio;
     public $brief;
+    public $img_arr;
     public $unit;
     public $sort;
     public $status;
@@ -37,6 +38,7 @@ class MaterialFrom extends CFormModel
             'active_ingredient'=>Yii::t('material','Active_ingredient'),
             'ratio'=>Yii::t('material','Ratio'),
             'brief'=>Yii::t('material','Brief'),
+            'img_arr'=>Yii::t('material','Img_arr'),
             'unit'=>Yii::t('material','Unit'),
             'sort'=>Yii::t('material','Sort'),
             'status'=>Yii::t('material','Status'),
@@ -46,7 +48,7 @@ class MaterialFrom extends CFormModel
     public function rules()
     {
         return array(
-            array('id,city,city_name,classify_id,classify,registration_no,validity,active_ingredient,active_ingredient,ratio,brief,status,creat_time','safe'),
+            array('id,city,city_name,classify_id,classify,registration_no,validity,active_ingredient,active_ingredient,ratio,brief,img_arr,status,creat_time','safe'),
             array('name,classify_id,unit,sort','required'),
             array('sort','numerical'),
         );
@@ -56,6 +58,7 @@ class MaterialFrom extends CFormModel
         $city_allow = Yii::app()->user->city_allow();
         $rows = Yii::app()->db->createCommand()->select("*")
             ->from($tab_suffix."material_lists")->where("id=:id",array(":id"=>$index))->queryAll();
+//        print_r($rows);exit;
         if (count($rows) > 0) {
             foreach ($rows as $row) {
                 $this->id = $row['id'];
@@ -66,6 +69,7 @@ class MaterialFrom extends CFormModel
                 $this->active_ingredient = $row['active_ingredient'];
                 $this->ratio = $row['ratio'];
                 $this->brief = $row['brief'];
+                $this->img_arr = $row['img_arr'];   //
                 $this->unit = $row['unit'];
                 $this->sort = $row['sort'];
                 $this->status = $row['status'];
@@ -90,6 +94,7 @@ class MaterialFrom extends CFormModel
     }
     protected function saveMaterial(&$connection)
     {
+//        print_r($_POST);EXIT;
         $tab_suffix = Yii::app()->params['table_envSuffix'];
         $sql = '';
         switch ($this->scenario) {
@@ -98,8 +103,8 @@ class MaterialFrom extends CFormModel
                 break;
             case 'new':
                 $sql = "insert into ".$tab_suffix."material_lists(
-                        name,classify_id, registration_no, validity, active_ingredient,ratio,brief,unit,status,sort,creat_time) values (
-						:name,:classify_id, :registration_no, :validity, :active_ingredient,:ratio,:brief,:unit,:status,:sort,:creat_time)";
+                        name,classify_id, registration_no, validity, active_ingredient,ratio,brief,img_arr,unit,status,sort,creat_time) values (
+						:name,:classify_id, :registration_no, :validity, :active_ingredient,:ratio,:brief,:img_arr,:unit,:status,:sort,:creat_time)";
                 break;
             case 'edit':
                 $sql = "update  ".$tab_suffix."material_lists set 
@@ -110,6 +115,7 @@ class MaterialFrom extends CFormModel
 					active_ingredient = :active_ingredient,
 					ratio = :ratio,
 					brief = :brief,
+					img_arr = :img_arr,
 					unit = :unit, 
 					status = :status, 
 					sort = :sort
@@ -117,6 +123,7 @@ class MaterialFrom extends CFormModel
                 break;
         }
         $command=$connection->createCommand($sql);
+//        exit;
         if (strpos($sql,':id')!==false)
             $command->bindParam(':id',$this->id,PDO::PARAM_INT);
         if (strpos($sql,':name')!==false)
@@ -133,6 +140,8 @@ class MaterialFrom extends CFormModel
             $command->bindParam(':ratio',$this->ratio,PDO::PARAM_STR);
         if (strpos($sql,':brief')!==false)
             $command->bindParam(':brief',$this->brief,PDO::PARAM_STR);
+        if (strpos($sql,':img_arr')!==false)
+            $command->bindParam(':img_arr',$this->img_arr,PDO::PARAM_STR);
         if (strpos($sql,':unit')!==false)
             $command->bindParam(':unit',$this->unit,PDO::PARAM_STR);
         if (strpos($sql,':status')!==false)
@@ -140,7 +149,13 @@ class MaterialFrom extends CFormModel
         if (strpos($sql,':sort')!==false)
             $command->bindParam(':sort',$this->sort,PDO::PARAM_STR);
         if (strpos($sql,':creat_time')!==false)
-            $command->bindParam(':creat_time',date('Y-m-d H:i:s', time()),PDO::PARAM_STR);
+            if($this->scenario=='new'){
+                $date = date('Y-m-d H:i:s', time());
+                $command->bindParam(':creat_time',$date,PDO::PARAM_STR);
+            }else{
+                $command->bindParam(':creat_time',date('Y-m-d H:i:s', time()),PDO::PARAM_STR);
+
+            }
         $command->execute();
 
         if ($this->scenario=='new')

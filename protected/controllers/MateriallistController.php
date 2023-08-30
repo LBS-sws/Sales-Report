@@ -24,7 +24,7 @@ class MateriallistController extends Controller
     {
         return array(
             array('allow',
-                'actions'=>array('new','edit','delete','save','import'),
+                'actions'=>array('new','edit','delete','save','import','upload'),
                 'expression'=>array('MateriallistController','allowReadWrite'),
             ),
             array('allow',
@@ -144,56 +144,83 @@ class MateriallistController extends Controller
 //		$this->actionIndex();
         $this->redirect(Yii::app()->createUrl('materiallist/index'));
     }
-	
-	public function actionImport() {
+
+    public function actionImport() {
         $model = new MaterialList;
         if (isset($_POST['MaterialList'])) {
             $model->attributes = $_POST['MaterialList'];
-			if ($model->validate()) {
-				if ($file = CUploadedFile::getInstance($model,'import_file')) {
-					$objImport = new Import;
-					$objData = new MaterialData;
-				
-					$objImport->readerType = $objImport->getReaderTypefromFileExtension($file->extensionName);
-					$objImport->fileName = $file->tempName;
-					$objImport->dataModel = $objData;
-					$message = $objImport->run();
-				
-					$model->determinePageNum(0);
-					$model->retrieveDataByPage($model->pageNum);
-					Dialog::message(Yii::t('import','View Log'), $message, -999);
-				} else {
-					$message = Yii::t('import','Upload file error');
-					Dialog::message(Yii::t('dialog','Error Message'), $message);
-				}		
-			} else {
-				$message = CHtml::errorSummary($model);
-				Dialog::message(Yii::t('dialog','Validation Message'), $message);
-			}
-		}
+            if ($model->validate()) {
+                if ($file = CUploadedFile::getInstance($model,'import_file')) {
+                    $objImport = new Import;
+                    $objData = new MaterialData;
+
+                    $objImport->readerType = $objImport->getReaderTypefromFileExtension($file->extensionName);
+                    $objImport->fileName = $file->tempName;
+                    $objImport->dataModel = $objData;
+                    $message = $objImport->run();
+
+                    $model->determinePageNum(0);
+                    $model->retrieveDataByPage($model->pageNum);
+                    Dialog::message(Yii::t('import','View Log'), $message, -999);
+                } else {
+                    $message = Yii::t('import','Upload file error');
+                    Dialog::message(Yii::t('dialog','Error Message'), $message);
+                }
+            } else {
+                $message = CHtml::errorSummary($model);
+                Dialog::message(Yii::t('dialog','Validation Message'), $message);
+            }
+        }
         $this->render('index',array('model'=>$model));
-	}
-	
-	public function actionExport() {
-		$model = new MaterialList;
-		$session = Yii::app()->session;
-		if (isset($session['materiallist_ms01']) && !empty($session['materiallist_ms01'])) {
-			$materiallist = $session['materiallist_ms01'];
-			$model->setCriteria($materiallist);
-		}
-		$model->noOfItem = 0;
+    }
+
+    public function actionExport() {
+        $model = new MaterialList;
+        $session = Yii::app()->session;
+        if (isset($session['materiallist_ms01']) && !empty($session['materiallist_ms01'])) {
+            $materiallist = $session['materiallist_ms01'];
+            $model->setCriteria($materiallist);
+        }
+        $model->noOfItem = 0;
         $model->determinePageNum(0);
         $model->retrieveDataByPage($model->pageNum);
-		
-		$objData = new RptMateriallist;
-		$objData->data = $model->attr;
-		$objExport = new Export;
-		$objExport->dataModel = $objData;
-		
-		$filename = 'material.xlsx';
-		$objExport->exportExcel($filename);
-	}
-	
+
+        $objData = new RptMateriallist;
+        $objData->data = $model->attr;
+        $objExport = new Export;
+        $objExport->dataModel = $objData;
+
+        $filename = 'material.xlsx';
+        $objExport->exportExcel($filename);
+    }
+    // 自定义上传
+    public function actionUpload(){
+        //print_r($_FILES);
+        $se_suffix = Yii::app()->params['envSuffix'];
+
+        $file = $_FILES["img"];
+        $date = date('Ymdhis');
+        $fileName = $file["name"];
+        $name = explode('.', $fileName); // 上传文件后缀
+        $newPath = time() . '.' . $name[1];
+        // 本地
+        if($se_suffix == 'dev'){
+
+            $dir = str_replace('\\','/',dirname(dirname(__DIR__)).'/upload/materiel');    // D:\phpstudy_pro\WWW\10003\LBS\Sales-Report
+            if (!file_exists($dir)) {
+                mkdir($dir, 0777, true);
+                //echo "目录 $dir 创建成功！";
+            } else {
+                //echo "目录 $dir 已存在！";
+            }
+            move_uploaded_file($_FILES["img"]["tmp_name"],$dir."/".$_FILES["img"]["name"]);
+            rename($dir."/".$fileName, $dir."/".$newPath);
+        }
+        $img_url = "upload/materiel/".$newPath;
+        $data['img'] = $img_url;
+        echo json_encode($data);
+
+    }
     public static function allowReadWrite() {
         return Yii::app()->user->validRWFunction('MS01');
     }
