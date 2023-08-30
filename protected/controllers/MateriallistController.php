@@ -219,7 +219,7 @@ class MateriallistController extends Controller
         // 测试
         if($se_suffix == 'uat'){
             chmod($_FILES["img"]["tmp_name"],0755);
-            $dir = str_replace('\\','/',dirname(dirname(__DIR__)).'/upload/papers');
+            $dir = str_replace('\\','/',dirname(dirname(__DIR__)).'/upload/materiel');
             if (!file_exists($dir)) {
                 mkdir($dir,0776);
                 //echo "目录 $dir 创建成功！";
@@ -232,7 +232,7 @@ class MateriallistController extends Controller
         // 正式
         if($se_suffix == ''){
             chmod($_FILES["img"]["tmp_name"],0755);
-            $dir = str_replace('\\','/',dirname(dirname(__DIR__)).'/upload/papers');
+            $dir = str_replace('\\','/',dirname(dirname(__DIR__)).'/upload/materiel');
             if (!file_exists($dir)) {
                 mkdir($dir,0776);
                 //echo "目录 $dir 创建成功！";
@@ -244,6 +244,7 @@ class MateriallistController extends Controller
         }
         $img_url = "upload/materiel/".$newPath;
         $data['img'] = $img_url;
+        $data['msg'] = 'success';
         echo json_encode($data);
 
     }
