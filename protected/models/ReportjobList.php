@@ -34,7 +34,7 @@ class ReportjobList extends CListPageModel
 			'CustomerID'=>'j.CustomerID',
 			'CustomerName'=>'j.CustomerName',
 			'ServiceType'=>'s.ServiceName',
-			'Staff01'=>'t.StaffName',
+			'Staff01'=>'t1.StaffName',
 		);
 		if (!Yii::app()->user->isSingleCity()) $search['City'] = 'b.name';
 		return $search;
