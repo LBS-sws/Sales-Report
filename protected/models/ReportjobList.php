@@ -34,7 +34,7 @@ class ReportjobList extends CListPageModel
 			'CustomerID'=>'j.CustomerID',
 			'CustomerName'=>'j.CustomerName',
 			'ServiceType'=>'s.ServiceName',
-			'Staff01'=>'t1.StaffName',
+			'Staff01'=>'t.StaffName',
 		);
 		if (!Yii::app()->user->isSingleCity()) $search['City'] = 'b.name';
 		return $search;
@@ -53,12 +53,12 @@ class ReportjobList extends CListPageModel
         }
 
 		$sql = $type==1
-			? "select j.*,b.name city_name,b.code,s.ServiceName, t1.StaffName as Staff01Name, t2.StaffName as Staff02Name, t3.StaffName as Staff03Name
+			? "select j.*,b.name city_name,b.code,s.ServiceName, t.StaffName as Staff01Name, t2.StaffName as Staff02Name, t3.StaffName as Staff03Name
 				from joborder as j 
 				left join officecity as o on j.City=o.City  
 				left join enums as e on e.EnumID=o.Office 
 				left join service as s on s.ServiceType=j.ServiceType 
-				left join staff as t1 on t1.StaffID=j.Staff01 
+				left join staff as t on t.StaffID=j.Staff01 
 				left join staff as t2 on t2.StaffID=j.Staff02 
 				left join staff as t3 on t3.StaffID=j.Staff03 
 				left join security$se_suffix.sec_city as b on e.Text=b.code 
@@ -69,7 +69,7 @@ class ReportjobList extends CListPageModel
 				left join officecity as o on j.City=o.City  
 				left join enums as e on e.EnumID=o.Office 
 				left join service as s on s.ServiceType=j.ServiceType 
-				left join staff as t1 on t1.StaffID=j.Staff01 
+				left join staff as t on t.StaffID=j.Staff01 
 				left join staff as t2 on t2.StaffID=j.Staff02 
 				left join staff as t3 on t3.StaffID=j.Staff03 
 				left join security$se_suffix.sec_city as b on e.Text=b.code 
