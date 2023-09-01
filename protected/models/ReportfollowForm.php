@@ -1011,11 +1011,11 @@ EOD;
                     </tr>
                     <tr>
                         <td width="15%">服务内容</td>
-                        <td width="85%" align="left">$briefing->content$bc</td>
+                        <td width="85%" align="left">$bc</td>
                     </tr>
                     <tr v-if="report_datas.briefing.proposal!=''">
                         <td width="15%">跟进与建议</td>
-                        <td width="85%" align="left">$briefing->proposal</td>
+                        <td width="85%" align="left">$bp</td>
                     </tr>
 EOD;
             }}
