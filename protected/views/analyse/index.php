@@ -103,7 +103,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                 loading:false,
                 api_url:'<?php echo $api_url;?>',
                 //
-                city:'<?php echo $city;?>',
+                city:[<?php echo $city;?>],
                 yearMonth:'',
                 pickerOptions: {
                     // 限制时分秒
