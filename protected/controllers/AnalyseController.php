@@ -45,8 +45,8 @@ class AnalyseController extends Controller
 
     public function actionIndex($pageNum = 0)
     {
-        $city = Yii::app()->user->city();
-
+//        $city = Yii::app()->user->city();
+        $city = Yii::app()->user->city_allow();
         $this->render('index', array('city' => $city,'api_url'=>Yii::app()->params['baseUrl_imgs']));
     }
 
@@ -134,11 +134,11 @@ class AnalyseController extends Controller
 
     public static function allowReadWrite()
     {
-        return Yii::app()->user->validRWFunction('OS01');
+        return Yii::app()->user->validRWFunction('PE03');
     }
 
     public static function allowReadOnly()
     {
-        return Yii::app()->user->validFunction('OS01');
+        return Yii::app()->user->validFunction('PE03');
     }
 }
