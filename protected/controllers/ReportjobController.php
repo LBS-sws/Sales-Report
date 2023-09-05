@@ -15,6 +15,8 @@ class ReportjobController extends Controller
 		);
 	}
 
+
+
 	/**
 	 * Specifies the access control rules.
 	 * This method is used by the 'accessControl' filter.
@@ -30,11 +32,11 @@ class ReportjobController extends Controller
 			),
 */
 			array('allow',
-				'actions'=>array('new','edit','delete','checklog','save','add','look','down','AllDelete','delcache','batch','batchcreate','batchdown','emaildetail','resentemail','downloadinbatch','downloadzip'),
+				'actions'=>array('index','view','new','edit','delete','checklog','save','add','look','down','AllDelete','delcache','batch','batchcreate','batchdown','emaildetail','resentemail','downloadinbatch','downloadzip'),
 				'expression'=>array('ReportjobController','allowReadWrite'),
 			),
 			array('allow',
-				'actions'=>array('index','view'),
+				'actions'=>array('index','view','new','edit','delete','checklog','save','add','look','down','AllDelete','delcache','batch','batchcreate','batchdown','emaildetail','resentemail','downloadinbatch','downloadzip'),
 				'expression'=>array('ReportjobController','allowReadOnly'),
 			),
 			array('deny',  // deny all users
@@ -42,6 +44,14 @@ class ReportjobController extends Controller
 			),
 		);
 	}
+
+    public static function allowReadWrite() {
+        return Yii::app()->user->validRWFunction('RQ01');
+    }
+
+    public static function allowReadOnly() {
+        return Yii::app()->user->validFunction('RQ01');
+    }
 	// 查看发票
 	public function actionLook(){
 		$id = $_GET['index'];
@@ -295,11 +305,5 @@ EOF;
 		Yii::app()->end();
 	}
 
-	public static function allowReadWrite() {
-		return Yii::app()->user->validRWFunction('RQ01');
-	}
 
-	public static function allowReadOnly() {
-		return Yii::app()->user->validFunction('RQ01');
-	}
 }
