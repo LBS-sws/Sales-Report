@@ -22,6 +22,7 @@ class ReportjobForm extends CFormModel
     public $end_dt;
     public $fields;
     public $customer_name;
+    public $custType = 203;
     /**
      * Declares customized attribute labels.
      * If not declared here, an attribute would have a label that is
@@ -100,7 +101,7 @@ class ReportjobForm extends CFormModel
             $zip->open($zipname, ZipArchive::CREATE);
             for ($fj = 0; $fj < count($jobids_data); $fj++) {
                 $index = $jobids_data[$fj]['JobID'];
-                $sql_basic = "select j.JobID,j.CustomerName,j.Addr,j.ContactName,j.Mobile,j.JobDate,j.StartTime,j.FinishTime,u.StaffName as Staff01,uo.StaffName as Staff02,ut.StaffName as Staff03,s.ServiceName,j.Status,j.City,j.ServiceType,j.FirstJob,j.FinishDate  from joborder as j left join service as s on s.ServiceType=j.ServiceType left join staff as u on u.StaffID=j.Staff01 left join staff as uo on uo.StaffID=j.Staff02 left join staff as ut on ut.StaffID=j.Staff03 where j.JobID=" . $index;
+                $sql_basic = "select j.JobID,j.CustomerName,j.Addr,j.CustomerID,j.ContactName,j.Mobile,j.JobDate,j.StartTime,j.FinishTime,u.StaffName as Staff01,uo.StaffName as Staff02,ut.StaffName as Staff03,s.ServiceName,j.Status,j.City,j.ServiceType,j.FirstJob,j.FinishDate  from joborder as j left join service as s on s.ServiceType=j.ServiceType left join staff as u on u.StaffID=j.Staff01 left join staff as uo on uo.StaffID=j.Staff02 left join staff as ut on ut.StaffID=j.Staff03 where j.JobID=" . $index;
                 $this->basic = Yii::app()->db->createCommand($sql_basic)->queryRow();
                 $sql_job = "select * from joborder where JobID=" . $index;
                 $this->job = Yii::app()->db->createCommand($sql_job)->queryRow();
@@ -269,7 +270,16 @@ class ReportjobForm extends CFormModel
                     }
                     $this->equipment = $equipmenthz_datas;
 
-                    $sql_photo = "select * from lbs_service_photos where job_type=1 and job_id=" . $index . " limit 4";
+                    //TODO 将类型为250的图片取10组
+                    $photo_num = 8;
+                    if(isset($basic->CustomerID) && $basic->CustomerID){
+                        $cust_info = "select * from customercompany where CustomerID=".$basic->CustomerID;
+                        $cust_ret = Yii::app()->db->createCommand($cust_info)->queryAll();
+                        if(isset($cust_type) && $cust_type['CustomerType'] == $this->custType){
+                            $photo_num = 50;
+                        }
+                    }
+                    $sql_photo = "select * from lbs_service_photos where job_type=1 and job_id=" . $index . " limit " . $photo_num;
                     $this->photo = Yii::app()->db->createCommand($sql_photo)->queryAll();
 
 
