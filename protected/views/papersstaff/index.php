@@ -3,7 +3,7 @@ $this->pageTitle=Yii::app()->name . ' - Papersstaff';
 ?>
 
 <?php $form=$this->beginWidget('TbActiveForm', array(
-    'id'=>'Employeesignature-type',
+    'id'=>'Papersstaff-type',
     'enableClientValidation'=>true,
     'clientOptions'=>array('validateOnSubmit'=>true,),
     'layout'=>TbHtml::FORM_LAYOUT_INLINE,
@@ -13,7 +13,7 @@ $this->pageTitle=Yii::app()->name . ' - Papersstaff';
     <div class="box"><div class="box-body">
             <div class="btn-group" role="group">
                 <?php
-                if (Yii::app()->user->validRWFunction('SS01'))
+                if (Yii::app()->user->validRWFunction('PQ01'))
                     echo TbHtml::button('<span class="fa fa-file-o"></span> '.Yii::t('papersstaff','Add Papersstaff'), array(
                         'submit'=>Yii::app()->createUrl('papersstaff/new'),
                     ));
