@@ -22,6 +22,7 @@ class ReportfollowForm extends CFormModel
     public $end_dt;
     public $fields;
 	public $customer_name;
+    public $custType = 250;
 	/**
 	 * Declares customized attribute labels.
 	 * If not declared here, an attribute would have a label that is
@@ -220,13 +221,6 @@ class ReportfollowForm extends CFormModel
                         }
                     }
                     $this->equipment = $equipmenthz_datas;
-
-                    $sql_photo = "select * from lbs_service_photos where job_type=2 and job_id=".$index." limit 4";
-                    $this->photo = Yii::app()->db->createCommand($sql_photo)->queryAll();
-
-//                    $sql_autograph = "select * from lbs_report_autograph where job_type='2' and job_id='".$index."'";
-//                    $this->autograph = Yii::app()->db->createCommand($sql_autograph)->queryRow();
-
 
                     //        在这里 首先去获取 新的数据表中是存在相关数据 使用curl_get去获取
 
@@ -856,8 +850,18 @@ EOD;
         }
         $this->equipment = $equipmenthz_datas;
 
-        $sql_photo = "select * from lbs_service_photos where job_type=2 and job_id=".$index." limit 4";
+        //TODO 将类型为250的图片取10组
+        $photo_num = 8;
+        if(isset($basic->CustomerID) && $basic->CustomerID){
+            $cust_info = "select * from customercompany where CustomerID=".$basic->CustomerID;
+            $cust_ret = Yii::app()->db->createCommand($cust_info)->queryAll();
+            if(isset($cust_type) && $cust_type['CustomerType'] == $this->custType){
+                $photo_num = 50;
+            }
+        }
+        $sql_photo = "select * from lbs_service_photos where job_type=2 and job_id=" . $index . " limit " . $photo_num;
         $this->photo = Yii::app()->db->createCommand($sql_photo)->queryAll();
+
 
 //        $sql_autograph = "select * from lbs_report_autograph where job_type='2' and job_id='".$index."'";
 //        $this->autograph = Yii::app()->db->createCommand($sql_autograph)->queryRow();

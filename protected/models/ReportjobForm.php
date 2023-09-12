@@ -22,7 +22,7 @@ class ReportjobForm extends CFormModel
     public $end_dt;
     public $fields;
     public $customer_name;
-    public $custType = 203;
+    public $custType = 250;
     /**
      * Declares customized attribute labels.
      * If not declared here, an attribute would have a label that is
@@ -269,20 +269,6 @@ class ReportjobForm extends CFormModel
                         }
                     }
                     $this->equipment = $equipmenthz_datas;
-
-                    //TODO 将类型为250的图片取10组
-                    $photo_num = 8;
-                    if(isset($basic->CustomerID) && $basic->CustomerID){
-                        $cust_info = "select * from customercompany where CustomerID=".$basic->CustomerID;
-                        $cust_ret = Yii::app()->db->createCommand($cust_info)->queryAll();
-                        if(isset($cust_type) && $cust_type['CustomerType'] == $this->custType){
-                            $photo_num = 50;
-                        }
-                    }
-                    $sql_photo = "select * from lbs_service_photos where job_type=1 and job_id=" . $index . " limit " . $photo_num;
-                    $this->photo = Yii::app()->db->createCommand($sql_photo)->queryAll();
-
-
 
                     //        在这里 首先去获取 新的数据表中是存在相关数据 使用curl_get去获取
 
@@ -979,7 +965,16 @@ EOD;
         }
         $this->equipment = $equipmenthz_datas;
 
-        $sql_photo = "select * from lbs_service_photos where job_type=1 and job_id=".$index." limit 8";
+        //TODO 将类型为250的图片取10组
+        $photo_num = 8;
+        if(isset($basic->CustomerID) && $basic->CustomerID){
+            $cust_info = "select * from customercompany where CustomerID=".$basic->CustomerID;
+            $cust_ret = Yii::app()->db->createCommand($cust_info)->queryAll();
+            if(isset($cust_type) && $cust_type['CustomerType'] == $this->custType){
+                $photo_num = 50;
+            }
+        }
+        $sql_photo = "select * from lbs_service_photos where job_type=1 and job_id=" . $index . " limit " . $photo_num;
         $this->photo = Yii::app()->db->createCommand($sql_photo)->queryAll();
 
         /**
