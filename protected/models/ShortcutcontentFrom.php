@@ -69,6 +69,8 @@ class ShortcutcontentFrom extends CFormModel
             throw new CHttpException(404,'Cannot update. ('.$e->getMessage().')');
         }
     }
+
+
     protected function Shortcutcontent(&$connection)
     {
         $tab_suffix = Yii::app()->params['table_envSuffix'];
@@ -103,5 +105,33 @@ class ShortcutcontentFrom extends CFormModel
         if ($this->scenario=='new')
             $this->id = Yii::app()->db->getLastInsertID();
         return true;
+    }
+
+
+    public function deleteAllData()
+    {
+        $connection = Yii::app()->db;
+        $transaction = $connection->beginTransaction();
+        try {
+            $tab_suffix = Yii::app()->params['table_envSuffix'];
+            $city = Yii::app()->user->city();
+
+            // 查询 lbs_service_shortcuts 表中的 id
+            $sql_ids = "SELECT GROUP_CONCAT(id) as ids FROM " . $tab_suffix . "lbs_service_shortcuts WHERE city = :city";
+            $command = $connection->createCommand($sql_ids);
+            $command->bindParam(':city', $city, PDO::PARAM_STR);
+            $result = $command->queryRow();
+            $ids = $result['ids'];
+
+            // 根据查询到的 id 删除 shortcut_contents 表中的数据
+            $sql = "DELETE FROM " . $tab_suffix . "shortcut_contents WHERE shortcut_id IN ($ids)";
+            $command = $connection->createCommand($sql);
+            $command->execute();
+
+            $transaction->commit();
+        } catch (Exception $e) {
+            $transaction->rollback();
+            throw new CHttpException(404, 'Cannot delete all data. (' . $e->getMessage() . ')');
+        }
     }
 }

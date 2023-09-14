@@ -24,11 +24,11 @@ class ShortcutcontentController extends Controller
     {
         return array(
             array('allow',
-                'actions'=>array('new','edit','delete','save','import'),
+                'actions'=>array('new','edit','delete','deleteall','save','import'),
                 'expression'=>array('ShortcutcontentController','allowReadWrite'),
             ),
             array('allow',
-                'actions'=>array('index','view','export'),
+                'actions'=>array('index','deleteall','view','export'),
                 'expression'=>array('ShortcutcontentController','allowReadOnly'),
             ),
             array('deny',  // deny all users
@@ -36,6 +36,19 @@ class ShortcutcontentController extends Controller
             ),
         );
     }
+    public function actionDeleteall()
+    {
+        $shortcutContent = new ShortcutcontentFrom();
+        try {
+            $shortcutContent->deleteAllData();
+            $response = ['success' => true, 'message' => '数据删除成功'];
+        } catch (Exception $e) {
+            $response = ['success' => false, 'message' => 'Failed to delete all data. Error: ' . $e->getMessage()];
+        }
+        echo json_encode($response);
+        Yii::app()->end();
+    }
+
     public function actionIndex($pageNum=0)
     {
         $model = new ShortcutcontentList();
@@ -134,19 +147,19 @@ class ShortcutcontentController extends Controller
 				if ($file = CUploadedFile::getInstance($model,'import_file')) {
 					$objImport = new Import;
 					$objData = new ShortcutcontentData;
-				
+
 					$objImport->readerType = $objImport->getReaderTypefromFileExtension($file->extensionName);
 					$objImport->fileName = $file->tempName;
 					$objImport->dataModel = $objData;
 					$message = $objImport->run();
-				
+
 					$model->determinePageNum(0);
 					$model->retrieveDataByPage($model->pageNum);
 					Dialog::message(Yii::t('import','View Log'), $message, -999);
 				} else {
 					$message = Yii::t('import','Upload file error');
 					Dialog::message(Yii::t('dialog','Error Message'), $message);
-				}		
+				}
 			} else {
 				$message = CHtml::errorSummary($model);
 				Dialog::message(Yii::t('dialog','Validation Message'), $message);
@@ -154,7 +167,7 @@ class ShortcutcontentController extends Controller
 		}
         $this->render('index',array('model'=>$model));
 	}
-	
+
 	public function actionExport() {
 		$model = new ShortcutcontentList;
 		$session = Yii::app()->session;
@@ -165,12 +178,12 @@ class ShortcutcontentController extends Controller
 		$model->noOfItem = 0;
         $model->determinePageNum(0);
         $model->retrieveDataByPage($model->pageNum);
-		
+
 		$objData = new RptShortcutcontentlist;
 		$objData->data = $model->attr;
 		$objExport = new Export;
 		$objExport->dataModel = $objData;
-		
+
 		$filename = 'shortcutcontent.xlsx';
 		$objExport->exportExcel($filename);
 	}
