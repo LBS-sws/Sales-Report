@@ -43,7 +43,7 @@ class ShortcutcontentController extends Controller
             $shortcutContent->deleteAllData();
             $response = ['success' => true, 'message' => '数据删除成功'];
         } catch (Exception $e) {
-            $response = ['success' => false, 'message' => 'Failed to delete all data. Error: ' . $e->getMessage()];
+            $response = ['success' => false, 'message' => '删除失败,原因: ' . $e->getMessage()];
         }
         echo json_encode($response);
         Yii::app()->end();

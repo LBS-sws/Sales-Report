@@ -7,12 +7,12 @@ $this->pageTitle=Yii::app()->name . ' - Shortcutcontent';
     'enableClientValidation'=>true,
     'clientOptions'=>array('validateOnSubmit'=>true,),
     'layout'=>TbHtml::FORM_LAYOUT_INLINE,
-	'htmlOptions'=>array('enctype'=>'multipart/form-data'),
+    'htmlOptions'=>array('enctype'=>'multipart/form-data'),
 )); ?>
 
 <section class="content">
     <div class="box">
-		<div class="box-body">
+        <div class="box-body">
             <div class="btn-group" role="group">
                 <?php
                 if (Yii::app()->user->validRWFunction('OS02'))
@@ -22,29 +22,31 @@ $this->pageTitle=Yii::app()->name . ' - Shortcutcontent';
                 ?>
             </div>
 
-			<div class="btn-group pull-right" role="group">
+            <div class="btn-group pull-right" role="group">
 
                 <?php
                 if (Yii::app()->user->validRWFunction('OS02'))
                     echo TbHtml::button('<span class="fa fa-file-o"></span> '.Yii::t('shortcut','一键清空快捷语'), array(
                         'id'=>'btnDeleteData',
+                        'class'=>'btn btn-danger btn-white', // 添加 the btn-danger
+                        'style'=>'color: white;',
                     ));
                 ?>
 
                 <?php
-                    echo TbHtml::button('<span class="fa fa-file-o"></span> '.Yii::t('import','Import'), array(
-                        'id'=>'btnImportData',
-                    ));
+                echo TbHtml::button('<span class="fa fa-file-o"></span> '.Yii::t('import','Import'), array(
+                    'id'=>'btnImportData',
+                ));
                 ?>
                 <?php
-                    echo TbHtml::button('<span class="fa fa-file-o"></span> '.Yii::t('import','Export'), array(
-                        'id'=>'btnExportData',
-						'submit'=>Yii::app()->createUrl('shortcutcontent/export'),
-                    ));
+                echo TbHtml::button('<span class="fa fa-file-o"></span> '.Yii::t('import','Export'), array(
+                    'id'=>'btnExportData',
+                    'submit'=>Yii::app()->createUrl('shortcutcontent/export'),
+                ));
                 ?>
-			</div>
+            </div>
         </div>
-	</div>
+    </div>
     <?php $this->widget('ext.layout.ListPageWidget', array(
         'title'=>Yii::t('shortcut','Shortcutcontent List'),
         'model'=>$model,
@@ -72,10 +74,10 @@ $this->renderPartial('//shortcutcontent/fileupload', array('model'=>$model, 'for
 
 
 <form class="form-horizontal MultiFile-intercepted" action="" method="post">
-<!--    --><?php //$this->renderPartial('//materiallist/redeemApply',array(
-//        'submit'=> Yii::app()->createUrl('materiallist/apply'),
-//    ));
-//    ?>
+    <!--    --><?php //$this->renderPartial('//materiallist/redeemApply',array(
+    //        'submit'=> Yii::app()->createUrl('materiallist/apply'),
+    //    ));
+    //    ?>
 </form>
 <?php
 $js = Script::genTableRowClick();
@@ -88,14 +90,12 @@ $('#btnImportData').on('click', function() {
 EOF;
 $js_delete = <<<EOF
 $('#btnDeleteData').on('click', function() {
-    if (confirm('确定要删除所有快捷语吗？')) {
+    if (confirm('警告：确定要删除所有快捷语吗？删除后将无法恢复，请先备份！')) {
         $.ajax({
             type: 'POST',
             url: '{$this->createUrl('shortcutcontent/deleteall')}',
             success: function(data) {
-                // 处理成功响应
-                // ...
-
+            	console.log(data);
                 // 删除成功后刷新页面
                 location.reload();
             },

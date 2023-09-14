@@ -117,7 +117,7 @@ class ShortcutcontentFrom extends CFormModel
             $city = Yii::app()->user->city();
 
             // 查询 lbs_service_shortcuts 表中的 id
-            $sql_ids = "SELECT GROUP_CONCAT(id) as ids FROM " . $tab_suffix . "lbs_service_shortcuts WHERE city = :city";
+            $sql_ids = "SELECT GROUP_CONCAT(id) as ids FROM " . $tab_suffix . "shortcuts WHERE city = :city";
             $command = $connection->createCommand($sql_ids);
             $command->bindParam(':city', $city, PDO::PARAM_STR);
             $result = $command->queryRow();
