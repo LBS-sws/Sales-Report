@@ -9,10 +9,10 @@
         </th>
     <?php endif ?>
 
-    <!--    <th>-->
-    <!--        --><?php echo TbHtml::link($this->getLabelName('city_name').$this->drawOrderArrow('city_name'),'#',$this->createOrderLink('papersstaff','city_name'));
-    //        ?>
-    <!--    </th>-->
+        <th>
+            <?php echo TbHtml::link($this->getLabelName('city_name').$this->drawOrderArrow('city_name'),'#',$this->createOrderLink('papersstaff','city_name'));
+            ?>
+        </th>
     <th>
         <?php
         echo TbHtml::link($this->getLabelName('staffid').$this->drawOrderArrow('staffid'),'#',$this->createOrderLink('employeesignature','staffid'));
