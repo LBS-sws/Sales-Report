@@ -2,11 +2,11 @@
 <!-- 表格头部 -->
 <tr>
     <?php if (!Yii::app()->user->isSingleCity()) : ?>
-        <th>
+<!--        <th>-->
             <?php //echo TbHtml::link($this->getLabelName('city_name').$this->drawOrderArrow('city_name'),'#',$this->createOrderLink('employeesignature','city_name'))
             ;
             ?>
-        </th>
+<!--        </th>-->
     <?php endif ?>
 
         <th>
