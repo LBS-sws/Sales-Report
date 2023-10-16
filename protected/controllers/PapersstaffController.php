@@ -92,6 +92,7 @@ class PapersstaffController extends Controller
             $model = new PapersstaffForm($_POST['PapersstaffForm']['scenario']);
             $model->attributes = $_POST['PapersstaffForm'];
 
+//            print_r($_POST);exit;
             if ($model->validate()) {
                 //新增
                 $model->saveData();

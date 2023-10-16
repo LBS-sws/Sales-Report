@@ -47,13 +47,27 @@ $this->pageTitle=Yii::app()->name . ' - Credits for';
             <?php if(!$item['id']){?>
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'staffid',array('class'=>"col-sm-2 control-label")); ?>
-                    <div class="col-sm-2">
+                    <div class="col-sm-4">
                         <?php
-                        echo $form->dropDownList($model, 'staffid', $employee_lists);
+                        //echo $form->dropDownList($model, 'staffid', $employee_lists);
                         ?>
+
+                        <div style="display: none;">
+                        <?php
+                        echo $form->textField($model, 'staffid',
+                            array('size'=>40,'maxlength'=>250,"id"=>"staffid",'readonly'=>false)
+                        );
+                        ?>
+                        </div>
+                        <div style="display: flex; ">
+                            <input type="text" id="myInput" class="input-40 form-control" style="width: 177px;">
+
+                            <input type="text" id="searchInput" placeholder="请输入搜索关键字" class="input-40 form-control">
+                        </div>
                     </div>
                 </div>
             <?php }?>
+
             <?php if($item['id']){?>
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'staffid',array('class'=>"col-sm-2 control-label")); ?>
@@ -70,6 +84,12 @@ $this->pageTitle=Yii::app()->name . ' - Credits for';
             <?php }?>
             <!-- 证件列表 -->
             <div class="Papersstaff_list" style="margin-top:30px;">
+
+            </div>
+            <div>
+<!--                <input type="text" id="myInput" class="input-40 form-control" style="width: 177px;">-->
+<!--                <input type="text" id="searchInput" placeholder="请输入搜索关键字">-->
+                <ul id="searchResults"></ul>
 
             </div>
         </div>
@@ -360,6 +380,69 @@ $this->pageTitle=Yii::app()->name . ' - Credits for';
     $("#yt0").on('click',function(){
         window.location.href="<?=Yii::app()->createUrl('Papersstaff/index');?>"
     })
+</script>
+
+<?php
+//$php_array = array(1,2,3);
+
+?>
+<script>
+$(function () {
+
+    var listjson = '<?=json_encode($employee_lists); ?>';
+    console.log(JSON.parse(listjson))
+
+    var js_array = new Array();
+
+    <?php
+    foreach($employee_lists as $key => $value) {
+//        echo "js_array.push('$value');";
+        echo "js_array.push({id:'$key',name:'$value'});";
+    }
+    ?>
+
+    console.log(js_array);
+
+    $('#myInput').on('input', function() {
+        var value = $(this).val();
+        console.log('输入框的值变为：' + value);
+    });
+    $('#searchInput').on('input', function() {
+        var keyword = $(this).val().toLowerCase();
+        $('#searchResults').empty(); // 清空搜索结果列表
+
+        if (keyword.length > 0) {
+            // 模拟搜索结果
+            var results = ['Apple', 'Banana', 'Orange', 'Pineapple'];
+
+            // results.forEach(function(result) {
+            //     if (result.toLowerCase().indexOf(keyword) !== -1) {
+            //         $('#searchResults').append('<li>' + result + '</li>');
+            //
+            //     }
+            // });
+            js_array.forEach(function(item,index) {
+                    // console.log(item.id+item.name)
+                    // console.log(item.name)
+                if (item.name.indexOf(keyword) !== -1) {
+                    $('#searchResults').append('<li data-id="'+item.id+'">' + item.name+'-'+item.id+'' + '</li>');
+
+                }
+            });
+
+            $('#searchResults li').on('click',function(e){
+                let text = $(this).text()
+                console.log($(this).index())
+                console.log(text)
+                console.log($(this).attr('data-id'))
+                $('#myInput').val(text)
+
+                $('#staffid').val($(this).attr('data-id'))
+            })
+        }
+    });
+
+})
 </script>
 
 <style>
