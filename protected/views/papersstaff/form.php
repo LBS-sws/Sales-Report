@@ -1,3 +1,41 @@
+<style>
+    .input-ui {
+        -webkit-appearance: none;
+        background-color: #fff;
+        background-image: none;
+        border-radius: 4px;
+        border: 1px solid #dcdfe6;
+        box-sizing: border-box;
+        color: #606266;
+        display: inline-block;
+        font-size: inherit;
+        height: 40px;
+        line-height: 40px;
+        outline: none;
+        padding: 0 15px;
+        transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+        width: 100%;
+    }
+    .input-ui{ max-width:200px; font-size:14px; }
+    ul{ padding:0; margin:0 ;}
+    ul li{
+        font-size:14px;
+        color: #606266;
+        list-style: none;
+        position: relative;
+        display: flex;
+        align-items: center;
+        padding: 0 30px 0 20px;
+        height: 34px;
+        line-height: 34px;
+        outline: none;
+        cursor:pointer;
+    }
+    ul li:hover {
+        background: #f5f7fa
+    }
+</style>
+
 <?php
 $this->pageTitle=Yii::app()->name . ' - Credits for';
 ?>
@@ -89,7 +127,7 @@ $this->pageTitle=Yii::app()->name . ' - Credits for';
             <div>
 <!--                <input type="text" id="myInput" class="input-40 form-control" style="width: 177px;">-->
 <!--                <input type="text" id="searchInput" placeholder="请输入搜索关键字">-->
-                <ul id="searchResults"></ul>
+                <ul id="searchResults" style="max-width: 200px;"></ul>
 
             </div>
         </div>
@@ -406,6 +444,7 @@ $(function () {
     $('#myInput').on('input', function() {
         var value = $(this).val();
         console.log('输入框的值变为：' + value);
+        $('#staffid').val(value)
     });
     $('#searchInput').on('input', function() {
         var keyword = $(this).val().toLowerCase();
