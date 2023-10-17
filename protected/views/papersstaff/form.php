@@ -34,6 +34,22 @@
     #searchResults li:hover {
         background: #f5f7fa
     }
+    .search{
+        display: block;
+        position: absolute;
+
+        background-color: #ffffff;
+        width: auto;
+        height: auto;
+        border: 1px solid #eee;
+        overflow: auto;
+        max-height: 400px;
+    }
+    #selectCustom{ width: 200px; }
+    #selectCustom>div{ padding: 10px 10px; cursor:pointer; }
+    #selectCustom>div:hover{   background: #eee;  }
+    #selectCustom>div .in{ padding: 10px 10px 3px 0; }
+
 </style>
 
 <?php
@@ -98,9 +114,14 @@ $this->pageTitle=Yii::app()->name . ' - Credits for';
                         ?>
                         </div>
                         <div style="display: flex; ">
-                            <input type="text" id="myInput" class="input-40 form-control" style="width: 177px;">
+                        </div>
+                        <div>
+                            <input type="text" id ="selectSearch" class="input-40 form-control"/>
 
-                            <input type="text" id="searchInput" placeholder="请输入搜索关键字" class="input-40 form-control">
+                            <form ation="#" >
+                                <div id="selectCustom" class="search"> </div>
+                            </form>
+
                         </div>
                     </div>
                 </div>
@@ -122,16 +143,82 @@ $this->pageTitle=Yii::app()->name . ' - Credits for';
             <?php }?>
             <!-- 证件列表 -->
             <div class="Papersstaff_list" style="margin-top:30px;">
-
             </div>
-            <div>
-<!--                <input type="text" id="myInput" class="input-40 form-control" style="width: 177px;">-->
-<!--                <input type="text" id="searchInput" placeholder="请输入搜索关键字">-->
-                <ul id="searchResults" style="max-width: 200px;"></ul>
 
+            <div>
+                <ul id="searchResults" style="max-width: 200px;"></ul>
             </div>
         </div>
 
+        <script type="text/javascript" >
+            $(function(){
+
+                var dataSource = new Array();
+                <?php
+                foreach($employee_lists as $key => $value) {
+                    echo "dataSource.push({id:'$key',name:'$value'});";
+                }
+                ?>
+                coverOption(dataSource);
+                console.log(dataSource)
+
+                $("#selectSearch").keyup(function(){
+                    var val1 =$("#selectSearch").val();
+                    var newList = [];
+                    for(var i=0;i<dataSource.length;i++){
+                        if(dataSource[i].name.indexOf(val1)>-1){
+                            newList.push(dataSource[i]);
+                        }
+                    }
+                    coverOption(newList);
+                });
+                $("#selectCustom").hide();
+                $("#selectSearch").click(function(){
+                    $("#selectCustom").show();
+                });
+                var width1 = $(".zidingyi").width();
+                $("#selectCustom").css("margin-left",(width1+5)+'px');
+            });
+
+            function coverOption(list){
+                $("#selectCustom").html('');
+                var tmp =[];
+                for(var i=0;i<list.length;i++){
+                    var str = '<div class="inBox"><input class="in" name="selectCustom" data-id="'+list[i].id+'" title="'+list[i].name+'" '+
+                        ' type="radio" value="'+list[i].id+'" />'+list[i].name+'</div>';
+                    tmp.push(str);
+                }
+                $("#selectCustom").html(tmp);
+
+
+
+                var dataSource = new Array();
+                <?php
+                foreach($employee_lists as $key => $value) {
+                    echo "dataSource.push({id:'$key',name:'$value'});";
+                }
+                ?>
+                $(".inBox").click(function(){
+
+                    let index = $(this).index()
+                    $('input:radio').eq(index).attr('checked', 'true');
+
+                    $("#selectSearch").val(dataSource[index].name)
+
+                    $('#staffid').val(dataSource[index].id)
+
+                    $("#selectCustom").hide();
+                })
+            }
+            $('#selectSearch').on('input', function() {
+                var value = $(this).val();
+                console.log('输入框的值变为：' + value);
+                if(!value){
+                    $('#staffid').val('')
+                }
+                //
+            });
+        </script>
 </section>
 
 <?php if($item['id']){?>
@@ -420,15 +507,8 @@ $this->pageTitle=Yii::app()->name . ' - Credits for';
     })
 </script>
 
-<?php
-//$php_array = array(1,2,3);
-
-?>
 <script>
 $(function () {
-
-    var listjson = '<?=json_encode($employee_lists); ?>';
-    console.log(JSON.parse(listjson))
 
     var js_array = new Array();
 
@@ -439,7 +519,7 @@ $(function () {
     }
     ?>
 
-    console.log(js_array);
+    // console.log(js_array);
 
     $('#myInput').on('input', function() {
         var value = $(this).val();
@@ -454,12 +534,6 @@ $(function () {
             // 模拟搜索结果
             var results = ['Apple', 'Banana', 'Orange', 'Pineapple'];
 
-            // results.forEach(function(result) {
-            //     if (result.toLowerCase().indexOf(keyword) !== -1) {
-            //         $('#searchResults').append('<li>' + result + '</li>');
-            //
-            //     }
-            // });
             js_array.forEach(function(item,index) {
                     // console.log(item.id+item.name)
                     // console.log(item.name)
