@@ -17,8 +17,8 @@
         width: 100%;
     }
     .input-ui{ max-width:200px; font-size:14px; }
-    ul{ padding:0; margin:0 ;}
-    ul li{
+    #searchResults{ padding:0; margin:0 ;}
+    #searchResults li{
         font-size:14px;
         color: #606266;
         list-style: none;
@@ -31,7 +31,7 @@
         outline: none;
         cursor:pointer;
     }
-    ul li:hover {
+    #searchResults li:hover {
         background: #f5f7fa
     }
 </style>
