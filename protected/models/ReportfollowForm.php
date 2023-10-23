@@ -363,8 +363,6 @@ class ReportfollowForm extends CFormModel
 EOD;
                     if($briefing!=''){
                         if(($this->service_sections!='' && in_array('1',$this->service_sections)) || $this->service_sections==''){
-							$bc = $city=='MO' ? $briefing->content : mb_convert_encoding(mb_convert_encoding($briefing->content, 'GB2312', 'UTF-8'), 'UTF-8', 'GB2312');
-							$bp = $city=='MO' ? $briefing->proposal : mb_convert_encoding(mb_convert_encoding($briefing->proposal, 'GB2312', 'UTF-8'), 'UTF-8', 'GB2312');
                             $html .= <<<EOD
                     <tr class="myTitle">
                         <th width="100%" align="left">服务简报</th>
@@ -1007,19 +1005,17 @@ EOD;
 EOD;
         if($briefing!=''){
         if(($this->service_sections!='' && in_array('1',$this->service_sections)) || $this->service_sections==''){
-			$bc = $city=='MO' ? $briefing->content : mb_convert_encoding(mb_convert_encoding($briefing->content, 'GB2312', 'UTF-8'), 'UTF-8', 'GB2312');
-			$bp = $city=='MO' ? $briefing->proposal : mb_convert_encoding(mb_convert_encoding($briefing->proposal, 'GB2312', 'UTF-8'), 'UTF-8', 'GB2312');
             $html .= <<<EOD
                     <tr class="myTitle">
                         <th width="100%" align="left">服务简报</th>
                     </tr>
                     <tr>
                         <td width="15%">服务内容</td>
-                        <td width="85%" align="left">$bc</td>
+                        <td width="85%" align="left">$briefing->content</td>
                     </tr>
                     <tr v-if="report_datas.briefing.proposal!=''">
                         <td width="15%">跟进与建议</td>
-                        <td width="85%" align="left">$bp</td>
+                        <td width="85%" align="left">$briefing->proposal</td>
                     </tr>
 EOD;
             }}
