@@ -573,26 +573,32 @@ EOD;
                                 $titlex = json_encode($equipment[$e]['title'], JSON_UNESCAPED_UNICODE);
                                 $titlex = str_replace("\/", '/', trim($titlex, '"'));
                                 if (count($equipment[$e]) > 1) {
-                                    $total01 = count($equipment[$e]['table_title']);
+                                    $table_titlex = $equipment[$e]['table_title'];
+                                    $table_titlex_count = count($table_titlex);
+
+                                    // 设备巡查 一列分为五个部分 编号(width=8%)、区域(width=11%)、other*n(width=31/n %)、检查与处理(width=25%)、补充说明(width=25%)
+                                    if($table_titlex_count<=4){ // 防止没有 other 时，php报错
+                                        $targs = '0%';
+                                    }else{
+                                        $targs = (31 / ($table_titlex_count - 4)) . "%";
+                                    }
                                     $html .= <<<EOD
                             <tr>
                                 <th width="100%" align="left">$titlex</th>
                             </tr>
                             <tr>
 EOD;
-                                    $targs = (31 / ($total01 - 4)) . "%";
-                                    $table_titlex = $equipment[$e]['table_title'];
-                                    foreach ($table_titlex as $ti => $record) {
-                                        if ($ti == 0) {
-                                            $wi01 = '8%';
-                                        } else if ($ti == 1) {
-                                            $wi01 = "11%";
-                                        } else if ($ti > 1 && $ti < count($table_titlex) - 2) {
-                                            $wi01 = $targs;
-                                        } else if ((($ti + 1) == count($table_titlex)) || (($ti + 2) == count($table_titlex))) {
-                                            $wi01 = "25%";
-                                        }
-                                        $html .= <<<EOD
+                                foreach ($table_titlex as $ti => $record) {
+                                    if ($ti == 0) {//编号
+                                        $wi01 = '8%';
+                                    } else if ($ti == 1) {//区域
+                                        $wi01 = '11%';
+                                    } else if ($ti > 1 && $ti < count($table_titlex) - 2) {//other
+                                        $wi01 = $targs;
+                                    } else if ((($ti + 1) == count($table_titlex)) || (($ti + 2) == count($table_titlex))) {//检查与处理 & 补充说明
+                                        $wi01 = '25%';
+                                    }
+                                    $html .= <<<EOD
                                         <td width="{$wi01}">$record</td>
 EOD;
                                     }
@@ -609,11 +615,11 @@ EOD;
                                             if ($cd == 0) {
                                                 $wi02 = '8%';
                                             } else if ($cd == 1) {
-                                                $wi02 = "11%";
+                                                $wi02 = '11%';
                                             } else if ($cd > 1 && $cd < count($record1) - 2) {
                                                 $wi02 = $targs;
                                             } else if ((($cd + 1) == count($record1)) || (($cd + 2) == count($record1))) {
-                                                $wi02 = "25%";
+                                                $wi02 = '25%';
                                             }
 
                                             $html .= <<<EOD
@@ -1268,26 +1274,32 @@ EOD;
                     $titlex = json_encode($equipment[$e]['title'], JSON_UNESCAPED_UNICODE);
                     $titlex = str_replace("\/",'/',trim($titlex,'"'));
                     if(count($equipment[$e])>1){
-                        $total01 = count($equipment[$e]['table_title']);
+                        $table_titlex = $equipment[$e]['table_title'];
+                        $table_titlex_count = count($table_titlex);
+
+                        // 设备巡查 一列分为五个部分 编号(width=8%)、区域(width=11%)、other*n(width=31/n %)、检查与处理(width=25%)、补充说明(width=25%)
+                        if($table_titlex_count<=4){ // 防止没有 other 时，php报错
+                            $targs = '0%';
+                        }else{
+                            $targs = (31 / ($table_titlex_count - 4)) . "%";
+                        }
                         $html .= <<<EOD
                             <tr>
                                 <th width="100%" align="left">$titlex</th>
                             </tr>
                             <tr>
 EOD;
-                        $targs = (31/($total01-4))."%";
-                        $table_titlex = $equipment[$e]['table_title'];
-                        foreach ($table_titlex as $ti=>$record) {
-                            if ($ti==0) {
-                                $wi01 = '8%';
-                            }else if ($ti==1) {
-                                $wi01 = "11%";
-                            }else if($ti>1 && $ti<count($table_titlex)-2){
-                                $wi01 = $targs;
-                            }else if ((($ti+1)==count($table_titlex)) || (($ti+2)==count($table_titlex))) {
-                                $wi01 = "25%";
-                            }
-                            $html .= <<<EOD
+                    foreach ($table_titlex as $ti => $record) {
+                        if ($ti == 0) {//编号
+                            $wi01 = '8%';
+                        } else if ($ti == 1) {//区域
+                            $wi01 = '11%';
+                        } else if ($ti > 1 && $ti < count($table_titlex) - 2) {//other
+                            $wi01 = $targs;
+                        } else if ((($ti + 1) == count($table_titlex)) || (($ti + 2) == count($table_titlex))) {//检查与处理 & 补充说明
+                            $wi01 = '25%';
+                        }
+                        $html .= <<<EOD
                                         <td width="{$wi01}">$record</td>
 EOD;
                         }
@@ -1304,11 +1316,11 @@ EOD;
                                 if ($cd==0) {
                                     $wi02 = '8%';
                                 }else if ($cd==1) {
-                                    $wi02 = "11%";
+                                    $wi02 = '11%';
                                 }else if($cd>1 && $cd<count($record1)-2){
                                     $wi02 = $targs;
                                 }else if ((($cd+1)==count($record1)) || (($cd+2)==count($record1))) {
-                                    $wi02 = "25%";
+                                    $wi02 = '25%';
                                 }
 
                                 $html .= <<<EOD
