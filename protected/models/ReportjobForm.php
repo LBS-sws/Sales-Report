@@ -593,9 +593,9 @@ EOD;
                                         $wi01 = '8%';
                                     } else if ($ti == 1) {//区域
                                         $wi01 = '11%';
-                                    } else if ($ti > 1 && $ti < count($table_titlex) - 2) {//other
+                                    } else if ($ti > 1 && $ti < $table_titlex_count - 2) {//other
                                         $wi01 = $targs;
-                                    } else if ((($ti + 1) == count($table_titlex)) || (($ti + 2) == count($table_titlex))) {//检查与处理 & 补充说明
+                                    } else if ((($ti + 1) == $table_titlex_count) || (($ti + 2) == $table_titlex_count)) {//检查与处理 & 补充说明
                                         $wi01 = '25%';
                                     }
                                     $html .= <<<EOD
@@ -1294,9 +1294,9 @@ EOD;
                             $wi01 = '8%';
                         } else if ($ti == 1) {//区域
                             $wi01 = '11%';
-                        } else if ($ti > 1 && $ti < count($table_titlex) - 2) {//other
+                        } else if ($ti > 1 && $ti < $table_titlex_count - 2) {//other
                             $wi01 = $targs;
-                        } else if ((($ti + 1) == count($table_titlex)) || (($ti + 2) == count($table_titlex))) {//检查与处理 & 补充说明
+                        } else if ((($ti + 1) == $table_titlex_count) || (($ti + 2) == $table_titlex_count)) {//检查与处理 & 补充说明
                             $wi01 = '25%';
                         }
                         $html .= <<<EOD
