@@ -570,6 +570,8 @@ EOD;
             }
             $customer_grade = $autograph['customer_grade'];
         }
+        // 23-11-2 导出ptf点评改为3颗星
+        $customer_grade = $customer_grade ? (($customer_grade>3)?3:$customer_grade) : 0 ;
         if ($res_de['code'] == 0) {
             $sign_datas = $autograph_new['data'];
             $html .= <<<EOD
@@ -577,7 +579,7 @@ EOD;
                             <th width="100%" align="left">客户点评</th>
                         </tr>
                         <tr>
-							<td width="100%" align="left">{$customer_grade}星(1~5)</td>
+							<td width="100%" align="left">{$customer_grade}星(1~3)</td>
                         </tr>
                         <tr class="myTitle">
                             <th  width="100%" align="left">报告签名</th>

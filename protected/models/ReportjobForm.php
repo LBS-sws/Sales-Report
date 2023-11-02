@@ -734,6 +734,8 @@ EOD;
                         $cimageSrc_add = '';
                         $customer_grade = $autograph['customer_grade'];
                     }
+                    // 23-11-2 导出ptf点评改为3颗星
+                    $customer_grade = $customer_grade ? (($customer_grade>3)?3:$customer_grade) : 0 ;
                     if (count($autograph) > 0 || $res_de['code'] == 0) {
                         $sign_datas = $res_de['data'];
                         $html .= <<<EOD
@@ -741,7 +743,7 @@ EOD;
                             <th width="100%" align="left">客户点评</th>
                         </tr>
                         <tr>
-							<td width="100%" align="left">{$customer_grade}星(1~5)</td>
+							<td width="100%" align="left">{$customer_grade}星(1~3)</td>
                         </tr>
                         <tr class="myTitle">
                             <th  width="100%" align="left">报告签名</th>
@@ -1427,13 +1429,15 @@ EOD;
             $customer_grade = $autograph['customer_grade'];
 
         }
-        $customer_grade = !empty($img_data['customer_grade']) ? $img_data['customer_grade'] : '';
+        $customer_grade = !empty($img_data['customer_grade']) ? $img_data['customer_grade'] : 0;
+        // 23-11-2 导出ptf点评改为3颗星
+        $customer_grade = ($customer_grade > 3) ? 3 : $customer_grade;
             $html .= <<<EOD
         <tr class="myTitle">
             <th width="100%" align="left">客户点评</th>
         </tr>
         <tr>
-            <td width="100%" align="left">{$customer_grade}星(1~5)</td>
+            <td width="100%" align="left">{$customer_grade}星(1~3)</td>
         </tr>
         <tr class="myTitle">
             <th  width="100%" align="left">报告签名</th>

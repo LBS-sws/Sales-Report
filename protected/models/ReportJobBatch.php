@@ -684,8 +684,9 @@ EOD;
 			$cimageSrc = '';
 			$cimageSrc_add = '';
         }
-		$customer_grade = isset($autograph['customer_grade'])?$autograph['customer_grade']:'';
-
+		$customer_grade = isset($autograph['customer_grade'])?$autograph['customer_grade']:0;
+		// 23-11-2 导出ptf点评改为3颗星
+		$customer_grade = ($customer_grade > 3) ? 3 : $customer_grade;
 		/**
 		 * 下边无需判断 $autograph count($autograph) > 0 ||
 		 * */
@@ -694,7 +695,7 @@ EOD;
             <th width="100%" align="left">客户点评</th>
         </tr>
         <tr>
-            <td width="100%" align="left">{$customer_grade}星(1~5)</td>
+            <td width="100%" align="left">{$customer_grade}星(1~3)</td>
         </tr>
         <tr class="myTitle">
             <th  width="100%" align="left">报告签名</th>
