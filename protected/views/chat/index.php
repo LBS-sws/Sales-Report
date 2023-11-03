@@ -253,7 +253,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
             </div>
             <div v-if="loadingCustomerList" class="loading">客户列表加载中...</div> <!-- Add this line -->
 
-            <el-menu class="chat-left-customer" :default-active="String(activeVisitor)" @select="selectVisitor">
+            <el-menu class="chat-left-customer" :default-active="String(activeVisitor)" ">
                 <el-menu-item v-if="visitors.length === 0">暂无数据</el-menu-item>
                 <el-menu-item v-for="visitor in visitors" :key="visitor.id" :index="String(visitor.customer_id)"
                               @click="selectVisitor(visitor.customer_id,visitor.city_id)">
@@ -690,7 +690,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
                 axios.get(url, {
                     params: {
                         date: date,
-                        city: this.city_id,
+                        city: this.activeCityId,
                         page: loadMore ? this.historyCurrentPage : 1,
                         list_rows: loadMore ? this.historyPageSize : this.pageSize,
                         customer_id: this.activeVisitor,
