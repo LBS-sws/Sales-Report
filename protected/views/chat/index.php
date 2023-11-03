@@ -256,7 +256,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
             <el-menu class="chat-left-customer" :default-active="String(activeVisitor)" @select="selectVisitor">
                 <el-menu-item v-if="visitors.length === 0">暂无数据</el-menu-item>
                 <el-menu-item v-for="visitor in visitors" :key="visitor.id" :index="String(visitor.customer_id)"
-                              @click="selectVisitor(visitor.customer_id)">
+                              @click="selectVisitor(visitor.customer_id,visitor.city_id)">
                     {{ visitor.customer_name }}
                     <span v-if="newMessageCount[visitor.customer_id]"
                           class="chat-badge">{{ newMessageCount[visitor.customer_id] }}</span>
@@ -349,6 +349,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
         el: '#app',
         data: {
             activeVisitor: null,
+            activeCityId: null,
             newMessageCount: {},
             visitors: [],
             messagesByCustomerId: {},
@@ -567,8 +568,9 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
             removeNewMessageCount(customer_id) {
                 this.$set(this.newMessageCount, customer_id, 0);
             },
-            selectVisitor(customer_id) {
+            selectVisitor(customer_id,cust_city_id) {
                 this.activeVisitor = customer_id;
+                this.activeCityId = cust_city_id;
                 this.historyCurrentPage = 1;
                 this.removeNewMessageCount(customer_id);
                 // Set the cookie with the customer_id as the key
@@ -620,7 +622,7 @@ header('Access-Control-Allow-Headers: Origin, Content-Type, Accept'); // Add any
                             id: rand_id,
                             content: this.newMessage,
                             is_staff: 1,
-                            city_id: this.city_id,
+                            city_id: this.activeCityId,
                             timestamp: new Date().toLocaleTimeString([], {
                                 hour: '2-digit',
                                 minute: '2-digit',
