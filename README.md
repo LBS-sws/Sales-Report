@@ -168,8 +168,16 @@ LBS系統更新
 #commit:your_commitid
 ```
 > 注：
-> 1. 推送commit中不要含有readme.md等文件
+> 1. 推送commit中**不要含有readme.md等文件**
 > 2. commit 信息中不要有表情，不要有奇奇怪怪的字符，会通不过
-> 3. 正式服推送时，需保证代码在`main`分支中，否则正式服中会将代码回滚
+> 3. 正式服推送时，**需保证代码在`main`分支中**，否则正式服中会将代码回滚
+> 4. 每次推送，服务器**仅更新分支中含有的文件**，不会更新分支之前提交的文件。因此有多个分支时，使用`,`分支多个分支id
+>    ```txt
+>    LBS系統更新
+>    #id:Daily-Report
+>    #ver:  大陆正式版
+>    #commit:f1xxx00,5exxx6c,5txxxoi
+>    ```
+> 5.
 
 ![img_1.png](readme_img.png)
