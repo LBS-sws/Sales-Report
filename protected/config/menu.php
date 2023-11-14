@@ -160,4 +160,15 @@ return array(
         ),
     ),
 ),
+    //聊天客服
+    'Chat'=>array( //聊天客服
+        'access'=>'CT',
+        'icon'=>'fa fa-volume-up',
+        'items'=>array(
+            'Chat List'=>array( //聊天列表
+                'access'=>'CT01',
+                'url'=>'/chat/index',
+            ),
+        )
+    ),
 );
