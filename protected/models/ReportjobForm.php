@@ -138,7 +138,11 @@ class ReportjobForm extends CFormModel
         $city = Yii::app()->user->city();
         $sql_city = "select GROUP_CONCAT(DISTINCT o.City) as citys from enums as e left join officecity as o on o.Office=e.EnumID where e.Text='".$city."' and e.EnumType=8";
         $city_off = Yii::app()->db->createCommand($sql_city)->queryRow();
-        $jobids = "select JobID from joborder where Status=3 and FinishDate>='".$dates['start_dt']."' and FinishDate<='".$dates['end_dt']."' and City in(".$city_off['citys'].")";
+        if($city_off['citys']){
+            $jobids = "select JobID from joborder where Status=3 and FinishDate>='".$dates['start_dt']."' and FinishDate<='".$dates['end_dt']."' and City in(".$city_off['citys'].")";
+        }else{
+            $jobids = "select JobID from joborder where Status=3 and FinishDate>='".$dates['start_dt']."' and FinishDate<='".$dates['end_dt']."'";
+        }
         if (!empty($dates['customer_name'])) $jobids .= " and CustomerName like '%".$dates['customer_name']."%'";
         $jobids_data =  Yii::app()->db->createCommand($jobids)->queryAll();
         if ($jobids_data){
@@ -716,9 +720,9 @@ EOD;
                         if (!is_dir($path)) {
                             mkdir($path, 0777, true);
                         }
-                        $employee01_signature = str_replace("data:image/jpg;base64,", "", $autograph['employee01_signature']);
-                        $employee02_signature = str_replace("data:image/jpg;base64,", "", $autograph['employee02_signature']);
-                        $employee03_signature = str_replace("data:image/jpg;base64,", "", $autograph['employee03_signature']);
+                        $employee01_signature = str_replace("data:image/jpg;base64,", "", isset($autograph['employee01_signature']) ? $autograph['employee01_signature'] : '');
+                        $employee02_signature = str_replace("data:image/jpg;base64,", "", isset($autograph['employee02_signature']) ? $autograph['employee02_signature'] : '');
+                        $employee03_signature = str_replace("data:image/jpg;base64,", "", isset($autograph['employee03_signature']) ? $autograph['employee03_signature'] : '');
                         //图片路径
                         $eimageSrc01 = $path . "/" . $eimageName01;
                         if ($employee01_signature != '') file_put_contents($eimageSrc01, base64_decode($employee01_signature));
@@ -727,7 +731,7 @@ EOD;
                         $eimageSrc03 = $path . "/" . $eimageName03;
                         if ($employee03_signature != '') file_put_contents($eimageSrc03, base64_decode($employee03_signature));
 
-                        if ($autograph['customer_signature'] != '' && $autograph['customer_signature'] != 'undefined') {
+                        if (isset($autograph['customer_signature']) && $autograph['customer_signature'] != '' && $autograph['customer_signature'] != 'undefined') {
                             $cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
                             $cimageSrc = $path . "/" . $cimageName;
                             $customer_signature = str_replace("data:image/png;base64,", "", $autograph['customer_signature']);
@@ -1417,9 +1421,9 @@ EOD;
             $eimageName02 = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
             $eimageName03 = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
 
-            $employee01_signature = str_replace("data:image/jpg;base64,", "", $autograph['employee01_signature']);
-            $employee02_signature = str_replace("data:image/jpg;base64,", "", $autograph['employee02_signature']);
-            $employee03_signature = str_replace("data:image/jpg;base64,", "", $autograph['employee03_signature']);
+            $employee01_signature = str_replace("data:image/jpg;base64,", "", isset($autograph['employee01_signature']) ? $autograph['employee01_signature'] : '');
+            $employee02_signature = str_replace("data:image/jpg;base64,", "", isset($autograph['employee02_signature']) ? $autograph['employee02_signature'] : '');
+            $employee03_signature = str_replace("data:image/jpg;base64,", "", isset($autograph['employee03_signature']) ? $autograph['employee03_signature'] : '');
             //图片路径
             $eimageSrc01 = $path . "/" . $eimageName01;
             if ($employee01_signature != '') file_put_contents($eimageSrc01, base64_decode($employee01_signature));
@@ -1428,7 +1432,7 @@ EOD;
             $eimageSrc03 = $path . "/" . $eimageName03;
             if ($employee03_signature != '') file_put_contents($eimageSrc03, base64_decode($employee03_signature));
 
-            if ($autograph['customer_signature'] != '' && $autograph['customer_signature'] != 'undefined') {
+            if (isset($autograph['customer_signature']) && $autograph['customer_signature'] != '' && $autograph['customer_signature'] != 'undefined') {
                 $cimageName = "lbs_" . date("His", time()) . "_" . rand(111, 999) . '.png';
                 $cimageSrc = $path . "/" . $cimageName;
                 $customer_signature = str_replace("data:image/png;base64,", "", $autograph['customer_signature']);
