@@ -61,5 +61,17 @@ class Utils {
         //生成新图
         imagepng($newImg, $url);
     }
+
+    //从点评表中读取点评分数
+    public function getScore($order_id, $order_type, $customer_grade=null){
+        $score_sql = 'select score from lbs_evaluates where order_id='.$order_id.' and order_type='.$order_type;
+        $score = Yii::app()->db->createCommand($score_sql)->queryRow();
+
+        if($score){
+            return $score['score'];
+        }else{
+            return $customer_grade;
+        }
+    }
 }
 ?>

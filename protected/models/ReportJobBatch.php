@@ -211,11 +211,18 @@ class ReportJobBatch {
         if (isset($res_de) && $res_de['code'] == 0) {
             $autograph_new = $res_de;
             //有图片进行处理
+
+			//点评分数处理
+			//该处数据来自小程序数据后台，那边已经读取了点评表中的数据，此处不再处理
+			//$autograph_new['data']['customer_grade'] = $utils->getScore($params['job_id'], $params['job_type'], $autograph_new['data']['customer_grade']);
         } else {
             $autograph_new = $res_de;
             //继续查询lbs的数据库
             $sql_autograph = "select * from lbs_report_autograph where job_type='1' and job_id='" . $data['JobID'] . "'";
             $autograph = Yii::app()->db->createCommand($sql_autograph)->queryRow();
+
+			//点评分数处理
+			$autograph['customer_grade'] = $utils->getScore($params['job_id'], $params['job_type'], $autograph['customer_grade']);
         }
 
         /**
