@@ -4,16 +4,18 @@ class Utils {
      * 定义访问地址
      * */
 
-    //正式版
-	// public $url = 'https://xcx.lbsapps.cn/index.php/api/index/getSignUrl?';
+    public $url = '';
+    public $sign_url = '';
 
-	// public $sign_url = 'https://xcx.lbsapps.cn';
-    
-    //测试版
-    public $url = 'https://operation.lbsapps.cn/index.php/api/index/getSignUrl?';
-
-	public $sign_url = 'https://operation.lbsapps.cn';
-
+    public function __construct(){
+        if(Yii::app()->params['envSuffix']){//测试服
+            $this->url = 'https://operation.lbsapps.cn/index.php/api/index/getSignUrl?';
+            $this->sign_url = 'https://operation.lbsapps.cn';
+        }else{ //正式服
+            $this->url = 'https://xcx.lbsapps.cn/index.php/api/index/getSignUrl?';
+            $this->sign_url = 'https://xcx.lbsapps.cn';
+        }
+    }
 
     /**
     $url 访问地址
