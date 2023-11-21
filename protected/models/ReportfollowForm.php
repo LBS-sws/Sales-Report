@@ -208,7 +208,7 @@ class ReportfollowForm extends CFormModel
                                     $check_data = json_decode($check_datas[$j]['check_datas'],true);
 
                                     $equipmenthz_datas[$i]['table_title'][0] = '编号';
-                                    $equipmenthz_datas[$i]['content'][$j][0] = sprintf('%02s', $j+1);
+                                    $equipmenthz_datas[$i]['content'][$j][0] = $check_datas[$j]['number']; // sprintf('%02s', $j+1);
                                     $equipmenthz_datas[$i]['table_title'][1] = '区域';
                                     $equipmenthz_datas[$i]['content'][$j][1] = $check_datas[$j]['equipment_area'];
                                     for ($m=0; $m < count($check_data); $m++) {
@@ -843,7 +843,7 @@ EOD;
                         $check_data = json_decode($check_datas[$j]['check_datas'],true);
 
                         $equipmenthz_datas[$i]['table_title'][0] = '编号';
-                        $equipmenthz_datas[$i]['content'][$j][0] = sprintf('%02s', $j+1);
+                        $equipmenthz_datas[$i]['content'][$j][0] = $check_datas[$j]['number']; // sprintf('%02s', $j+1);
                         $equipmenthz_datas[$i]['table_title'][1] = '区域';
                         $equipmenthz_datas[$i]['content'][$j][1] = $check_datas[$j]['equipment_area'];
                         for ($m=0; $m < count($check_data); $m++) {
