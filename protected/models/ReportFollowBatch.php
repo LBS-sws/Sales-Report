@@ -579,7 +579,7 @@ EOD;
         }
         // 23-11-2 导出ptf点评改为3颗星
         $customer_grade = $customer_grade ? (($customer_grade>3)?3:$customer_grade) : 0 ;
-        if (count($autograph) > 0 || $res_de['code'] == 0) {
+        if ($res_de['code'] == 0) {
             $sign_datas = $autograph_new['data'];
             $html .= <<<EOD
                         <tr class="myTitle">
