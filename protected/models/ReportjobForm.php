@@ -962,6 +962,22 @@ EOD;
                 $sql_check_datas = "select * from lbs_service_equipments where job_type=1 and job_id=".$index." and equipment_type_id=".$type_id['equipment_type_id']." and equipment_area is not null and equipment_area!='' and check_datas is not null and check_datas!='' order by id asc";
                 $check_datas= Yii::app()->db->createCommand($sql_check_datas)->queryAll();
                 if (count($check_datas) > 0) {
+                    // 获取number字段的值
+                    $numbers = array_column($check_datas, 'number');
+
+                    // 自然排序
+                    natsort($numbers);
+
+                    $sorted_check_datas = [];
+                    foreach ($numbers as $number) {
+                        foreach ($check_datas as $data) {
+                            if ($data['number'] === $number) {
+                                $sorted_check_datas[] = $data;
+                                break;
+                            }
+                        }
+                    }
+                    $check_datas = $sorted_check_datas;
                     for($j=0; $j < count($check_datas); $j++){
                         $check_data = json_decode($check_datas[$j]['check_datas'],true);
                         $equipmenthz_datas[$i]['table_title'][0] = '编号';
