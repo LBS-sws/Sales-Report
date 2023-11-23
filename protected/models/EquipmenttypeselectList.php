@@ -94,7 +94,8 @@ class EquipmenttypeselectList extends CListPageModel
                     'city'=>$record['city'],
                     'city_name'=>$record['city_name'],
                     'equipment_type_name'=>$record['name'],
-                    'check_targt'=>$tarsts[$record['check_targt']],
+                    //'check_targt'=>$tarsts[$record['check_targt']],
+					'check_targt'=>isset($tarsts[$record['check_targt']])?$tarsts[$record['check_targt']]:'' ,
                     'check_selects'=>$record['check_selects'],
                     'creat_time'=>$record['creat_time'],
                 );
