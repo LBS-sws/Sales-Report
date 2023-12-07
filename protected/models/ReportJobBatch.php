@@ -320,8 +320,6 @@ class ReportJobBatch {
                 <tr>
                     <td width="15%">客户名称</td>
                     <td width="35%" align="left">{$basic['CustomerName']}</td>
-                    <td width="15%">服务日期</td>
-                    <td width="35%" align="left">{$basic['JobDate']}</td>
                     
 EOD;
 		if($reportDate == ''){
