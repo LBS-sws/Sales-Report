@@ -333,6 +333,14 @@ class ReportjobForm extends CFormModel
                      *                            签名更改结束
                      * ##########################################################
                      * */
+                    $custList = Yii::app()->params['cust'];
+
+                    $reportDate = '';
+                    if(in_array($job_datas['CustomerID'],$custList)){
+                        $reportDateStart = isset($job_datas['StartTime'])?date('H:i',strtotime($job_datas['StartTime'])):'';
+                        $reportDateEnd = isset($job_datas['FinishTime'])?date('H:i',strtotime($job_datas['FinishTime'])):'';
+                        $reportDate = $reportDateStart.'  -  '.$reportDateEnd;
+                    }
 
                     //查询服务板块
                     $sql_service_sections = "select * from lbs_service_reportsections where city='" . $city . "' and service_type=" . $service_type;
@@ -350,6 +358,7 @@ class ReportjobForm extends CFormModel
                     $photo = $this->photo;
                     $autograph = $this->autograph;
                     $baseUrl_imgs = Yii::app()->params['baseUrl_imgs'];
+
 
                     $company_img = $baseUrl_imgs . "pdf/company/" . $city . ".jpg";
                     $logo_img = $baseUrl_imgs . "pdf/logo.png";
@@ -1074,7 +1083,14 @@ EOD;
          * */
 
 
+        $custList = Yii::app()->params['cust'];
 
+        $reportDate = '';
+        if(in_array($job_datas['CustomerID'],$custList)){
+            $reportDateStart = isset($job_datas['StartTime'])?date('H:i',strtotime($job_datas['StartTime'])):'';
+            $reportDateEnd = isset($job_datas['FinishTime'])?date('H:i',strtotime($job_datas['FinishTime'])):'';
+            $reportDate = $reportDateStart.'  -  '.$reportDateEnd;
+        }
 
         //查询服务板块
         $sql_service_sections = "select * from lbs_service_reportsections where city='".$city."' and service_type=".$service_type;
@@ -1153,6 +1169,22 @@ EOD;
                     <td width="35%" align="left">$basic->CustomerName</td>
                     <td width="15%">服务日期</td>
                     <td width="35%" align="left">$basic->JobDate</td>
+                    
+                    
+EOD;
+if($reportDate == ''){
+    $html .= <<<EOD
+    <td width="15%">服务日期</td>
+    <td width="35%" align="left">{$basic->JobDate}</td>
+EOD;
+            }else{
+                $html .= <<<EOD
+<td width="15%">服务时间</td>
+    <td width="35%" align="left">{$basic->JobDate}<br/>{$reportDate}</td>
+EOD;
+            }
+            $html .= <<<EOD
+                    
                 </tr>
                 <tr>
                     <td width="15%">客户地址</td>

@@ -199,6 +199,9 @@ class ReportJobBatch {
          *                            签名更改开始
          * ##########################################################
          * */
+
+
+
         $params = [
             'job_type' => 1,
             'job_id' => $data['JobID'],
@@ -244,6 +247,18 @@ class ReportJobBatch {
 		}
 
 		$basic = $data;
+
+		$custList = Yii::app()->params['cust'];
+
+		$reportDate = '';
+		if(in_array($basic['CustomerID'],$custList)){
+			$reportDateStart = isset($basic['StartTime'])?date('H:i',strtotime($basic['StartTime'])):'';
+			$reportDateEnd = isset($basic['FinishTime'])?date('H:i',strtotime($basic['FinishTime'])):'';
+			$reportDate = $reportDateStart.'  -  '.$reportDateEnd;
+		}
+
+
+
 //		$briefing = $briefing_q ? self::array_to_object($briefing_q) : '';
 		$baseUrl_imgs = Yii::app()->params['baseUrl_imgs'];
 		$company_img = $baseUrl_imgs . "pdf/company/" . $city . ".jpg";
@@ -307,6 +322,20 @@ class ReportJobBatch {
                     <td width="35%" align="left">{$basic['CustomerName']}</td>
                     <td width="15%">服务日期</td>
                     <td width="35%" align="left">{$basic['JobDate']}</td>
+                    
+EOD;
+		if($reportDate == ''){
+			$html .= <<<EOD
+    <td width="15%">服务日期</td>
+    <td width="35%" align="left">{$basic['JobDate']}</td>
+EOD;
+		}else{
+			$html .= <<<EOD
+<td width="15%">服务时间</td>
+    <td width="35%" align="left">{$basic['JobDate']}<br/>{$reportDate}</td>
+EOD;
+		}
+		$html .= <<<EOD
                 </tr>
                 <tr>
                     <td width="15%">客户地址</td>
