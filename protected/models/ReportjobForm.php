@@ -458,6 +458,8 @@ class ReportjobForm extends CFormModel
 EOD;
                     if ($briefing != '') {
                         if (($this->service_sections != '' && in_array('1', $this->service_sections)) || $this->service_sections == '') {
+                            $briefing->content = nl2br($briefing->content);
+                            $briefing->proposal = nl2br($briefing->proposal);
                             $html .= <<<EOD
                     <tr class="myTitle">
                         <th width="100%" align="left">服务简报</th>
@@ -1214,6 +1216,8 @@ EOD;
 EOD;
         if($briefing!=''){
             if(($this->service_sections!='' && in_array('1',$this->service_sections)) || $this->service_sections==''){
+                $briefing->content = nl2br($briefing->content);
+                $briefing->proposal = nl2br($briefing->proposal);
                 $html .= <<<EOD
                     <tr class="myTitle">
                         <th width="100%" align="left">服务简报</th>
