@@ -20,17 +20,13 @@ class WorkOrder extends CListPageModel
     public $format;
     public $uid;
     public $city;
-    public $target_at;
+
     public $fields;
     public $email;
-    public $emailcc;
-    public $touser;
-    public $ccuser;
     public $year;
     public $follow_staff;
     public $type;
     public $form;
-    public $staffs_desc;
     public $suffix = '';
 
     public function __construct()
@@ -76,24 +72,38 @@ class WorkOrder extends CListPageModel
         return Yii::t('returneport', 'Date') . ': ' . $this->criteria->year . '/' . $this->criteria->month;
     }
 
-    public function retrieveData()
+    public function retrieveData($city)
     {
-        $year = empty($this->criteria->year) ? date('Y') : $this->criteria->year;
-        $month = empty($this->criteria->month) ? date('m') : $this->criteria->month;
-        $first_date = $year . '-' . $month . '-01';
-//        $last_date = date('Y-m-d',strtotime(date('Y-m-d',strtotime($first_date.' +1 month')).' -1 day'));
-//        $first_date2 = date('Y-m-d',strtotime($first_date.' -1 day'));
-        $sql = "select * from service{$this->suffix}.officecity a left join service{$this->suffix}.enums b on b.EnumID=a.City AND b.EnumType = 1";
-        $ret = Yii::app()->db->createCommand($sql)->queryAll();
+        if (count(explode(',', $city)) > 1) {
+            $city_de = $city;
+        } else if (count(explode(',', $city)) == 1) {
+            $city_de = $city;
+        }
+        $citys = $this->getCityByCode($city_de);
+        $sql_scv = "select b.EnumID as City,b.Text as Text from service{$this->suffix}.enums b where b.EnumID IN({$citys[0]['city']}) AND b.EnumType = 1  ";
+        $ret = Yii::app()->db->createCommand($sql_scv)->queryAll();
         return $ret;
+
+    }
+
+    public function getCityByCode($city)
+    {
+        $rows = Yii::app()->db->createCommand()->select("GROUP_CONCAT(DISTINCT c.EnumID ) as city")->from("service{$this->suffix}.officecity as a")
+            ->leftJoin("service{$this->suffix}.enums b", "b.EnumID = a.Office")
+            ->leftJoin("service{$this->suffix}.enums c", "c.EnumID = a.City ")
+            ->where("b.Text IN($city) and b.EnumType = 8 AND c.EnumType = 1")
+            ->queryAll();
+        return $rows;
     }
 
 
-    public function getStaff($city = '')
+    public function getStaff($city)
     {
+
         $sql = "select * from service{$this->suffix}.staff a left join service{$this->suffix}.enums b on b.EnumID=a.City AND b.EnumType = 1 where City = {$city} ";
         $ret = Yii::app()->db->createCommand($sql)->queryAll();
         return $ret;
+
     }
 
     public function getJob($data)
@@ -102,7 +112,7 @@ class WorkOrder extends CListPageModel
 //        $end_date = date('Y-m-d',strtotime($data['end_date']));
         $staff_sql = "";
         if (isset($data['staff']) && !empty($data['staff'])) {
-            $staff_sql = "and a.Staff01 = '".$data['staff']."'";
+            $staff_sql = "and a.Staff01 = '" . $data['staff'] . "'";
         }
         switch ($data['service_type']) {
             case '1':
@@ -121,7 +131,7 @@ class WorkOrder extends CListPageModel
         $start_date = date('Y-m-d', strtotime($data['start_date'])) . " 00:00:00";
         $end_date = date('Y-m-d', strtotime($data['end_date'])) . " 23:59:59";
 //        is_mark == 1 表示大于开启
-        if ((isset($data['time_point_start']) && $data['time_point_start'] >=0) && $data['time_point_end'] == 0) {
+        if ((isset($data['time_point_start']) && $data['time_point_start'] >= 0) && $data['time_point_end'] == 0) {
             $is_mark = '>=';
             $condition = "COUNT(IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$is_mark}{$data['time_point_start']}, TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$is_mark}{$data['time_point_start']}, NULL
     )) AS unusual,
@@ -132,7 +142,7 @@ class WorkOrder extends CListPageModel
   IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$is_mark}{$data['time_point_start']},'异常单','正常单') as 'name'";
 
         }
-        if((isset($data['time_point_end']) && $data['time_point_end'] >=0) && $data['time_point_start'] == 0){
+        if ((isset($data['time_point_end']) && $data['time_point_end'] >= 0) && $data['time_point_start'] == 0) {
             $is_mark = '<=';
             $condition = "COUNT(IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$is_mark}{$data['time_point_end']}, TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$is_mark}{$data['time_point_end']}, NULL
     )) AS unusual,
@@ -144,7 +154,7 @@ class WorkOrder extends CListPageModel
 
         }
 
-        if((isset($data['time_point_start']) && $data['time_point_start'] >0) && (isset($data['time_point_end']) && $data['time_point_end'] >0)){
+        if ((isset($data['time_point_start']) && $data['time_point_start'] > 0) && (isset($data['time_point_end']) && $data['time_point_end'] > 0)) {
 
             $condition = "COUNT(IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))>{$data['time_point_start']} OR TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))<{$data['time_point_end']}, TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))>{$data['time_point_start']} OR TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))<{$data['time_point_end']}, NULL
     )) AS unusual,
@@ -154,6 +164,32 @@ class WorkOrder extends CListPageModel
   IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))>{$data['time_point_start']} OR TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))<{$data['time_point_end']},'异常单','正常单') as 'name'";
 
         }
+
+//
+//        $build_sql1 = "SELECT
+//   e.Text as area_code
+//FROM
+// service{$this->suffix}.officecity AS o
+//   LEFT JOIN service{$this->suffix}.enums AS e ON e.EnumID = o.Office
+//   LEFT JOIN security{$this->suffix}.sec_city AS b ON e.Text = b.CODE
+//WHERE
+//   e.EnumType = 8
+//   AND o.City = {$data['city']}";
+//        $build_ret1 = Yii::app()->db->createCommand($build_sql1)->queryAll();
+////        var_dump($build_ret1[0]['area_code']);exit();
+//
+//        $build_sql2 = "SELECT
+//   GROUP_CONCAT(City) as citys
+//FROM
+// service{$this->suffix}.officecity AS o
+//   LEFT JOIN service{$this->suffix}.enums AS e ON e.EnumID = o.Office
+//   LEFT JOIN security{$this->suffix}.sec_city AS b ON e.Text = b.CODE
+//WHERE
+//   e.EnumType = 8
+//   AND e.Text IN('{$build_ret1[0]['area_code']}') ";
+//
+//        $build_ret2 = Yii::app()->db->createCommand($build_sql2)->queryAll();
+////        var_dump($build_ret2);exit();
 
 
         $sql = "SELECT 
@@ -169,7 +205,7 @@ FROM
 	 JOIN service{$this->suffix}.staff c ON c.StaffID = a.Staff01
 WHERE
 	JobDate BETWEEN '{$start_date}' AND '{$end_date}'" . $staff_sql . "
-	AND b.EnumID = '{$data['city']}' AND a.Staff01 !='' AND a.`Status` = 3
+	AND b.EnumID IN({$data['city']}) AND a.Staff01 !='' AND a.`Status` = 3 AND b.EnumType = 1
 GROUP BY staff_id ORDER BY {$rangDate} DESC";
 
 
@@ -181,7 +217,7 @@ FROM {$table} a
 	LEFT JOIN service{$this->suffix}.enums b ON b.EnumID = a.City
 	 JOIN service{$this->suffix}.staff c ON c.StaffID = a.Staff01
 WHERE JobDate BETWEEN '{$start_date}' AND '{$end_date}'" . $staff_sql . "
-	AND b.EnumID = '{$data['city']}' AND a.Staff01 !='' AND a.`Status` = 3
+	AND b.EnumID  IN({$data['city']}) AND a.Staff01 !='' AND a.`Status` = 3 AND b.EnumType = 1
 GROUP BY scene";
 //        var_dump($sql_count);exit();
         $ret['count'] = Yii::app()->db->createCommand($sql_count)->queryAll();
@@ -211,35 +247,57 @@ GROUP BY scene";
                 $rangDate = 'FinishDate';
                 $stype = 'ServiceType';
         }
-        $start_date = date('Y-m-d',strtotime($data['start_date']))." 00:00:00";
-        $end_date = date('Y-m-d',strtotime($data['end_date'])). " 23:59:59";
-        if ((isset($data['time_point_start']) && $data['time_point_start'] >=0) && $data['time_point_end'] == 0) {
+        $start_date = date('Y-m-d', strtotime($data['start_date'])) . " 00:00:00";
+        $end_date = date('Y-m-d', strtotime($data['end_date'])) . " 23:59:59";
+        if ((isset($data['time_point_start']) && $data['time_point_start'] >= 0) && $data['time_point_end'] == 0) {
             $is_mark = '>=';
             $condition_x = "TIMEDIFF(a.FinishTime,a.StartTime) AS job_time,IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$is_mark}{$data['time_point_start']},'1','0') as 'flag',
   IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$is_mark}{$data['time_point_start']},'异常单','正常单') as 'status'";
 
         }
-        if((isset($data['time_point_end']) && $data['time_point_end'] >=0) && $data['time_point_start'] == 0){
+        if ((isset($data['time_point_end']) && $data['time_point_end'] >= 0) && $data['time_point_start'] == 0) {
             $is_mark = '<=';
             $condition_x = "TIMEDIFF(a.FinishTime,a.StartTime) AS job_time,IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$is_mark}{$data['time_point_end']},'1','0') as 'flag',
   IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$is_mark}{$data['time_point_end']},'异常单','正常单') as 'status'";
 
         }
 
-        if((isset($data['time_point_start']) && $data['time_point_start'] >0) && (isset($data['time_point_end']) && $data['time_point_end'] >0)){
+        if ((isset($data['time_point_start']) && $data['time_point_start'] > 0) && (isset($data['time_point_end']) && $data['time_point_end'] > 0)) {
 
             $condition_x = "TIMEDIFF(a.FinishTime,a.StartTime) AS job_time,IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))>{$data['time_point_start']} OR TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))<{$data['time_point_end']},'1','0') as 'flag',
   IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))>{$data['time_point_start']} OR TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))<{$data['time_point_end']},'异常单','正常单') as 'status'";
 
         }
 
+        $build_sql1 = "SELECT
+   e.Text as area_code
+FROM
+ service{$this->suffix}.officecity AS o
+   LEFT JOIN service{$this->suffix}.enums AS e ON e.EnumID = o.Office
+   LEFT JOIN security{$this->suffix}.sec_city AS b ON e.Text = b.CODE 
+WHERE
+   e.EnumType = 8 
+   AND o.City = {$data['city']}";
+        $build_ret1 = Yii::app()->db->createCommand($build_sql1)->queryAll();
+//        var_dump($build_ret1[0]['area_code']);exit();
 
+        $build_sql2 = "SELECT
+   GROUP_CONCAT(City) as citys
+FROM
+ service{$this->suffix}.officecity AS o
+   LEFT JOIN service{$this->suffix}.enums AS e ON e.EnumID = o.Office
+   LEFT JOIN security{$this->suffix}.sec_city AS b ON e.Text = b.CODE 
+WHERE
+   e.EnumType = 8 
+   AND e.Text IN('{$build_ret1[0]['area_code']}') ";
 
+        $build_ret2 = Yii::app()->db->createCommand($build_sql2)->queryAll();
 
-        $sql = "SELECT 
+        if($table == "service{$this->suffix}.followuporder"){
+            $sql = "SELECT 
 	a.CustomerName AS customer_name,
 	d.StaffName AS staff_name,
-	b.Text AS service_type,
+	b.ServiceName AS service_type,
 	c.Text AS city_name,
 	a.StartTime AS start_time,
 	a.FinishTime AS end_time,
@@ -247,12 +305,36 @@ GROUP BY scene";
 	{$condition_x}
 FROM
 	{$table} a
-	LEFT JOIN service{$this->suffix}.enums b ON b.EnumID = a.{$stype}
+	LEFT JOIN service{$this->suffix}.service b ON b.ServiceType = a.{$stype}
 	 JOIN service{$this->suffix}.enums c ON c.EnumID = a.City 
 	 JOIN service{$this->suffix}.staff d ON d.StaffID = a.Staff01
 WHERE
-	a.Staff01 = '".$data['staff_id']."' AND JobDate BETWEEN '{$start_date}' AND '{$end_date}'
-	AND a.`Status` = 3 AND b.EnumType = 2 AND b.Text != '' AND a.City = '{$data['city']}'";
+	a.Staff01 = '" . $data['staff_id'] . "' AND JobDate BETWEEN '{$start_date}' AND '{$end_date}'
+	AND a.`Status` = 3   AND c.EnumType = 1  AND a.City IN({$build_ret2[0]['citys']}) ORDER BY  a.JobDate DESC";
+        }else{
+            $sql = "SELECT 
+	a.CustomerName AS customer_name,
+	d.StaffName AS staff_name,
+	b.ServiceName AS service_type,
+	c.Text AS city_name,
+	a.StartTime AS start_time,
+	a.FinishTime AS end_time,
+	a.JobDate AS job_date,
+	a.FinishDate AS finish_date,
+	{$condition_x}
+FROM
+	{$table} a
+	LEFT JOIN service{$this->suffix}.service b ON b.ServiceType = a.{$stype}
+	 JOIN service{$this->suffix}.enums c ON c.EnumID = a.City 
+	 JOIN service{$this->suffix}.staff d ON d.StaffID = a.Staff01
+WHERE
+	a.Staff01 = '" . $data['staff_id'] . "' AND JobDate BETWEEN '{$start_date}' AND '{$end_date}'
+	AND a.`Status` = 3   AND c.EnumType = 1  AND a.City IN({$build_ret2[0]['citys']}) ORDER BY  a.JobDate DESC";
+        }
+
+
+
+
 //        var_dump($sql);exit;
 
         $ret = Yii::app()->db->createCommand($sql)->queryAll();
@@ -262,6 +344,7 @@ WHERE
 
     public function getExport($data)
     {
+//        var_dump($data);exit();
 //        var_dump($data);exit;
 //        $staff_id = '',$start_date, $end_date,$time_point,$service_type = 1,$city
 //        if (empty()) {
@@ -284,32 +367,55 @@ WHERE
                 $stype = 'ServiceType';
         }
 
-        $start_date = date('Y-m-d',strtotime($data['start_date']))." 00:00:00";
-        $end_date = date('Y-m-d',strtotime($data['end_date'])). " 23:59:59";
-        if ((isset($data['time_point_start']) && $data['time_point_start'] >=0) && $data['time_point_end'] == 0) {
+        $start_date = date('Y-m-d', strtotime($data['start_date'])) . " 00:00:00";
+        $end_date = date('Y-m-d', strtotime($data['end_date'])) . " 23:59:59";
+        if ((isset($data['time_point_start']) && $data['time_point_start'] >= 0) && $data['time_point_end'] == 0) {
             $is_mark = '>=';
             $condition_x = "TIMEDIFF(a.FinishTime,a.StartTime) AS job_time,IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$is_mark}{$data['time_point_start']},'1','0') as 'flag',
   IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$is_mark}{$data['time_point_start']},'异常单','正常单') as 'status'";
 
         }
-        if((isset($data['time_point_end']) && $data['time_point_end'] >=0) && $data['time_point_start'] == 0){
+        if ((isset($data['time_point_end']) && $data['time_point_end'] >= 0) && $data['time_point_start'] == 0) {
             $is_mark = '<=';
             $condition_x = "TIMEDIFF(a.FinishTime,a.StartTime) AS job_time,IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$is_mark}{$data['time_point_end']},'1','0') as 'flag',
   IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime)){$is_mark}{$data['time_point_end']},'异常单','正常单') as 'status'";
 
         }
 
-        if((isset($data['time_point_start']) && $data['time_point_start'] >0) && (isset($data['time_point_end']) && $data['time_point_end'] >0)){
+        if ((isset($data['time_point_start']) && $data['time_point_start'] > 0) && (isset($data['time_point_end']) && $data['time_point_end'] > 0)) {
 
             $condition_x = "TIMEDIFF(a.FinishTime,a.StartTime) AS job_time,IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))>{$data['time_point_start']} OR TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))<{$data['time_point_end']},'1','0') as 'flag',
   IF(TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))>{$data['time_point_start']} OR TIME_TO_SEC(TIMEDIFF(a.FinishTime,a.StartTime))<{$data['time_point_end']},'异常单','正常单') as 'status'";
 
         }
 
+        $build_sql1 = "SELECT
+   e.Text as area_code
+FROM
+ service{$this->suffix}.officecity AS o
+   LEFT JOIN service{$this->suffix}.enums AS e ON e.EnumID = o.Office
+   LEFT JOIN security{$this->suffix}.sec_city AS b ON e.Text = b.CODE 
+WHERE
+   e.EnumType = 8 
+   AND o.City = {$data['city']}";
+        $build_ret1 = Yii::app()->db->createCommand($build_sql1)->queryAll();
+//        var_dump($build_ret1[0]['area_code']);exit();
+
+        $build_sql2 = "SELECT
+   GROUP_CONCAT(City) as citys
+FROM
+ service{$this->suffix}.officecity AS o
+   LEFT JOIN service{$this->suffix}.enums AS e ON e.EnumID = o.Office
+   LEFT JOIN security{$this->suffix}.sec_city AS b ON e.Text = b.CODE 
+WHERE
+   e.EnumType = 8 
+   AND e.Text IN('{$build_ret1[0]['area_code']}') ";
+        $build_ret2 = Yii::app()->db->createCommand($build_sql2)->queryAll();
+
         $sql = "SELECT SQL_CALC_FOUND_ROWS
 	a.CustomerName AS customer_name,
 	d.StaffName AS staff_name,
-	b.Text AS service_type,
+    b.ServiceName AS service_type,
 	c.Text AS city_name,
 	a.StartTime AS start_time,
 	a.FinishTime AS end_time,
@@ -317,17 +423,17 @@ WHERE
 	{$condition_x}
 FROM
 	{$table} a
-	LEFT JOIN service{$this->suffix}.enums b ON b.EnumID = a.{$stype}
-	 JOIN service{$this->suffix}.enums c ON c.EnumID = a.City 
+    LEFT JOIN service{$this->suffix}.service b ON b.ServiceType = a.{$stype}
+	 JOIN service{$this->suffix}.enums c ON c.EnumID = a.City  
 	 JOIN service{$this->suffix}.staff d ON d.StaffID = a.Staff01
 
 WHERE
-    JobDate BETWEEN '{$start_date}' AND '{$end_date}'
-	AND a.`Status` = 3 AND b.EnumType = 2 AND b.Text != '' AND a.City = '{$data['city']}'";
+    JobDate BETWEEN '{$start_date}' AND '{$end_date}'  AND c.EnumType = 1
+	AND a.`Status` = 3 AND a.City IN({$build_ret2[0]['citys']})  ORDER BY  a.JobDate DESC";
         $ret['data'] = Yii::app()->db->createCommand($sql)->queryAll();
 //        $this->findBySql("SELECT FOUND_ROWS() as row_count;");
         $ret['count'] = Yii::app()->db->createCommand("SELECT FOUND_ROWS() as row_count;")->queryRow();
-        return ['data'=>$ret,'range'=>[$start_date,$end_date]];
+        return ['data' => $ret, 'range' => [$start_date, $end_date]];
 
     }
 
@@ -335,6 +441,126 @@ WHERE
     {
         $a = explode(',', $this->fields);
         return empty($this->fields) || in_array($name, $a);
+    }
+
+    /**
+     * 获取点评统计报表数据
+     * @param $data
+     * @return array
+     */
+    public function getEvaluationExport($data)
+    {
+        /* 城市区域筛选 */
+        $build_sql1 = "SELECT e.Text as area_code
+            FROM
+                service{$this->suffix}.officecity AS o
+                LEFT JOIN service{$this->suffix}.enums AS e ON e.EnumID = o.Office
+                LEFT JOIN security{$this->suffix}.sec_city AS b ON e.Text = b.CODE 
+            WHERE
+                e.EnumType = 8 AND
+                o.City = {$data['city']}";
+        $build_ret1 = Yii::app()->db->createCommand($build_sql1)->queryAll();
+
+        $build_sql2 = "SELECT GROUP_CONCAT(City) as citys
+            FROM
+                service{$this->suffix}.officecity AS o
+                LEFT JOIN service{$this->suffix}.enums AS e ON e.EnumID = o.Office
+                LEFT JOIN security{$this->suffix}.sec_city AS b ON e.Text = b.CODE 
+            WHERE
+                e.EnumType = 8 AND
+                e.Text IN('{$build_ret1[0]['area_code']}') ";
+        $data['citys_code'] = Yii::app()->db->createCommand($build_sql2)->queryAll();
+
+        //查出服务单
+        $table = "service{$this->suffix}.joborder";
+        $stype = 'ServiceType';
+        $orderList = $this->getOrderData('order', $table, $stype, $data);
+
+        //跟进单
+        $table = "service{$this->suffix}.followuporder";
+        $stype = 'SType';
+        $followList = $this->getOrderData('follow', $table, $stype, $data);
+
+        //数据合并
+        $combinedArray = [
+            "data" => array_merge($orderList["data"], $followList["data"]),
+            "count" => [
+                "row_count" => (int)$orderList["count"]["row_count"] + (int)$followList["count"]["row_count"]
+            ]
+        ];
+
+        // 按"job_date"排序合并后的数组
+        usort($combinedArray["data"], function($a, $b){
+            // 比较函数，用于按"job_date"排序
+            return strtotime($a["job_date"]) - strtotime($b["job_date"]);
+        });
+
+        return $combinedArray;
+    }
+
+
+    /**
+     * 获取订单数据
+     * @return array
+     */
+    public function getOrderData($type, $table, $stype, $data){
+        $start_date = date('Y-m-d', strtotime($data['start_date']));
+        $end_date = date('Y-m-d', strtotime($data['end_date']));
+        $order_type = 1;
+
+        switch ($type){
+            case 'order': //服务单
+                $sql = "SELECT SQL_CALC_FOUND_ROWS
+                    a.JobID,
+                    a.CustomerName AS customer_name,
+                    b.ServiceName AS service_type,
+                    a.JobDate AS job_date,
+                    a.FirstJob
+                FROM
+                    {$table} a
+                    LEFT JOIN service{$this->suffix}.service b ON b.ServiceType = a.{$stype}
+                    JOIN service{$this->suffix}.enums c ON c.EnumID = a.City
+                WHERE
+                    JobDate BETWEEN '{$start_date}' AND '{$end_date}'  AND
+                    a.Staff01 = {$data['staff_id']} AND
+                    a.City IN({$data['citys_code'][0]['citys']})
+                ORDER BY  a.JobDate DESC";
+
+                $order_type = 1;
+                break;
+            case 'follow': //跟进单
+                $sql = "SELECT SQL_CALC_FOUND_ROWS
+                    a.FollowUpID as JobID,
+                    a.CustomerName AS customer_name,
+                    b.ServiceName AS service_type,
+                    a.JobDate AS job_date
+                FROM
+                    {$table} a
+                    LEFT JOIN service{$this->suffix}.service b ON b.ServiceType = a.{$stype}
+                    JOIN service{$this->suffix}.enums c ON c.EnumID = a.City
+                WHERE
+                    JobDate BETWEEN '{$start_date}' AND '{$end_date}'  AND
+                    a.Staff01 = {$data['staff_id']} AND
+                    a.City IN({$data['citys_code'][0]['citys']})
+                ORDER BY  a.JobDate DESC";
+
+                $order_type = 2;
+                break;
+        }
+
+        $ret['data'] = Yii::app()->db->createCommand($sql)->queryAll();//执行查询
+        $ret['count'] = Yii::app()->db->createCommand("SELECT FOUND_ROWS() as row_count;")->queryRow();// 计算总条数
+
+        //获取点评问题
+        foreach ($ret['data'] as &$val){
+            //获取问题sql
+            $Evaluation_sql = "SELECT question FROM service{$this->suffix}.lbs_evaluates WHERE order_id = {$val['JobID']} AND order_type = {$order_type}";
+
+            $question = Yii::app()->db->createCommand($Evaluation_sql)->queryRow();
+            $val['question'] = ($question['question'] ? json_decode($question['question'], true) : null);
+        }
+
+        return $ret;
     }
 }
 
