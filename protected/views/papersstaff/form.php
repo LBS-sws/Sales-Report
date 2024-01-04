@@ -281,7 +281,7 @@ $this->pageTitle=Yii::app()->name . ' - Credits for';
     </div>
 <?php }?>
 
-<div class="big"> <img class="big_img" src=""> </div>
+<div class="big"> <img class="big_img" src="" style="max-width: 80%;"> </div>
 
 <?php $this->endWidget(); ?>
 
