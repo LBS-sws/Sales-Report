@@ -1035,7 +1035,7 @@ EOD;
         $this->equipment = $equipmenthz_datas;
 
         //TODO 将类型为250的图片取10组
-        $photo_num = 8;
+        $photo_num = 4;
         if(isset($basic->CustomerID) && $basic->CustomerID){
             $cust_info = "select * from customercompany where CustomerID=".$basic->CustomerID;
             $cust_ret = Yii::app()->db->createCommand($cust_info)->queryAll();
