@@ -171,4 +171,15 @@ return array(
             ),
         )
     ),
+    'Report export'=>array(
+        'access'=>'RE',
+        'icon'=>'fa-edit',
+        'items'=>array(
+            'Report List'=>array(
+                'access'=>'RE01',
+                'url'=>'/reportlist/index',
+            ),
+
+        ),
+    ),
 );

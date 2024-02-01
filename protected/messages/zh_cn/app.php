@@ -83,7 +83,7 @@ return array(
 	'Papers query'=>'员工证件',
 	'Papersstafflist'=>'员工证件列表',
 	
-'Analyse Settings'=>'分析报告管理',
+	'Analyse Settings'=>'分析报告管理',
 	'Analyse Settings'=>'分析报告管理',
 	'Analyse Report'=>'分析报告列表',
 	'Pest Type'=>'虫害类型',
@@ -93,5 +93,9 @@ return array(
 	'city_name' => '地区',
 
 	'Chat'=>'客户消息',
+
+	// 报表导出
+	'Report export'=>'报表导出',
+	'Report List'=>'报表列表',
 );
 ?>
