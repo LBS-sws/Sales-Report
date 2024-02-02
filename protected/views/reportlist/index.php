@@ -21,7 +21,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
         <div class="box-body">
             <div>
                 <div>
-                    <span class="demonstration">客户名称xxx：</span>
+                    <span class="demonstration">客户名称：</span>
 
                     <!-- 远程搜索要使用filterable和remote -->
                     <el-autocomplete srt
@@ -58,20 +58,20 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
             :key="tableKey"
             :data="tableData"
             style="width: 100%">
-            <el-table-column label="地区" prop="date"> </el-table-column>
+            <el-table-column label="地区" prop="Text"> </el-table-column>
 
-            <el-table-column label="客户名称" prop="customer_name"> </el-table-column>
-            <el-table-column label="客户编号" prop="customer_id"> </el-table-column>
-            <el-table-column label="服务日期" prop="customer_id"> </el-table-column>
+            <el-table-column label="客户名称" prop="NameZH"> </el-table-column>
+            <el-table-column label="客户编号" prop="CustomerID"> </el-table-column>
+            <el-table-column label="服务日期" prop="JobDate"> </el-table-column>
 
-            <el-table-column label="鼠类发现数量" prop="customer_id"> </el-table-column>
-            <el-table-column label="鼠迹" prop="customer_id"> </el-table-column>
+            <el-table-column label="鼠类发现数量" prop="risk_data[0][value]"> </el-table-column>
+            <el-table-column label="鼠迹" prop="risk_data[1][value]"> </el-table-column>
 
-            <el-table-column label="蟑螂活体数量" prop="customer_id"> </el-table-column>
-            <el-table-column label="蟑螂痕迹" prop="customer_id"> </el-table-column>
+            <el-table-column label="蟑螂活体数量" prop="risk_data[2][value]"> </el-table-column>
+            <el-table-column label="蟑螂痕迹" prop="risk_data[3][value]"> </el-table-column>
 
-            <el-table-column label="飞虫数量" prop="customer_id"> </el-table-column>
-            <el-table-column label="飞虫类目" prop="customer_id"> </el-table-column>
+            <el-table-column label="飞虫数量" prop="risk_data[4][value]"> </el-table-column>
+            <el-table-column label="飞虫类目" prop="risk_data[5][value]"> </el-table-column>
 
 <!--            <el-table-column label="操作">-->
 <!--                <template slot-scope="scope">-->
@@ -220,7 +220,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                         let callBackArr = []; // 准备一个空数组，此数组是最终返给输入框的数组
                         // 这个res是发请求，从后台获取的数据
                         console.log(queryString)
-                        fetch(this.api_url+'index.php/api/Customer/search?q=' + queryString + '&city='+this.city , {
+                        fetch(this.api_url+'index.php/api/Risk/list?q=' + queryString + '&city='+this.city , {
                             method: "get",
                             // body: JSON.stringify({City:val}),
                             headers: {
@@ -361,7 +361,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                 }
                 this.loading = true
 
-                fetch(this.api_url+'index.php/api/Risk/list?' + 'page=' + this.currentPage + '&q=' + this.searchKey+ '&city='+this.city, {
+                fetch(this.api_url+'index.php/api/Risk/list?' + 'page=' + this.currentPage + '&q=' + this.state2+ '&city='+this.city, {
                     method: "get",
                     // body: JSON.stringify({City:val}),
                     headers: {
