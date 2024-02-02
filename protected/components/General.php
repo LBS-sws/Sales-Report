@@ -3,7 +3,7 @@
 
 class General extends CGeneral {
 
-/* SAMPLE CODE	
+/* SAMPLE CODE
 // ===========
 	public static function getAcctTypeList()
 	{
@@ -27,7 +27,7 @@ class General extends CGeneral {
 			return '2016/01/01';
 		}
 	}
-	
+
     /*
      * 獲取必須測驗的測驗單id
      */
@@ -50,14 +50,30 @@ class General extends CGeneral {
         return $value?$value:0;
     }
 
-	public static function isWebImageValid($webpath) {
-		$fname = sys_get_temp_dir().'/img'.md5(microtime()).'.jpg';
-		$content = file_get_contents($webpath);
-		file_put_contents($fname, $content);
-		$result = exif_imagetype($fname);
-		unlink($fname);
-		return ($result!==false && ($result==1 || $result==2 || $result==3 || $result==6));
-	}
+    public static function isWebImageValid($webpath) {
+        $headers = get_headers($webpath);
+        $statusCode = substr($headers[0], 9, 3); // 获取状态码
+        if ($statusCode == "200") {
+            $contentType = "";
+            foreach ($headers as $header) {
+                if (strpos($header, "Content-Type:") === 0) {
+                    $contentType = trim(substr($header, 14));
+                    break;
+                }
+            }
+            // 检查资源类型
+            if (strpos($contentType, "image/") === 0) {
+                // 图片资源
+                return true;
+            } else {
+                // 其他类型的资源
+                return false;
+            }
+        } else {
+            // 请求失败或资源不存在
+            return false;
+        }
+    }
 }
 
 ?>

@@ -357,6 +357,7 @@ EOD;
                     <td width="35%" align="left">{$basic['task_type']}</td>
                     <td width="15%">服务人员</td>
                     <td width="35%" align="left">{$basic['Staffall']}</td>
+                    <td width="35%" align="left">{$basic['Staffall']}</td>
                 </tr>
                 <tr>
                     <td width="15%">监测设备</td>
@@ -400,7 +401,9 @@ EOD;
 					$site_photos = explode(',', $photox['site_photos']);
 					for ($sp = 0; $sp < count($site_photos); $sp++) {
 						$spa = $baseUrl_imgs . str_replace("\/", '/', trim($site_photos[$sp], '"'));
-						if (!General::isWebImageValid($spa)) $spa = '/images/spacer.gif';
+						if (!General::isWebImageValid($spa)){
+							$spa = str_replace("xcx.", "files.", $baseUrl_imgs) . str_replace("\/", '/', trim($site_photos[$sp], '"'));
+						}
 						$html .= <<<EOD
                             <td width="20%" align="center">
 								<img src="$spa" width="80" height="100" style="padding:20px 50px;">
@@ -495,7 +498,9 @@ EOD;
 						$site_photos = explode(',', $riskx['site_photos']);
 						for ($sp = 0; $sp < count($site_photos); $sp++) {
 							$spa = $baseUrl_imgs . str_replace("\/", '/', trim($site_photos[$sp], '"'));
-							if (!General::isWebImageValid($spa)) $spa = '/images/spacer.gif';
+							if (!General::isWebImageValid($spa)){
+								$spa = str_replace("xcx.", "files.", $baseUrl_imgs) . str_replace("\/", '/', trim($site_photos[$sp], '"'));
+							}
 							$html .= <<<EOD
 							<td width="21%" align="center">
 								<img src="${spa}" width="80" height="100" style="padding:20px 50px;">
