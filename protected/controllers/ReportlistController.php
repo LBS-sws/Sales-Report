@@ -39,6 +39,7 @@ class ReportlistController extends Controller
 
     public function actionIndex($pageNum=0)
     {
+        $city = Yii::app()->user->city_allow();
         $model = new MaterialList;
         if (isset($_POST['MaterialList'])) {
             $model->attributes = $_POST['MaterialList'];
@@ -51,7 +52,7 @@ class ReportlistController extends Controller
         }
         $model->determinePageNum($pageNum);
         $model->retrieveDataByPage($model->pageNum);
-        $this->render('index',array('model'=>$model,'api_url'=>Yii::app()->params['baseUrl_imgs']));
+        $this->render('index',array('model'=>$model,'city' => $city,'api_url'=>Yii::app()->params['baseUrl_imgs']));
     }
     public function actionView($index)
     {
