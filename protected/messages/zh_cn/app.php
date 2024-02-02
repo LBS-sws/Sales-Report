@@ -96,6 +96,6 @@ return array(
 
 	// 报表导出
 	'Report export'=>'报表导出',
-	'Report List'=>'报表列表',
+	'Report List'=>'风险虫害记录表',
 );
 ?>
