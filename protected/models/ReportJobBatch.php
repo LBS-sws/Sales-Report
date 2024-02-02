@@ -12,6 +12,7 @@ class ReportJobBatch {
 		return $total;
 	}
 
+	//批量导出工作单
 	public static function downloadJobReport() {
 		$model = new ReportjobList;
 		$session = Yii::app()->session;
@@ -32,6 +33,7 @@ class ReportJobBatch {
 			$custname = $row['CustomerName'];
 			$reportfile = Yii::app()->basePath."/images/report/$city/$job_dt/$job_id.pdf";
 			if (!file_exists($reportfile)) {
+				//生成工作单
 				self::generateJobReport($row, $city, $reportfile);
 			}
 			if (file_exists($reportfile))
@@ -212,21 +214,23 @@ class ReportJobBatch {
         $res = $utils->httpCurl($utils->url.$params_str);
         $res_de = json_decode($res, true);
         if (isset($res_de) && $res_de['code'] == 0) {
-            $autograph_new = $res_de;
-            //有图片进行处理
+			$autograph_new = $res_de;
+			//有图片进行处理
 
 			//点评分数处理
 			//该处数据来自小程序数据后台，那边已经读取了点评表中的数据，此处不再处理
 			//$autograph_new['data']['customer_grade'] = $utils->getScore($params['job_id'], $params['job_type'], $autograph_new['data']['customer_grade']);
-        } else {
-            $autograph_new = $res_de;
-            //继续查询lbs的数据库
-            $sql_autograph = "select * from lbs_report_autograph where job_type='1' and job_id='" . $data['JobID'] . "'";
-            $autograph = Yii::app()->db->createCommand($sql_autograph)->queryRow();
-
-			//点评分数处理
-			$autograph['customer_grade'] = $utils->getScore($params['job_id'], $params['job_type'], $autograph['customer_grade']);
-        }
+		}
+// 目前两表已取消同步，因此不再使用
+//        } else {
+//            $autograph_new = $res_de;
+//            //继续查询lbs的数据库
+//            $sql_autograph = "select * from lbs_report_autograph where job_type='1' and job_id='" . $data['JobID'] . "'";
+//            $autograph = Yii::app()->db->createCommand($sql_autograph)->queryRow();
+//
+//			//点评分数处理
+//			$autograph['customer_grade'] = $utils->getScore($params['job_id'], $params['job_type'], $autograph['customer_grade']);
+//        }
 
         /**
          * ###########################################################
@@ -697,7 +701,6 @@ EOD;
             $eimageSrc03 = !empty($img_data['staff_id03_url']) ? $utils->sign_url . $img_data['staff_id03_url'] : '';
             $cimageSrc = !empty($img_data['customer_signature_url']) ? $utils->sign_url . $img_data['customer_signature_url'] : '';
             $cimageSrc_add = !empty($img_data['customer_signature_url_add']) ? $utils->sign_url . $img_data['customer_signature_url_add'] : '';
-            $customer_grade = !empty($img_data['customer_grade']) ? $img_data['customer_grade'] : '';
             // conversion_flag = 1 图片未旋转 需要先下载
             if(isset($img_data['conversion_flag']) && $img_data['conversion_flag'] == 1){
                 if ($cimageSrc != '' && $img_data['customer_signature_url'] != 'undefined') {
@@ -725,7 +728,7 @@ EOD;
 			$cimageSrc = '';
 			$cimageSrc_add = '';
         }
-		$customer_grade = isset($autograph['customer_grade'])?$autograph['customer_grade']:0;
+		$customer_grade = isset($autograph_new['data']['customer_grade'])?$autograph_new['data']['customer_grade']:0;
 		// 23-11-2 导出ptf点评改为3颗星
 		$customer_grade = ($customer_grade > 3) ? 3 : $customer_grade;
 		/**

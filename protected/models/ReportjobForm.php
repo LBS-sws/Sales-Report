@@ -320,7 +320,7 @@ class ReportjobForm extends CFormModel
                         //点评分数处理
                         //该处数据来自小程序数据后台，那边已经读取了点评表中的数据，此处不再处理
                         //$autograph_new['data']['customer_grade'] = $utils->getScore($params['job_id'], $params['job_type'], $autograph_new['data']['customer_grade']);
-                    } else {
+                    } else { //目前该处已没使用。数据皆来自远程接口
                         $autograph_new = $res_de;
                         //继续查询lbs的数据库
                         $sql_autograph = "select * from lbs_report_autograph where job_type='1' and job_id='" . $index."'";
@@ -1072,7 +1072,7 @@ EOD;
             //点评分数处理
             //该处数据来自小程序数据后台，那边已经读取了点评表中的数据，此处不再处理
             //$autograph_new['data']['customer_grade'] = $utils->getScore($params['job_id'], $params['job_type'], $autograph_new['data']['customer_grade']);
-        } else {
+        } else { //目前该处已没使用。数据皆来自远程接口
             $autograph_new = $res_de;
             //继续查询lbs的数据库
             $sql_autograph = "select * from lbs_report_autograph where job_type='1' and job_id='" . $index."'";
@@ -1113,7 +1113,7 @@ EOD;
         $risk = $this->risk;
         $equipment = $this->equipment;
         $photo = $this->photo;
-        $autograph = $this->autograph;
+//        $autograph = $this->autograph;
         $baseUrl_imgs = Yii::app()->params['baseUrl_imgs'];
         $company_img = $baseUrl_imgs."pdf/company/".$city.".jpg";
         $logo_img = $baseUrl_imgs."pdf/logo.png";
@@ -1471,6 +1471,7 @@ EOD;
             $eimageSrc03 = !empty($img_data['staff_id03_url']) ? $utils->sign_url . $img_data['staff_id03_url'] : '';
             $cimageSrc = !empty($img_data['customer_signature_url']) ? $utils->sign_url . $img_data['customer_signature_url'] : '';
             $cimageSrc_add = !empty($img_data['customer_signature_url_add']) ? $utils->sign_url . $img_data['customer_signature_url_add'] : '';
+            $customer_grade = !empty($img_data['customer_grade']) ? $img_data['customer_grade'] : 0;
             $employee02_signature = '';
             $employee03_signature = '';
             // conversion_flag = 1 图片未旋转 需要先下载
@@ -1528,10 +1529,9 @@ EOD;
                 $cimageSrc = '';
             }
             $cimageSrc_add = '';
-            $customer_grade = $autograph['customer_grade'];
+            $customer_grade = !empty($autograph['customer_grade']) ? $autograph['customer_grade'] : 0;
 
         }
-        $customer_grade = !empty($img_data['customer_grade']) ? $img_data['customer_grade'] : 0;
         // 23-11-2 导出ptf点评改为3颗星
         $customer_grade = ($customer_grade > 3) ? 3 : $customer_grade;
             $html .= <<<EOD

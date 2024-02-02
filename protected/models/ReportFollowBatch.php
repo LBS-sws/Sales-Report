@@ -164,7 +164,7 @@ class ReportFollowBatch
             //点评分数处理
             //该处数据来自小程序数据后台，那边已经读取了点评表中的数据，此处不再处理
             //$autograph_new['data']['customer_grade'] = $utils->getScore($params['job_id'], $params['job_type'], $autograph_new['data']['customer_grade']);
-        } else {
+        } else { //目前该处已没使用。数据皆来自远程接口
             $autograph_new = $res_de;
             //继续查询lbs的数据库
             $sql_autograph = "select * from lbs_report_autograph where job_type='2' and job_id='" . $data['FollowUpID'] . "'";
@@ -285,8 +285,8 @@ class ReportFollowBatch
 EOD;
         if ($briefing !== false) {
             if (($service_sections != '' && in_array('1', $service_sections)) || $service_sections == '') {
-                $briefing['content'] = nl2br($briefing['content']);
-                $briefing['proposal'] = nl2br($briefing['proposal']);
+//                $briefing['content'] = nl2br($briefing['content']);
+//                $briefing['proposal'] = nl2br($briefing['proposal']);
                 $html .= <<<EOD
                     <tr class="myTitle">
                         <th width="100%" align="left">服务简报</th>
