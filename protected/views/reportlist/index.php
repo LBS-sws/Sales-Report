@@ -20,27 +20,30 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
     <div class="box">
         <div class="box-body">
             <div>
+
                 <div>
-                    <span class="demonstration">客户名称：</span>
+<!--                    <span class="demonstration">客户名称：</span>-->
+<!--                    -->
+<!--                    <el-autocomplete srt-->
+<!--                                     v-model="state2"-->
+<!--                                     clearable-->
+<!--                                     :fetch-suggestions="querySearch"-->
+<!--                                     placeholder="请输入内容"-->
+<!--                                     :trigger-on-focus="false"-->
+<!--                                     @select="handleSelect"-->
+<!--                                     size="small"-->
+<!--                    ></el-autocomplete>-->
 
-                    <!-- 远程搜索要使用filterable和remote -->
-                    <el-autocomplete srt
-                                     v-model="state2"
-                                     clearable
-                                     :fetch-suggestions="querySearch"
-                                     placeholder="请输入内容"
-                                     :trigger-on-focus="false"
-                                     @select="handleSelect"
-                                     size="small"
-                    ></el-autocomplete>
 
+<!--                    <el-button style="margin-left: 20px" @click="getCustomerList()" type="primary">查询</el-button>-->
 
-                    <el-button style="margin-left: 20px" @click="getCustomerList()" type="primary">查询</el-button>
+                    <el-button style="margin-left: 20px" @click="getCustomerList()" type="primary">导出</el-button>
+
                 </div>
             </div>
         </div>
     </div>
-    <div>
+    <div style="display: none;">
         <!-- 表格分页 -->
         <!-- pager-count pager-count属性可以设置最大页码按钮数,超出折叠,默认为7-->
         <!-- 注意：若数据是后端接口返回的则此时:total="pageCount"-->
@@ -349,6 +352,18 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
             },
 
             getCustomerList() {
+
+                // window.open(url, name, options)
+                let domain = '<?php echo $api_url;?>'
+                // console.log(domain)
+
+                let url = domain + 'index.php/api/Risk/export';
+                // console.log(url)
+
+                window.open(url);       //在当前窗口中打开窗口
+
+                console.log('导出')
+                return false
                 // consol
                 // this.nowUser = val
                 let orgin_time = this.date1;
@@ -397,10 +412,14 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                 })
                 // this.checkUser = ''
             },
+            // 导出
+            export(){
+                console.log('导出...')
+            }
         },
         mounted(){
             // 在页面加载时请求数据
-            this.getCustomerList()
+            // this.getCustomerList()
 
         },
 
