@@ -28,6 +28,9 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
 
                     </el-form-item>
 
+
+
+
                     <el-form-item label="时间" >
                         <el-date-picker
                                 v-model="form.date"
@@ -35,7 +38,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                                 range-separator="至"
                                 start-placeholder="开始日期"
                                 end-placeholder="结束日期"
-                                value-format=“yyyy-MM-dd”
+                                value-format="yyyy-MM-dd"
 
                         >
                         </el-date-picker>
@@ -73,7 +76,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                 city:[<?php echo $city;?>],
                 form :{
                     name:'',
-                    date:''
+                    date:[]
                 },
 
             }
@@ -103,6 +106,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                 console.log(this.form.name)
                 console.log(this.form.date)
 
+                // let date = JSON.stringify(this.form.date)
 
                 let url = '<?php echo $api_url;?>' + 'index.php/api/Risk/export';
                 axios.post(url, {
