@@ -36,6 +36,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                                 start-placeholder="开始日期"
                                 end-placeholder="结束日期"
                                 value-format=“yyyy-MM-dd”
+
                         >
                         </el-date-picker>
                     </el-form-item>
@@ -73,8 +74,9 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                 form :{
                     name:'中央',
                     date:''
-                }
-            };
+                },
+
+            }
         },
         watch: {
             // 监听日期清理后数据为null进行处理否则会报错
@@ -86,26 +88,16 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
             }
         },
         created(){
-            // 初始化默认时间
-            // this.defaultDate()
+
+            this.form.date = ['2024-01-01','2024-12-31']
+            console.log(this.form.date)
+
         },
         computed:{
 
         },
         methods: {
-            // 初始化默认时间
-            defaultDate() {
-                var date = new Date()
-                var year = date.getFullYear().toString()
-                var month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1).toString() : (date.getMonth() + 1).toString()
-                // var da = date.getDate() < 10 ? '0' + date.getDate().toString() : date.getDate().toString()
-                var da = new Date(date.getFullYear(), month, 0).getDate()
-                da < 10 ? '0' + da.toString() : da.toString()
-                var beg = year + '-' + '01' + '-01'
-                var end = year + '-' + '12' + '-' + '31'
-                console.log( [beg, end] )
-                this.form.date = [beg, end] //将值设置给插件绑定的数据
-            },
+
             // 导出
             exportData(){
                 console.log(this.form.name)
@@ -120,6 +112,10 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                     console.log(response);
                     if(response.data.code==400){
                         alert('请选择日期')
+                    }
+                    if(response.data.code==200){
+                        console.log(response.data.data.file_url)
+                        window.location.href = response.data.data.file_url
                     }
 
                 }).catch(function (error) {
@@ -139,8 +135,6 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
             }
         },
         mounted(){
-
-            // this.getCustomerList()
 
         },
 
