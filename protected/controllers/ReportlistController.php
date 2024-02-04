@@ -39,6 +39,16 @@ class ReportlistController extends Controller
 
     public function actionIndex($pageNum=0)
     {
+
+        $se_suffix = Yii::app()->params['envSuffix'];
+        $city_allow = Yii::app()->user->city_allow();
+//        echo $se_suffix;
+//
+//        echo $city_allow;
+
+        $city_all = General::getCityList();
+        
+
         $city = Yii::app()->user->city_allow();
         $model = new MaterialList;
         if (isset($_POST['MaterialList'])) {
