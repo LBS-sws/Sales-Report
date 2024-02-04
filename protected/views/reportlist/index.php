@@ -115,7 +115,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                 }).then(function (response) {
                     console.log(response);
                     if(response.data.code==400){
-                        alert('请选择日期')
+                        alert(response.data.msg)
                     }
                     if(response.data.code==200){
                         console.log(response.data.data.file_url)
