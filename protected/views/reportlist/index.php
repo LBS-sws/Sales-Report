@@ -72,7 +72,7 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                 api_url:'<?php echo $api_url;?>',
                 city:[<?php echo $city;?>],
                 form :{
-                    name:'中央',
+                    name:'',
                     date:''
                 },
 
@@ -89,8 +89,8 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
         },
         created(){
 
-            this.form.date = ['2024-01-01','2024-12-31']
-            console.log(this.form.date)
+            // this.form.date = ['2024-01-01','2024-12-31']
+            // console.log(this.form.date)
 
         },
         computed:{
