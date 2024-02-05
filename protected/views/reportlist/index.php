@@ -24,8 +24,15 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                 <el-form ref="form" :model="form" label-width="80px" style="display: flex; justify-content: flex-start; " >
 
                     <el-form-item label="地区" style="width: 200px;">
-                        <el-input v-model="form.name"></el-input>
-
+<!--                        <el-input v-model="form.name"></el-input>-->
+                        <el-select v-model="form.name" placeholder="请选择"  <?php if($select_ck==1){ }else{ echo 'disabled'; } ?>>
+                            <el-option
+                                    v-for="item in options"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
 
 
@@ -39,7 +46,6 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                                 start-placeholder="开始日期"
                                 end-placeholder="结束日期"
                                 value-format="yyyy-MM-dd"
-
                         >
                         </el-date-picker>
                     </el-form-item>
@@ -78,7 +84,8 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
                     name:'',
                     date:[]
                 },
-
+                options: [],
+                disabledx:false
             }
         },
         watch: {
@@ -91,9 +98,19 @@ $this->pageTitle = Yii::app()->name . ' - Riskrank';
             }
         },
         created(){
+            // 城市下拉
+            var js_array = new Array();
+            <?php
+            foreach($city_all as $key => $value) {
+                echo "js_array.push({value:'$value[value]',label:'$value[label]'});";
+            }
+            ?>
 
-            // this.form.date = ['2024-01-01','2024-12-31']
-            // console.log(this.form.date)
+            // console.log(js_array);
+            this.options = js_array
+
+            // 当前用户地区
+            this.form.name = '<?=$city_val;?>';
 
         },
         computed:{

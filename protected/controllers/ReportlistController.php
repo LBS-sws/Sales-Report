@@ -41,28 +41,34 @@ class ReportlistController extends Controller
     {
 
         $se_suffix = Yii::app()->params['envSuffix'];
-        $city_allow = Yii::app()->user->city_allow();
+
 //        echo $se_suffix;
-//
-//        echo $city_allow;
 
+
+        // 获取数据表所有城市
         $city_all = General::getCityList();
-        
 
-        $city = Yii::app()->user->city_allow();
-        $model = new MaterialList;
-        if (isset($_POST['MaterialList'])) {
-            $model->attributes = $_POST['MaterialList'];
-        } else {
-            $session = Yii::app()->session;
-            if (isset($session['materiallist_ms01']) && !empty($session['materiallist_ms01'])) {
-                $materiallist = $session['materiallist_ms01'];
-                $model->setCriteria($materiallist);
-            }
+        $city_alls = [];
+        foreach ($city_all as $key=>$val){
+            array_push($city_alls,array('label'=>$val,'value'=>$key));
         }
-        $model->determinePageNum($pageNum);
-        $model->retrieveDataByPage($model->pageNum);
-        $this->render('index',array('model'=>$model,'city' => $city,'api_url'=>Yii::app()->params['baseUrl_imgs']));
+
+        // 当前用户所拥有的城市权限
+        $city = Yii::app()->user->city_allow();
+//        echo $city;
+
+        $strArray = explode(',',$city);
+        $select_ck = 1;
+        if(count($strArray) == 1){
+            $select_ck = 0;
+            $city_val = str_replace("'", '', $city);
+
+        }else{
+            $city_val = '';
+        }
+       
+
+        $this->render('index',array('city' => $city,'city_all'=>$city_alls, 'select_ck'=>$select_ck, 'city_val'=>$city_val, 'api_url'=>Yii::app()->params['baseUrl_imgs']));
     }
     public function actionView($index)
     {
